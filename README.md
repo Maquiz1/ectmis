@@ -1,3 +1,3 @@
 # pharmacy
-Study Pharmacy System
+Clinical Trial Material Inventory System
 # ctmis
