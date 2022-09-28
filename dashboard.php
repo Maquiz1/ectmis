@@ -68,7 +68,7 @@ if ($user->isLoggedIn()) {
                     <div class="col-md-6">
 
                         <div class="wBlock blue clearfix">
-                            <a href="info.php?id=3&type=2">
+                            <a href="data.php?id=4&type=2">
                                 <div class="dSpace">
                                     <h3>DEVICES</h3>
                                     <span class="mChartBar" sparkType="bar" sparkBarColor="white">
@@ -153,7 +153,7 @@ if ($user->isLoggedIn()) {
                                     }
 
                                     foreach ($override->getWithLimit('batch_description', 'status', 1,$page, $numRec) as $bDiscription) {
-                                        $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
+                                        $useGroup = $override->get('use_group', 'id', $bDiscription['type'])[0]['name'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['cat_id'])[0]['name'];
                                         $icu = ($override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);

@@ -367,10 +367,7 @@ if ($user->isLoggedIn()) {
         } elseif (Input::get('update_check')) {
             $validate = new validate();
             $validate = $validate->check($_POST, array(
-                'last_check_date' => array(
-                    'required' => true,
-                ),
-                'next_check_date' => array(
+                'check_date' => array(
                     'required' => true,
                 ),
                 'maintainance_status' => array(
@@ -378,37 +375,36 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                if (Input::get('next_check_date') >= date('Y-m-d')) {
+                // print_r($_POST);
+                // if (Input::get('next_check_date') >= date('Y-m-d')) {
                     // if (Input::get('next_check_date') <= Input::get('next_check_date_db')) {
-                        if (Input::get('last_check_date') <= date('Y-m-d')) {
-                            if (Input::get('last_check_date') >= Input::get('last_check_date_db')) {
-                                try {
-                                    $user->createRecord('check_records2', array(
-                                        'batch_desc_id' => Input::get('batch_desc_id'),
-                                        'last_check_date' => Input::get('last_check_date'),
-                                        'next_check_date' => Input::get('next_check_date'),
-                                        'create_on' => date('Y-m-d'),
-                                        'staff_id' => $user->data()->id,
-                                        'status' => Input::get('maintainance_status'),
-                                        'check_type' => Input::get('maintainance_type'),
-                                    ));
+                    if (Input::get('last_check_date') <= date('Y-m-d')) {
+                        // if (Input::get('last_check_date') >= Input::get('last_check_date_db')) {
+                            try {
+                                $user->createRecord('check_records', array(
+                                    'batch_desc_id' => Input::get('id'),
+                                    'check_date' => Input::get('check_date'),
+                                    'create_on' => date('Y-m-d'),
+                                    'staff_id' => $user->data()->id,
+                                    'status' => Input::get('maintainance_status'),
+                                ));
 
-                                    $successMessage = 'Check Status Updated Successful';
-                                } catch (Exception $e) {
-                                    die($e->getMessage());
-                                }
-                            } else {
-                                $errorMessage = 'Last Date not correct';
+                                $successMessage = 'Check Status Updated Successful';
+                            } catch (Exception $e) {
+                                die($e->getMessage());
                             }
-                        } else {
-                            $errorMessage = 'Last Date can not be of Future';
-                        }
+                        // } else {
+                        //     $errorMessage = 'Last Date not correct';
+                        // }
                     // } else {
-                    //     $errorMessage = 'Next Date not correct';
+                    //     $errorMessage = 'Last Date can not be of Future';
                     // }
-                } else {
-                    $errorMessage = 'Next Date can not be of Past';
-                }
+                    } else {
+                        $errorMessage = 'Check Date not correct';
+                    }
+                // } else {
+                //     $errorMessage = 'Next Date can not be of Past';
+                // }
             } else {
                 $pageError = $validate->errors();
             }
@@ -745,9 +741,7 @@ if ($user->isLoggedIn()) {
                                         <tr>
                                             <th width="15%">Generic Name</th>
                                             <th width="15%">Study</th>
-                                            <th width="10%">Last Check Date</th>
-                                            <!-- <th width="10%">Last Check Status</th> -->
-                                            <th width="10%">Next Check Date</th>
+                                            <th width="10%">Check Date</th>
                                             <th width="5%">Status</th>
                                             <th width="20%">Manage</th>
                                         </tr>
@@ -762,38 +756,25 @@ if ($user->isLoggedIn()) {
                                         } else {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
-                                        foreach ($override->getWithLimit('batch', 'status', 1, $page, $numRec) as $batch) {
+                                        $type = $_GET['type'];
+                                        foreach ($override->getNews('batch', 'status', 1, 'type', $type) as $batch) {
+                                            // foreach ($override->getWithLimit('batch', 'status', 1, $page, $numRec) as $batch) {
                                             $study = $override->get('study', 'id', $batch['study_id'])[0];
                                             $batchItems = $override->getSumD1('batch_description', 'assigned', 'batch_id', $batch['id']);
-                                            // $lastCheck = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['last_check_date'];
                                             $currentAmount = $override->get('batch_description', 'batch_id', $batch['id'])[0]['quantity'];
                                             $notifyAmount = $override->get('batch_description', 'batch_id', $batch['id'])[0]['quantity'];
-                                            // $lastStatus = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['status'];
-                                            // $nextCheck = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['last_check_date'];
                                             $batchDescId = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['batch_desc_id'];
                                             $maintainance_type = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['check_type'];
                                             $lastStatus2 = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['status'];
-                                            // $lastDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['last_check_date'];
-                                            // $nextDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['next_check_date'];
-                                            $lastDate = $override->get('batch_description', 'id', $batch['id'])[0]['last_check_date'];
-                                            $nextDate = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check_date'];
+                                            $checkDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['check_date'];
+                                            $nextDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['check_date'];
 
 
-                                            // print_r($lastDate);
                                             $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; ?>
                                             <tr>
                                                 <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                 <td><?= $study['name'] ?></td>
-                                                <td><?= $lastDate ?></td>
-                                                <!-- <td>
-                                                    <?php if ($lastStatus2 == 1) { ?>
-                                                        <a href="#" role="button" class="btn btn-success btn-sm">OK!</a>
-                                                    <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-danger">NOT CHECKED!</a>
-                                                    <?php } ?>
-                                                </td> -->
-                                                </td>
-                                                <td><?= $nextDate ?></td>
+                                                <td><?= $checkDate ?></td>
                                                 <td>
                                                     <?php if ($nextDate == date('Y-m-d')) { ?>
                                                         <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
@@ -806,7 +787,6 @@ if ($user->isLoggedIn()) {
                                                 <td>
                                                     <a href="data.php?id=8&updateId=<?= $batch['id'] ?>" class="btn btn-default">View</a>
                                                     <a href="#desc<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>
-                                                    <!-- <a href="#delete<?= $batch['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a> -->
                                                 </td>
 
                                             </tr>
@@ -823,7 +803,6 @@ if ($user->isLoggedIn()) {
 
                                                                 <div class="col-sm-8">
                                                                     <div class="row-form clearfix">
-                                                                        <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Maintainance Status:</label>
                                                                             <select name="maintainance_status" style="width: 100%;" required>
@@ -836,22 +815,14 @@ if ($user->isLoggedIn()) {
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="col-sm-8">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Last Check Date:</label>
-                                                                            <div class="col-md-9"><input type="date" name="last_check_date" value='<?= $lastDate ?>' readonly /> <span></span></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-8">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Next Check Date:</label>
-                                                                            <div class="col-md-9"><input type="date" name="next_check_date" required /> <span></span></div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Check Date:</label>
+                                                                                <div class="col-md-9"><input type="date" name="check_date" value='<?= $checkDate ?>' /> <span></span></div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -860,10 +831,6 @@ if ($user->isLoggedIn()) {
                                                             <div class="dr"><span></span></div>
                                                             <div class="modal-footer">
                                                                 <input type="hidden" name="id" value="<?= $batch['id'] ?>">
-                                                                <input type="hidden" name="last_check_date_db" value="<?= $lastDate ?>">
-                                                                <input type="hidden" name="next_check_date_db" value="<?= $nextDate ?>">
-                                                                <input type="hidden" name="batch_desc_id" value="<?= $batchDescId ?>">
-                                                                <input type="hidden" name="maintainance_type" value="<?= $maintainance_type ?>">
                                                                 <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
@@ -997,7 +964,7 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-                                        foreach ($override->get4('batch_description', 'status', 1,$page, $numRec) as $bDiscription) {
+                                        foreach ($override->get4('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
                                             $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                             $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                             $icu = ($override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
@@ -1322,7 +1289,7 @@ if ($user->isLoggedIn()) {
                                         } else {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
-                                        foreach ($override->getWithLimit('batch', 'status', 4,$page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('batch', 'status', 4, $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $status = $override->get('maintainance_status', 'id', $batch['status'])[0]['name'];
                                             $name = $override->get('batch_description', 'id', $_GET['updateId'])[0]['name'];
