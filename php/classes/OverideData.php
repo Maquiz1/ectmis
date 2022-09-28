@@ -47,6 +47,30 @@ class OverideData{
         return $result;
     }
 
+    public function get4($table,$where,$id,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where > '$id' AND $where2 = '$id2'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function get5($table,$where,$id,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where <= '$id' AND $where2 = '$id2'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function get6($table,$where,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where < 0 AND $where2 = '$id2'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function get7($table,$where,$id,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where <= '$id' AND $where2 = '$id2'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
     public function getSumD($table,$variable){
         $query = $this->_pdo->query("SELECT SUM($variable) FROM $table");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -92,6 +116,49 @@ class OverideData{
     }
     public function getWithLimit($table,$where,$id,$page,$numRec){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' limit $page,$numRec");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getDataWithLimit($table,$page,$numRec){
+        $query = $this->_pdo->query("SELECT * FROM $table limit $page,$numRec");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDate2($table,$var,$value,$var1,$value1){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+
+    public function searchBtnDateSufficient($table,$var,$value,$var1,$value1,$var2,$value2,$var3,$value3,$var4,$value4){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 < '$value2' AND $var3 = '$value3' AND $var4 = '$value4'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDateLow($table,$var,$value,$var1,$value1,$var2,$value2,$var3,$value3,$var4,$value4){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 >= '$value2' AND $var3 = '$value3' AND $var4 = '$value4'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDateOutStock($table,$var,$value,$var1,$value1,$var2,$value2,$var3,$value3,$var4,$value4){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 <= $value2 AND $var3 = '$value3' AND $var4 = '$value4'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDateExpired($table,$var,$value,$var1,$value1,$var2,$value2,$var3,$value3,$var4,$value4){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 <= $value2 AND $var3 = '$value3' AND $var4 = '$value4'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDateNotChecked($table,$var,$value,$var1,$value1,$var2,$value2,$var3,$value3,$var4,$value4){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 <= $value2 AND $var3 = '$value3' AND $var4 = '$value4'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }

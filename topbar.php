@@ -85,7 +85,7 @@ if (Input::exists('post')) {
 ?>
 <div class="header">
     <!-- <div class="row justify-content-center"> -->
-        <h4 style="font-weight: bold;color: #f8f8f8" href="#" class="text-center"> &nbsp;Pharmacy Inventory</h4>
+        <h4 style="font-weight: bold;color: #f8f8f8" href="#" class="text-center"> &nbsp;CTMIS</h4>
     <!-- </div> -->
     <ul class="header_menu">
         <li class="list_icon"><a href="#">&nbsp;</a></li>
@@ -211,7 +211,7 @@ if (Input::exists('post')) {
         </form>
     </div>
 </div>
-<div class="modal" id="batch_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal" id="batch_desc_test" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form method="post">
             <?php if(Input::get('change_password')){if($errorMessage){?>

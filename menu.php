@@ -140,6 +140,35 @@ if($user->data()->accessLevel == 1){
                     </li>
                 </ul>
             </li>
+            <li class="openable">
+                <a href="#"><span class="isw-documents"></span><span class="text">Reports</span></a>
+                <ul>
+                    <li>
+                        <a href="report.php?id=1">
+                            <span class="glyphicon glyphicon-search"></span><span class="text">Search Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="">
+                <a href="info.php?id=11">
+                    <span class="isw-download"></span><span class="text">Download</span>
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="zebra.php" target="_blank">
+                    <span class="isw-print"></span><span class="text">Zebra Print</span>
+                </a>
+            </li>
+
+            <?php if($user->data()->power == 1){?>
+                <li class="active">
+                    <a href="zebra.php">
+                        <span class="isw-print"></span><span class="text">Zebra Print</span>
+                    </a>
+                </li>
+            <?php }?>
         <?php }else {?>
 
         <?php }?>
