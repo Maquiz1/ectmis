@@ -17,6 +17,45 @@ $today = date('Y-m-d');
 $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 if ($user->isLoggedIn()) {
     if (Input::exists('post')) {
+        $validate = new validate();
+        if (Input::get('update_stock_guide')) {
+            $validate = $validate->check($_POST, array(
+                'amount' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $total_quantity = 0;
+                if (Input::get('amount') > 0) {
+                    $total_quantity = Input::get('quantity_db') + Input::get('amount');
+                    try {
+                        $user->updateRecord('batch_description', array(
+                            'quantity' => $total_quantity,
+                        ), Input::get('id'));
+
+                        $user->createRecord('batch_description_records', array(
+                            'quantity' => Input::get('quantity'),
+                            'batch_description_id' => Input::get('batch'),
+                            'notify_amount' => Input::get('notify_amount'),
+                            'staff_id' => $user->data()->id,
+                            'use_group' => Input::get('use_group'),
+                            'create_on' => date('Y-m-d'),
+                            'use_case' => Input::get('use_case'),
+                            'added' => Input::get('amount'),
+
+                        ));
+
+                        $successMessage = 'Stock guied Successful Updated';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                } else {
+                    $errorMessage = 'Amount added Must Be Greater Than 0';
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        }
     }
 } else {
     Redirect::to('index.php');
@@ -292,7 +331,7 @@ if ($user->isLoggedIn()) {
                                                             <input type="hidden" name="assigned" value="<?= $bDiscription['assigned'] ?>">
                                                             <input type="hidden" name="notify_amount" value="<?= $bDiscription['notify_amount'] ?>">
                                                             <input type="hidden" name="status" value="<?= $bDiscription['maintainance_status'] ?>">
-                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
+                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['type'] ?>">
                                                             <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
