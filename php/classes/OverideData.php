@@ -47,20 +47,26 @@ class OverideData{
         return $result;
     }
 
-    public function get4($table,$where,$id,$where2,$id2){
+    public function getFull($table,$where,$id,$where2,$id2){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where > '$id' AND $where2 = '$id2'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 
-    public function get5($table,$where,$id,$where2,$id2){
-        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where <= '$id' AND $where2 = '$id2'");
+    public function get4($table,$where,$id,$where2,$id2,$where3,$id3){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where > '$id' AND $where2 = '$id2' AND $where3 = '$id3'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 
-    public function get6($table,$where,$where2,$id2){
-        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where < 0 AND $where2 = '$id2'");
+    public function get5($table,$where,$id,$where2,$id2,$where3,$id3){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where <= '$id' AND $where2 = '$id2' AND $where3 = '$id3'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function get6($table,$where,$id,$where2,$id2,$where3,$id3){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where < '$id' AND $where2 = '$id2' AND $where3 = '$id3'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
