@@ -375,7 +375,6 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                // print_r($_POST);
                 // if (Input::get('next_check_date') >= date('Y-m-d')) {
                 // if (Input::get('next_check_date') <= Input::get('next_check_date_db')) {
                 if (Input::get('last_check_date') <= date('Y-m-d')) {
