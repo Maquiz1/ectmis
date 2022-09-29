@@ -88,39 +88,7 @@ if ($user->isLoggedIn()) {
 
             <div class="workplace">
 
-                <div class="row">
-
-                    <div class="col-md-6">
-
-                        <div class="wBlock green clearfix">
-                            <a href="info.php?id=3&type=1">
-                                <div class="dSpace">
-                                    <h3>MEDICINES</h3>
-                                    <span class="mChartBar" sparkType="bar" sparkBarColor="white">
-                                        <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
-                                    </span>
-                                    <span class="number"><?= $override->countData('batch', 'type', 1, 'status', 1) ?></span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <div class="wBlock blue clearfix">
-                            <a href="data.php?id=4&type=2">
-                                <div class="dSpace">
-                                    <h3>DEVICES</h3>
-                                    <span class="mChartBar" sparkType="bar" sparkBarColor="white">
-                                        <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
-                                    </span>
-                                    <span class="number"><?= $override->countData('batch', 'type', 2, 'status', 1) ?></span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
+            <?php include "header.php"; ?>
 
                 <div class="dr"><span></span></div>
                 <div class="row">
@@ -160,7 +128,7 @@ if ($user->isLoggedIn()) {
                             </ul>
                         </div>
                         <div class="block-fluid">
-                        <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                            <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                 <thead>
                                     <tr>
                                         <th width="10%">Generic Name</th>
@@ -192,7 +160,7 @@ if ($user->isLoggedIn()) {
                                         $page = ($_GET['page'] * $numRec) - $numRec;
                                     }
 
-                                    foreach ($override->getWithLimit('batch_description', 'status', 1,$page, $numRec) as $bDiscription) {
+                                    foreach ($override->getWithLimit('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $useGroup = $override->get('use_group', 'id', $bDiscription['type'])[0]['name'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['cat_id'])[0]['name'];

@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <![endif]-->
 
-<link rel="icon" type="image/ico" href="favicon.ico"/>
+<link rel="icon" type="image/ico" href="favicon.ico" />
 
 <link href="css/stylesheets.css" rel="stylesheet" type="text/css" />
 <link rel='stylesheet' type='text/css' href='css/fullcalendar.print.css' media='print' />
@@ -66,3 +66,4 @@
 <script type='text/javascript' src='js/charts.js'></script>
 <script type='text/javascript' src='js/plugins.js'></script>
 <script type='text/javascript' src='js/settings.js'></script>
+
