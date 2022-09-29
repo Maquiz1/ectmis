@@ -1,4 +1,24 @@
 <?php
+require_once 'php/core/init.php';
+$user = new User();
+$override = new OverideData();
+$email = new Email();
+$random = new Random();
+
+$successMessage = null;
+$pageError = null;
+$errorMessage = null;
+
+
+$noE = 0;
+$noC = 0;
+$noD = 0;
+$numRec = 13;
+$users = $override->getData('user');
+
+$today = date('Y-m-d');
+$todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
+
 if ($user->data()->accessLevel == 1) {
 } else {
 }
@@ -49,7 +69,7 @@ if ($user->data()->accessLevel == 1) {
                 </ul>
             </li>
 
-            <?php } else { ?>
+        <?php } else { ?>
             <li class="openable">
                 <a href="#"><span class="isw-lock"></span><span class="text">Studies</span></a>
                 <ul>
@@ -143,6 +163,31 @@ if ($user->data()->accessLevel == 1) {
                 <a href="info.php?id=11">
                     <span class="isw-download"></span><span class="text">Download</span>
                 </a>
+            </li>
+
+            <li class="openable">
+                <a href="#"><span class="isw-tag"></span><span class="text">Summary</span></a>
+                <ul>
+                    <li>
+                        <a href="data.php?id=1">
+                            <span class="text">Expired Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount1('batch', 'expire_date', $today, 'status', 1) ?></span>
+                        </a>
+                        <a href="data.php?id=9">
+                            <span class="text">Archived Accesories / Supplies/ Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span>
+                        </a>
+                        <a href="data.php?id=9">
+                            <span class="text">Archive Devices / Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span>
+                        </a>
+                        <a href="data.php?id=9">
+                            <span class="text">Archive Devices / Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="info.php?id=22">
+                            <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <li class="active">

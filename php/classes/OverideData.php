@@ -26,6 +26,37 @@ class OverideData{
         $num = $query->rowCount();
         return $num;
     }
+
+    public function getCount1($table,$field,$value,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $field <= '$value' AND $where2 = '$id2'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getCount2($table,$field,$value,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $field <= '$value' AND $where2 = '$id2'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getCount3($table,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE notify_amount >= quantity AND $where2 = '$id2'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getCount4($table,$where2,$id2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE notify_amount >= quantity AND $where2 = '$id2'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getCount5($table,$where2,$id2,$where3,$id3){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE notify_amount >= quantity AND $where2 = '$id2' AND $where3 = '$id3'");
+        $num = $query->rowCount();
+        return $num;
+    }
+    
     public function countData($table,$field,$value,$field1,$value1){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $field = '$value' AND $field1 = '$value1'");
         $num = $query->rowCount();

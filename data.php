@@ -498,7 +498,7 @@ if ($user->isLoggedIn()) {
                                         <?php
 
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch', 'status', 1);
+                                        $pagNum = $override->getCount1('batch','expire_date', $today, 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
                                         // print_r($pages);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
@@ -514,8 +514,6 @@ if ($user->isLoggedIn()) {
                                             $dCat = $override->get('drug_cat', 'id', $batchDesc['id'])[0];
                                             $amnt = $batchDesc['quantity'] - $batchDesc['assigned'];
                                             $used = $override->get('batch_description', 'batch_id', $batchDesc['id'])[0];
-                                            // number_format($batchDesc['amount'] - $notifyAmount['assigned'])                                            
-                                            // print_r($used);
                                         ?>
                                             <tr>
                                                 <td><input type="checkbox" name="checkbox" /></td>
@@ -528,7 +526,7 @@ if ($user->isLoggedIn()) {
                                                 <td>
                                                     <?php if ($batchDesc['expire_date'] <= $today) { ?>
                                                         <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
-                                                    <?php } elseif ($batchDesc['expire_date'] > 0) { ?>
+                                                    <?php } elseif ($batchDesc['expire_date'] > $today) { ?>
                                                         <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Not Expired</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal">Un - Checked</a>
