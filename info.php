@@ -341,7 +341,7 @@ if ($user->isLoggedIn()) {
 
             <div class="workplace">
 
-            <?php include "header.php"; ?>
+                <?php include "header.php"; ?>
 
 
                 <div class="workplace">
@@ -758,21 +758,21 @@ if ($user->isLoggedIn()) {
                                     </ul>
                                 </div>
                                 <div class="block-fluid">
+                                    <h2>Filterable</h2>
+                                    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                                    <br>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th><input type="checkbox" name="checkall" /></th>
-                                                <th width="15%">Name</th>
-                                                <th width="15%">Study</th>
-                                                <th width="15%">Manufacturer</th>
+                                                <th width="10%">Name</th>
+                                                <th width="10%">Study</th>
                                                 <th width="10%">Amount</th>
-                                                <th width="10%">Man Date</th>
                                                 <th width="10%">Exp Date</th>
                                                 <th width="5%">Status</th>
                                                 <th width="20%">Manage</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="myTable">
                                             <?php $amnt = 0;
                                             $type = $_GET['type'];
                                             foreach ($override->getNews('batch', 'status', 1, 'type', $type) as $batch) {
@@ -781,12 +781,9 @@ if ($user->isLoggedIn()) {
                                                 // print_r($batchItems[0]['SUM(assigned)']);
                                                 $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; ?>
                                                 <tr>
-                                                    <td><input type="checkbox" name="checkbox" /></td>
                                                     <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                     <td><?= $study['name'] ?></td>
-                                                    <td><?= $batch['manufacturer'] ?></td>
                                                     <td><?= $batch['amount'] ?></td>
-                                                    <td><?= $batch['manufactured_date'] ?></td>
                                                     <td><?= $batch['expire_date'] ?></td>
                                                     <td>
                                                         <?php if ($amnt <= $batch['notify_amount'] && $amnt > 0) { ?>
@@ -1730,6 +1727,15 @@ if ($user->isLoggedIn()) {
                 }
             });
 
+        });
+
+        $(document).ready(function() {
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
         });
     });
 </script>

@@ -88,7 +88,7 @@ if ($user->isLoggedIn()) {
 
             <div class="workplace">
 
-            <?php include "header.php"; ?>
+                <?php include "header.php"; ?>
 
                 <div class="dr"><span></span></div>
                 <div class="row">
@@ -111,6 +111,10 @@ if ($user->isLoggedIn()) {
                                 <?= $successMessage ?>
                             </div>
                         <?php } ?>
+
+                        <h2>Filterable</h2>
+                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                        <br>
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>Drug Transfer</h1>
@@ -149,7 +153,7 @@ if ($user->isLoggedIn()) {
                                         <th width="15%">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="myTable">
                                     <?php
                                     $amnt = 0;
                                     $pagNum = $override->getCount('batch_description', 'status', 1);
@@ -367,6 +371,16 @@ if ($user->isLoggedIn()) {
         </div>
     </div>
     <script>
+        $(document).ready(function() {
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+
         <?php if ($user->data()->pswd == 0) { ?>
             $(window).on('load', function() {
                 $("#change_password_n").modal({
