@@ -610,22 +610,16 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" name="checkall" /></th>
                                             <th width="25%">Generic Name</th>
                                             <th width="25%">Study</th>
                                             <th width="10%">Amount</th>
                                             <th width="10%">Expire Date</th>
-                                            <th width="25%">Manage</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
-
-
                                         <?php
-
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch', 'status', 1);
+                                        $pagNum = $override->getCount1('batch', 'expire_date', $todayPlus30, 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
                                         // print_r($pages);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
@@ -639,15 +633,10 @@ if ($user->isLoggedIn()) {
                                             // print_r($study);
                                         ?>
                                             <tr>
-                                                <td><input type="checkbox" name="checkbox" /></td>
                                                 <td> <a href="info.php?id=7&bt=<?= $list['id'] ?>"><?= $list['name'] ?></a></td>
                                                 <td><?= $study ?></td>
                                                 <td><?= $list['amount'] ?></td>
-                                                <td><?= $list['expire_date'] ?></td>
-                                                <td>
-                                                    <!-- <a href="info.php?id=7&bt=<?= $lis['id'] ?>" class="btn btn-default">View</a> -->
-                                                </td>
-
+                                                <td><?= $list['expire_date'] ?></td>                                                
                                             </tr>
                                         <?php } ?>
                                     </tbody>
