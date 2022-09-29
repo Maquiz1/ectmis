@@ -377,31 +377,31 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 // print_r($_POST);
                 // if (Input::get('next_check_date') >= date('Y-m-d')) {
-                    // if (Input::get('next_check_date') <= Input::get('next_check_date_db')) {
-                    if (Input::get('last_check_date') <= date('Y-m-d')) {
-                        // if (Input::get('last_check_date') >= Input::get('last_check_date_db')) {
-                            try {
-                                $user->createRecord('check_records', array(
-                                    'batch_desc_id' => Input::get('id'),
-                                    'check_date' => Input::get('check_date'),
-                                    'create_on' => date('Y-m-d'),
-                                    'staff_id' => $user->data()->id,
-                                    'status' => Input::get('maintainance_status'),
-                                ));
+                // if (Input::get('next_check_date') <= Input::get('next_check_date_db')) {
+                if (Input::get('last_check_date') <= date('Y-m-d')) {
+                    // if (Input::get('last_check_date') >= Input::get('last_check_date_db')) {
+                    try {
+                        $user->createRecord('check_records', array(
+                            'batch_desc_id' => Input::get('id'),
+                            'check_date' => Input::get('check_date'),
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                            'status' => Input::get('maintainance_status'),
+                        ));
 
-                                $successMessage = 'Check Status Updated Successful';
-                            } catch (Exception $e) {
-                                die($e->getMessage());
-                            }
-                        // } else {
-                        //     $errorMessage = 'Last Date not correct';
-                        // }
+                        $successMessage = 'Check Status Updated Successful';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                    // } else {
+                    //     $errorMessage = 'Last Date not correct';
+                    // }
                     // } else {
                     //     $errorMessage = 'Last Date can not be of Future';
                     // }
-                    } else {
-                        $errorMessage = 'Check Date not correct';
-                    }
+                } else {
+                    $errorMessage = 'Check Date not correct';
+                }
                 // } else {
                 //     $errorMessage = 'Next Date can not be of Past';
                 // }
@@ -436,6 +436,40 @@ if ($user->isLoggedIn()) {
                     <li><a href="#">Info</a> <span class="divider">></span></li>
                 </ul>
                 <?php include 'pageInfo.php' ?>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="wBlock green clearfix">
+                        <a href="info.php?id=3&type=1">
+                            <div class="dSpace">
+                                <h3>MEDICINES</h3>
+                                <span class="mChartBar" sparkType="bar" sparkBarColor="white">
+                                    <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
+                                </span>
+                                <span class="number"><?= $override->countData('batch', 'type', 1, 'status', 1) ?></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="wBlock blue clearfix">
+                        <a href="data.php?id=4&type=2">
+                            <div class="dSpace">
+                                <h3>DEVICES</h3>
+                                <span class="mChartBar" sparkType="bar" sparkBarColor="white">
+                                    <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
+                                </span>
+                                <span class="number"><?= $override->countData('batch', 'type', 2, 'status', 1) ?></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
             <div class="workplace">
@@ -741,7 +775,7 @@ if ($user->isLoggedIn()) {
                                         <tr>
                                             <th width="15%">Generic Name</th>
                                             <th width="15%">Study</th>
-                                            <th width="10%">Check Date</th>
+                                            <th width="10%">Next Check Date</th>
                                             <th width="5%">Status</th>
                                             <th width="20%">Manage</th>
                                         </tr>
@@ -1166,7 +1200,7 @@ if ($user->isLoggedIn()) {
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount4('batch_description_records', 'batch_description_id', $_GET['did']);
+                                        $pagNum = $override->getCount('batch_description_records', 'batch_description_id', $_GET['did']);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
@@ -1213,8 +1247,7 @@ if ($user->isLoggedIn()) {
                                     <thead>
                                         <tr>
                                             <th width="15%">Generic Name</th>
-                                            <th width="10%">Last check date</th>
-                                            <th width="10%">Next check date</th>
+                                            <th width="10%">check date</th>
                                             <th width="10%">Status</th>
                                             <th width="10%">Date Changed</th>
                                             <th width="10%">Staff</th>
@@ -1239,8 +1272,7 @@ if ($user->isLoggedIn()) {
                                         ?>
                                             <tr>
                                                 <td><?= $name ?></td>
-                                                <td><?= $batch['last_check_date'] ?></td>
-                                                <td><?= $batch['next_check_date'] ?></td>
+                                                <td><?= $batch['check_date'] ?></td>
                                                 <td><?= $status ?></td>
                                                 <td><?= $batch['create_on'] ?></td>
                                                 <td><?= $staff ?></td>

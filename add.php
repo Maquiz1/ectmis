@@ -293,6 +293,21 @@ if ($user->isLoggedIn()) {
                                     'status' => Input::get('maintainance_status'),
                                     'check_type' => Input::get('maintainance_type'),
                                 ));
+
+
+                                $user->createRecord('batch_description_records', array(
+                                    'quantity' => $BatchLastRow[0]['amount'],
+                                    'assigned' => 0,
+                                    'batch_description_id' => $override->lastRow('batch_description', 'id')[0]['id'],
+                                    'notify_amount' => $BatchLastRow[0]['notify_amount'],
+                                    'staff_id' => $user->data()->id,
+                                    'use_group' => Input::get('use_group'),
+                                    'create_on' => date('Y-m-d'),
+                                    'use_case' => Input::get('use_case'),
+                                    'added' => $BatchLastRow[0]['amount'],
+        
+                                ));
+
                                 $successMessage = 'Batch Description Successful Added';
                             } else {
                                 $errorMessage = 'Exceeded Notification Amount, Please cross check and try again';

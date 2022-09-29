@@ -35,6 +35,7 @@ if ($user->isLoggedIn()) {
 
                         $user->createRecord('batch_description_records', array(
                             'quantity' => Input::get('quantity'),
+                            'assigned' => Input::get('amount'),
                             'batch_description_id' => Input::get('batch'),
                             'notify_amount' => Input::get('notify_amount'),
                             'staff_id' => $user->data()->id,
@@ -328,7 +329,6 @@ if ($user->isLoggedIn()) {
                                                             <input type="hidden" name="batch" value="<?= $bDiscription['batch_id'] ?>">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
                                                             <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="hidden" name="assigned" value="<?= $bDiscription['assigned'] ?>">
                                                             <input type="hidden" name="notify_amount" value="<?= $bDiscription['notify_amount'] ?>">
                                                             <input type="hidden" name="status" value="<?= $bDiscription['maintainance_status'] ?>">
                                                             <input type="hidden" name="use_group" value="<?= $bDiscription['type'] ?>">

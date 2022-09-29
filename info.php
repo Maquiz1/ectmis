@@ -361,7 +361,7 @@ if ($user->isLoggedIn()) {
                     <div class="col-md-6">
 
                         <div class="wBlock blue clearfix">
-                            <a href="info.php?id=3&type=2">
+                            <a href="data.php?id=4&type=2">
                                 <div class="dSpace">
                                     <h3>DEVICES</h3>
                                     <span class="mChartBar" sparkType="bar" sparkBarColor="white">
@@ -1296,7 +1296,7 @@ if ($user->isLoggedIn()) {
                                         <tbody>
                                             <?php
                                             $type = $_GET['type'];
-                                            foreach ($override->getNews('batch', 'status', 1, 'type',$type) as $batch) {
+                                            foreach ($override->getNews('batch', 'status', 1, 'type', $type) as $batch) {
                                                 $study = $override->get('study', 'id', $batch['study_id'])[0] ?>
                                                 <tr>
                                                     <td><input type="checkbox" name="checkbox" /></td>
