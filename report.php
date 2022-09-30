@@ -25,26 +25,27 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
+                // print_r($_POST);
                 try {
                     switch (Input::get('report')) {
                         case 1:
                             $data = $override->searchBtnDate2('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
                             break;
-                        case 2:
-                            $data = $override->searchBtnDateSufficient('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'notify_amount', 'amount', 'type', 1, 'status', 1);
-                            break;
-                        case 3:
-                            $data = $override->searchBtnDateLow('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'notify_amount', 'amount', 'type', 1, 'status', 1);
-                            break;
-                        case 4:
-                            $data = $override->searchBtnDateOutStock('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'amount',0, 'type', 1, 'status', 1);
-                            break;
-                        case 5:
-                            $data = $override->searchBtnDateExpired('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'expire_date', date('Y-m-d'), 'type', 1, 'status', 1);
-                            break;
-                        case 6:
-                            $data = $override->searchBtnDateNotChecked('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'valid_date', date('Y-m-d'), 'type', 2, 'status', 1);
-                            break;
+                            // case 2:
+                            //     $data = $override->searchBtnDateSufficient('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'notify_amount', 'amount', 'type', 1, 'status', 1);
+                            //     break;
+                            // case 3:
+                            //     $data = $override->searchBtnDateLow('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'notify_amount', 'amount', 'type', 1, 'status', 1);
+                            //     break;
+                            // case 4:
+                            //     $data = $override->searchBtnDateOutStock('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'amount',0, 'type', 1, 'status', 1);
+                            //     break;
+                            // case 5:
+                            //     $data = $override->searchBtnDateExpired('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'expire_date', date('Y-m-d'), 'type', 1, 'status', 1);
+                            //     break;
+                            // case 6:
+                            //     $data = $override->searchBtnDateNotChecked('batch_description', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'next_check', date('Y-m-d'), 'type', 2, 'status', 1);
+                            //     break;
                     }
                     $successMessage = 'Report Successful Created';
                 } catch (Exception $e) {
@@ -115,22 +116,22 @@ if ($user->isLoggedIn()) {
                                     <div class="row-form clearfix">
                                         <div class="col-md-1">Start Date:</div>
                                         <div class="col-md-2">
-                                            <input value="" class="validate[required,custom[date]]" type="text" name="start_date" id="start_date" /><span>Example: 2010-12-01</span>
+                                            <input value="" class="validate[required,custom[date]]" type="date" name="start_date" id="start_date" /><span>Example: 2010-12-01</span>
                                         </div>
                                         <div class="col-md-1">End Date:</div>
                                         <div class="col-md-2">
-                                            <input value="" class="validate[required,custom[date]]" type="text" name="end_date" id="end_date" /><span>Example: 2010-12-01</span>
+                                            <input value="" class="validate[required,custom[date]]" type="date" name="end_date" id="end_date" /><span>Example: 2010-12-01</span>
                                         </div>
                                         <div class="col-md-1">Type</div>
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
                                                 <option value="1">Full Report</option>
-                                                <option value="2">Sufficent Medicine</option>
+                                                <!-- <option value="2">Sufficent Medicine</option>
                                                 <option value="3">Running Low Medicine</option>
                                                 <option value="4">Out of Stock Medicine</option>
                                                 <option value="5">Expired Medicine</option>
-                                                <option value="6">Unchecked Devices</option>
+                                                <option value="6">Unchecked Devices</option> -->
                                             </select>
                                         </div>
                                         <div class="col-md-2">
@@ -172,7 +173,7 @@ if ($user->isLoggedIn()) {
                                     } else {
                                         $page = ($_GET['page'] * $numRec) - $numRec;
                                     }
-                                    $data = $override->getDataWithLimit('batch', $page, $numRec);
+                                    // $data = $override->getDataWithLimit('batch', $page, $numRec);
                                 } else {
                                     $pagNum = 0;
                                     $pagNum = $override->getNo('batch');
@@ -182,10 +183,10 @@ if ($user->isLoggedIn()) {
                                     } else {
                                         $page = ($_GET['page'] * $numRec) - $numRec;
                                     }
-                                    $data = $override->getDataWithLimit('batch', $page, $numRec);
+                                    // $data = $override->getDataWithLimit('batch', $page, $numRec);
                                 } ?>
                                 <?php if ($_POST && Input::get('report') == 1) { ?>
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table id="FullReport" cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">DATE</th>
@@ -197,6 +198,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">EXPIRRE</th>
                                                 <th width="10%">INITIAL</th>
                                                 <th width="10%">STATUS</th>
+                                                <th width="10%"></th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -206,6 +208,7 @@ if ($user->isLoggedIn()) {
                                                 $remained = $records['amount'] - $used;
                                                 $notify = $records['notify_amount'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
+                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
                                             ?>
                                                 <tr>
                                                     <td><?= $records['create_on'] ?></td>
@@ -217,7 +220,7 @@ if ($user->isLoggedIn()) {
                                                         } else {
                                                             echo 0;
                                                         } ?></td>
-                                                    <td><?= $remained ?></td>
+                                                    <td><?= $balance ?></td>
                                                     <td><?= $records['expire_date'] ?></td>
                                                     <td><?= $username ?></td>
                                                     <td><?php if ($remained <= 0) {; ?>
@@ -230,6 +233,9 @@ if ($user->isLoggedIn()) {
                                                             <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
                                                         <?php
                                                         } ?>
+                                                    </td>
+                                                    <td>
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
@@ -286,14 +292,14 @@ if ($user->isLoggedIn()) {
                                                         } ?>
                                                     </td>
                                                     <td>
-                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
-                                    <?php } elseif ($_POST && Input::get('report') == 3) { ?>
+                                <?php } elseif ($_POST && Input::get('report') == 3) { ?>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
@@ -345,7 +351,7 @@ if ($user->isLoggedIn()) {
                                             <?php } ?>
                                         </tbody>
                                     </table>
-                                    <?php } elseif ($_POST && Input::get('report') == 4) { ?>
+                                <?php } elseif ($_POST && Input::get('report') == 4) { ?>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
@@ -397,7 +403,7 @@ if ($user->isLoggedIn()) {
                                             <?php } ?>
                                         </tbody>
                                     </table>
-                                    <?php } elseif ($_POST && Input::get('report') == 5) { ?>
+                                <?php } elseif ($_POST && Input::get('report') == 5) { ?>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
@@ -415,7 +421,7 @@ if ($user->isLoggedIn()) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php 
+                                            <?php
                                             foreach ($data as $records) {
                                                 $used = $override->get('batch_description', 'batch_id', $records['id'])[0]['assigned'];
                                                 $remained = $records['amount'] - $used;
@@ -447,71 +453,14 @@ if ($user->isLoggedIn()) {
                                                         } ?>
                                                     </td>
                                                     <td>
-                                                        <a href="#" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
+                                                        <a href="#" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
-                                    <?php } elseif ($_POST && Input::get('report') == 6) { ?>
-                                        <table cellpadding="0" cellspacing="0" width="100%" class="table">
-                                        <thead>
-                                            <tr>
-                                                <th width="10%">DATE</th>
-                                                <th width="10%">NAME</th>
-                                                <th width="10%">BATCH</th>
-                                                <th width="10%">RECEIVED</th>
-                                                <th width="10%">USED</th>
-                                                <th width="10%">BALANCE</th>
-                                                <th width="10%">EXPIRRE</th>
-                                                <th width="10%">INITIAL</th>
-                                                <th width="10%">STATUS</th>
-                                                <th width="10%"></th>
-                                                <th width="10%">REMARKS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($data as $records) {
-                                                $used = $override->get('batch_description', 'batch_id', $records['id'])[0]['assigned'];
-                                                $remained = $records['amount'] - $used;
-                                                $notify = $records['notify_amount'];
-                                                $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
-                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
-                                            ?>
-                                                <tr>
-                                                    <td><?= $records['create_on'] ?></td>
-                                                    <td><?= $records['name'] ?></td>
-                                                    <td><?= $records['batch_no'] ?></td>
-                                                    <td><?= $records['amount'] ?></td>
-                                                    <td><?php if ($used > 0) {
-                                                            echo $used;
-                                                        } else {
-                                                            echo 0;
-                                                        } ?></td>
-                                                    <td><?= $balance ?></td>
-                                                    <td><?= $records['expire_date'] ?></td>
-                                                    <td><?= $username ?></td>
-                                                    <td><?php if ($remained <= 0) {; ?>
-                                                            <a href="#" role="button" class="btn btn-warning btn-sm">Out of stock</a>
-                                                        <?php
-                                                        } elseif ($remained > $notify) {; ?>
-                                                            <a href="#" role="button" class="btn btn-info btn-sm">Sufficent</a>
-                                                        <?php
-                                                        } else { ?>
-                                                            <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
-                                                        <?php
-                                                        } ?>
-                                                    </td>
-                                                    <td>
-                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
-                                                    </td>
-                                                    <td><?= $records['details'] ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                <?php } else { ?>
+                                <?php } elseif ($_POST && Input::get('report') == 6) { ?>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
@@ -561,7 +510,64 @@ if ($user->isLoggedIn()) {
                                                         } ?>
                                                     </td>
                                                     <td>
-                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
+                                                    </td>
+                                                    <td><?= $records['details'] ?></td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                <?php } elseif ($_POST && Input::get('report') == 7) { ?>
+                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">DATE</th>
+                                                <th width="10%">NAME</th>
+                                                <th width="10%">BATCH</th>
+                                                <th width="10%">RECEIVED</th>
+                                                <th width="10%">USED</th>
+                                                <th width="10%">BALANCE</th>
+                                                <th width="10%">EXPIRRE</th>
+                                                <th width="10%">INITIAL</th>
+                                                <th width="10%">STATUS</th>
+                                                <th width="10%"></th>
+                                                <th width="10%">REMARKS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($data as $records) {
+                                                $used = $override->get('batch_description', 'batch_id', $records['id'])[0]['assigned'];
+                                                $remained = $records['amount'] - $used;
+                                                $notify = $records['notify_amount'];
+                                                $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
+                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
+                                            ?>
+                                                <tr>
+                                                    <td><?= $records['create_on'] ?></td>
+                                                    <td><?= $records['name'] ?></td>
+                                                    <td><?= $records['batch_no'] ?></td>
+                                                    <td><?= $records['amount'] ?></td>
+                                                    <td><?php if ($used > 0) {
+                                                            echo $used;
+                                                        } else {
+                                                            echo 0;
+                                                        } ?></td>
+                                                    <td><?= $balance ?></td>
+                                                    <td><?= $records['expire_date'] ?></td>
+                                                    <td><?= $username ?></td>
+                                                    <td><?php if ($remained <= 0) {; ?>
+                                                            <a href="#" role="button" class="btn btn-warning btn-sm">Out of stock</a>
+                                                        <?php
+                                                        } elseif ($remained > $notify) {; ?>
+                                                            <a href="#" role="button" class="btn btn-info btn-sm">Sufficent</a>
+                                                        <?php
+                                                        } else { ?>
+                                                            <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
+                                                        <?php
+                                                        } ?>
+                                                    </td>
+                                                    <td>
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
@@ -601,6 +607,10 @@ if ($user->isLoggedIn()) {
         </div>
     </div>
 </body>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
 <script>
     <?php if ($user->data()->pswd == 0) { ?>
         $(window).on('load', function() {
@@ -613,6 +623,56 @@ if ($user->isLoggedIn()) {
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
+
+    $(document).ready(function() {
+                $('#FullReport').DataTable({
+
+                    "language": {
+                        "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+                    },
+
+
+                    dom: 'Bfrtip',
+                    buttons: [{
+
+                            extend: 'excelHtml5',
+                            title: 'REPORT',
+                            className: 'btn-primary',
+                            // displayFormat: 'dddd D MMMM YYYY',
+                            // wireFormat: 'YYYY-MM-DD',
+                            // columnDefs: [{
+                            // targets: [6],
+                            // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
+                            // }],
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            title: 'REPORT',
+                            className: 'btn-primary',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL'
+
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            title: 'REPORT',
+                            className: 'btn-primary'
+                        },
+                        {
+                            extend: 'copyHtml5',
+                            title: 'VISITS',
+                            className: 'btn-primary'
+                        },
+                        //     {
+                        //         extend: 'print',
+                        //         // name: 'printButton'
+                        //         title: 'VISITS'
+                        //     }
+                    ],
+
+                    // paging: true,
+                    // scrollY: 10
+                });
 </script>
 
 </html>
