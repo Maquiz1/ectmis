@@ -249,6 +249,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">EXPIRRE</th>
                                                 <th width="10%">INITIAL</th>
                                                 <th width="10%">STATUS</th>
+                                                <th width="10%"></th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -258,6 +259,7 @@ if ($user->isLoggedIn()) {
                                                 $remained = $records['amount'] - $used;
                                                 $notify = $records['notify_amount'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
+                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
                                             ?>
                                                 <tr>
                                                     <td><?= $records['create_on'] ?></td>
@@ -269,7 +271,7 @@ if ($user->isLoggedIn()) {
                                                         } else {
                                                             echo 0;
                                                         } ?></td>
-                                                    <td><?= $remained ?></td>
+                                                    <td><?= $balance ?></td>
                                                     <td><?= $records['expire_date'] ?></td>
                                                     <td><?= $username ?></td>
                                                     <td><?php if ($remained <= 0) {; ?>
@@ -282,6 +284,9 @@ if ($user->isLoggedIn()) {
                                                             <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
                                                         <?php
                                                         } ?>
+                                                    </td>
+                                                    <td>
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
@@ -405,6 +410,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">EXPIRRE</th>
                                                 <th width="10%">INITIAL</th>
                                                 <th width="10%">STATUS</th>
+                                                <th width="10%"></th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -440,13 +446,16 @@ if ($user->isLoggedIn()) {
                                                         <?php
                                                         } ?>
                                                     </td>
+                                                    <td>
+                                                        <a href="#" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
+                                                    </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
                                     <?php } elseif ($_POST && Input::get('report') == 6) { ?>
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                        <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">DATE</th>
@@ -458,6 +467,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">EXPIRRE</th>
                                                 <th width="10%">INITIAL</th>
                                                 <th width="10%">STATUS</th>
+                                                <th width="10%"></th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -467,6 +477,7 @@ if ($user->isLoggedIn()) {
                                                 $remained = $records['amount'] - $used;
                                                 $notify = $records['notify_amount'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
+                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
                                             ?>
                                                 <tr>
                                                     <td><?= $records['create_on'] ?></td>
@@ -478,7 +489,7 @@ if ($user->isLoggedIn()) {
                                                         } else {
                                                             echo 0;
                                                         } ?></td>
-                                                    <td><?= $remained ?></td>
+                                                    <td><?= $balance ?></td>
                                                     <td><?= $records['expire_date'] ?></td>
                                                     <td><?= $username ?></td>
                                                     <td><?php if ($remained <= 0) {; ?>
@@ -491,6 +502,9 @@ if ($user->isLoggedIn()) {
                                                             <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
                                                         <?php
                                                         } ?>
+                                                    </td>
+                                                    <td>
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
@@ -510,6 +524,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">EXPIRRE</th>
                                                 <th width="10%">INITIAL</th>
                                                 <th width="10%">STATUS</th>
+                                                <th width="10%"></th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -519,6 +534,7 @@ if ($user->isLoggedIn()) {
                                                 $remained = $records['amount'] - $used;
                                                 $notify = $records['notify_amount'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
+                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
                                             ?>
                                                 <tr>
                                                     <td><?= $records['create_on'] ?></td>
@@ -530,7 +546,7 @@ if ($user->isLoggedIn()) {
                                                         } else {
                                                             echo 0;
                                                         } ?></td>
-                                                    <td><?= $remained ?></td>
+                                                    <td><?= $balance ?></td>
                                                     <td><?= $records['expire_date'] ?></td>
                                                     <td><?= $username ?></td>
                                                     <td><?php if ($remained <= 0) {; ?>
@@ -543,6 +559,9 @@ if ($user->isLoggedIn()) {
                                                             <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
                                                         <?php
                                                         } ?>
+                                                    </td>
+                                                    <td>
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>                                                        
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>

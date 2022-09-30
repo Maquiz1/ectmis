@@ -262,7 +262,9 @@ if ($user->isLoggedIn()) {
                                     'status' => 1,
                                     'use_case' => Input::get('use_case'),
                                     'type' => Input::get('use_group'),
-                                    'maintainance_type' => Input::get('maintainance_type')
+                                    'maintainance_type' => Input::get('maintainance_type'),
+                                    'next_check' => Input::get('check_date'),
+                                    'check_status' => Input::get('maintainance_status'),
                                 ));
 
                                 $si = 0;
@@ -292,6 +294,7 @@ if ($user->isLoggedIn()) {
                                     'staff_id' => $user->data()->id,
                                     'status' => Input::get('maintainance_status'),
                                     'check_type' => Input::get('maintainance_type'),
+                                    'next_check' => Input::get('check_date'),
                                 ));
 
 
@@ -698,10 +701,10 @@ if ($user->isLoggedIn()) {
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Group:</label>
+                                                        <label>Category:</label>
                                                         <select name="use_group" style="width: 100%;" required>
-                                                            <option value="">Select Group</option>
-                                                            <?php foreach ($override->getData('use_group') as $dCat) { ?>
+                                                            <option value="">Select Category</option>
+                                                            <?php foreach ($override->getData('type') as $dCat) { ?>
                                                                 <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
                                                             <?php } ?>
                                                         </select>

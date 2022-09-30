@@ -34,8 +34,8 @@ if ($user->isLoggedIn()) {
                         ), Input::get('id'));
 
                         $user->createRecord('batch_description_records', array(
-                            'quantity' => Input::get('quantity'),
-                            'assigned' => Input::get('amount'),
+                            'quantity' => Input::get('amount'),
+                            // 'assigned' => Input::get('amount'),
                             'batch_description_id' => Input::get('batch'),
                             'notify_amount' => Input::get('notify_amount'),
                             'staff_id' => $user->data()->id,
@@ -117,7 +117,7 @@ if ($user->isLoggedIn()) {
                         <br>
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>Drug Transfer</h1>
+                            <h1>INVENTORY STATUS SUMMARY</h1>
                             <ul class="buttons">
                                 <li><a href="#" class="isw-download"></a></li>
                                 <li><a href="#" class="isw-attachment"></a></li>
@@ -176,6 +176,7 @@ if ($user->isLoggedIn()) {
                                         $Exam = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 6)[0]['quantity'];
                                         $Pharmacy = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 7)[0]['quantity'];
                                         $sumLoctn = $override->getSumD1('batch_guide_records', 'quantity', 'batch_description_id', $bDiscription['id'])[0]['SUM(quantity)'];
+                                        // $assigned = ($override->getNews('batch_description_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
                                     ?>
                                         <tr>
                                             <td><?= $bDiscription['name'] ?></td>
