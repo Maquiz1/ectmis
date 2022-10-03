@@ -724,7 +724,7 @@ if ($user->isLoggedIn()) {
                                 </ul>
                             </div>
                             <div class="block-fluid">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table id='tableId4' cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
                                             <th width="15%">Generic</th>
@@ -777,7 +777,7 @@ if ($user->isLoggedIn()) {
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success">OK!</a>
                                                     <?php } ?>
-                                                </td>                                              
+                                                </td>
                                                 <td><?= $batch['next_check'] ?></td>
                                                 <td>
                                                     <a href="data.php?id=8&updateId=<?= $batch['id'] ?>" class="btn btn-default">View</a>
@@ -1174,7 +1174,7 @@ if ($user->isLoggedIn()) {
                                 </ul>
                             </div>
                             <div class="block-fluid">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table id='tableId7' cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
                                             <th width="10%">Date</th>
@@ -1239,7 +1239,7 @@ if ($user->isLoggedIn()) {
                                 </ul>
                             </div>
                             <div class="block-fluid">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table id='tableId8' cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
                                             <th width="15%">Generic Name</th>
@@ -1450,6 +1450,15 @@ if ($user->isLoggedIn()) {
         </div>
     </div>
 </body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+
 <script>
     <?php if ($user->data()->pswd == 0) { ?>
         $(window).on('load', function() {
@@ -1510,6 +1519,138 @@ if ($user->isLoggedIn()) {
                 }
             });
 
+        });
+
+        $('#tableId4').DataTable({
+
+            "language": {
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
+            },
+            // columns: columnDefs,
+
+            dom: 'lBfrtip',
+            buttons: [{
+
+                    extend: 'excelHtml5',
+                    title: 'Check_report',
+                    className: 'btn-primary'
+                },
+
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Check_report',
+                    className: 'btn-primary',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL'
+
+                },
+
+
+                {
+                    extend: 'csvHtml5',
+                    title: 'Check_report',
+                    className: 'btn-primary'
+                },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
+                //     {
+                //         extend: 'print',
+                //         // name: 'printButton'
+                //         title: 'VISITS'
+                //     }
+            ],
+            "pageLength": 100
+        });
+
+        $('#tableId8').DataTable({
+
+            "language": {
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
+            },
+            // columns: columnDefs,
+
+            dom: 'lBfrtip',
+            buttons: [{
+
+                    extend: 'excelHtml5',
+                    title: 'Check_report',
+                    className: 'btn-primary'
+                },
+
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Check_report',
+                    className: 'btn-primary',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL'
+
+                },
+
+
+                {
+                    extend: 'csvHtml5',
+                    title: 'Check_report',
+                    className: 'btn-primary'
+                },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
+                //     {
+                //         extend: 'print',
+                //         // name: 'printButton'
+                //         title: 'VISITS'
+                //     }
+            ],
+            "pageLength": 100
+        });
+
+        $('#tableId7').DataTable({
+
+            "language": {
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
+            },
+            // columns: columnDefs,
+
+            dom: 'lBfrtip',
+            buttons: [{
+
+                    extend: 'excelHtml5',
+                    title: 'Inventory_status_report',
+                    className: 'btn-primary'
+                },
+
+                {
+                    extend: 'pdfHtml5',
+                    title: 'inventory_report',
+                    className: 'btn-primary',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL'
+
+                },
+
+
+                {
+                    extend: 'csvHtml5',
+                    title: 'inventory_report',
+                    className: 'btn-primary'
+                },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
+                //     {
+                //         extend: 'print',
+                //         // name: 'printButton'
+                //         title: 'VISITS'
+                //     }
+            ],
+            "pageLength": 100
         });
     });
 </script>

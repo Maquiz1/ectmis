@@ -126,9 +126,9 @@ if ($user->isLoggedIn()) {
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
-                                                <option value="1">Full Report</option>
-                                                <!-- <option value="2">Sufficent Medicine</option>
-                                                <option value="3">Running Low Medicine</option>
+                                                <option value="1">Stock Report</option>
+                                                <option value="2">Check Report</option>
+                                                <!-- <option value="3">Running Low Medicine</option>
                                                 <option value="4">Out of Stock Medicine</option>
                                                 <option value="5">Expired Medicine</option>
                                                 <option value="6">Unchecked Devices</option> -->
@@ -243,59 +243,161 @@ if ($user->isLoggedIn()) {
                                         </tbody>
                                     </table>
                                 <?php } elseif ($_POST && Input::get('report') == 2) { ?>
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table id='FullReport' cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th width="10%">DATE</th>
-                                                <th width="10%">NAME</th>
-                                                <th width="10%">BATCH</th>
-                                                <th width="10%">RECEIVED</th>
-                                                <th width="10%">USED</th>
-                                                <th width="10%">BALANCE</th>
-                                                <th width="10%">EXPIRRE</th>
-                                                <th width="10%">INITIAL</th>
-                                                <th width="10%">STATUS</th>
-                                                <th width="10%"></th>
-                                                <th width="10%">REMARKS</th>
+                                                <th width="15%">Generic</th>
+                                                <th width="15%">Brand</th>
+                                                <th width="5%">Last Check</th>
+                                                <th width="5%">Status</th>
+                                                <th width="5%">Next Check</th>
+                                                <th width="5%">Manage</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($data as $records) {
-                                                $used = $override->get('batch_description', 'batch_id', $records['id'])[0]['assigned'];
-                                                $remained = $records['amount'] - $used;
-                                                $notify = $records['notify_amount'];
-                                                $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
-                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
+                                            <?php
+                                            $amnt = 0;
+                                            $pagNum = $override->getCount('batch', 'status', 1);
+                                            $pages = ceil($pagNum / $numRec);
+                                            if (!$_GET['page'] || $_GET['page'] == 1) {
+                                                $page = 0;
+                                            } else {
+                                                $page = ($_GET['page'] * $numRec) - $numRec;
+                                            }
+                                            $type = Input::get('report');
+                                            foreach ($override->getNews('batch', 'status', 1, 'type', $type) as $batch) {
+                                                // foreach ($override->getWithLimit('batch', 'status', 1, $page, $numRec) as $batch) {
+                                                $study = $override->get('study', 'id', $batch['study_id'])[0];
+                                                $name = $override->get('batch_description', 'assigned', 'batch_id', $batch['id']);
+                                                $batchItems = $override->getSumD1('batch_description', 'assigned', 'batch_id', $batch['id']);
+                                                $currentAmount = $override->get('batch_description', 'batch_id', $batch['id'])[0]['quantity'];
+                                                $notifyAmount = $override->get('batch_description', 'batch_id', $batch['id'])[0]['quantity'];
+                                                $batchDescId = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['batch_desc_id'];
+                                                $maintainance_type = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['check_type'];
+                                                $lastStatus2 = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['status'];
+                                                $checkDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['check_date'];
+                                                $nextCheck = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
+                                                $status = $override->get('batch_description', 'batch_id', $batch['id'])[0]['check_status'];
+                                                $batchId = $override->get('batch_description', 'batch_id', $batch['id'])[0]['batch_id'];
+                                                // $nextCheck2 = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
+
+                                                $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)'];
+                                                // print_r($nextCheck);
                                             ?>
                                                 <tr>
-                                                    <td><?= $records['create_on'] ?></td>
-                                                    <td><?= $records['name'] ?></td>
-                                                    <td><?= $records['batch_no'] ?></td>
-                                                    <td><?= $records['amount'] ?></td>
-                                                    <td><?php if ($used > 0) {
-                                                            echo $used;
-                                                        } else {
-                                                            echo 0;
-                                                        } ?></td>
-                                                    <td><?= $balance ?></td>
-                                                    <td><?= $records['expire_date'] ?></td>
-                                                    <td><?= $username ?></td>
-                                                    <td><?php if ($remained <= 0) {; ?>
-                                                            <a href="#" role="button" class="btn btn-warning btn-sm">Out of stock</a>
-                                                        <?php
-                                                        } elseif ($remained > $notify) {; ?>
-                                                            <a href="#" role="button" class="btn btn-info btn-sm">Sufficent</a>
-                                                        <?php
-                                                        } else { ?>
-                                                            <a href="#" role="button" class="btn btn-danger btn-sm">Running Low</a>
-                                                        <?php
-                                                        } ?>
-                                                    </td>
+                                                    <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
+                                                    <td><?= $batch['name'] ?></td>
+                                                    <td><?= $batch['last_check'] ?></td>
                                                     <td>
-                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
+                                                        <?php if ($batch['next_check'] == date('Y-m-d')) { ?>
+                                                            <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
+                                                        <?php } elseif ($batch['next_check'] < date('Y-m-d')) { ?>
+                                                            <a href="#" role="button" class="btn btn-danger">NOT CHECKED!</a>
+                                                        <?php } else { ?>
+                                                            <a href="#" role="button" class="btn btn-success">OK!</a>
+                                                        <?php } ?>
                                                     </td>
-                                                    <td><?= $records['details'] ?></td>
+                                                    <td><?= $batch['next_check'] ?></td>
+                                                    <td>
+                                                        <a href="data.php?id=8&updateId=<?= $batch['id'] ?>" class="btn btn-default">View</a>
+                                                    </td>
+
                                                 </tr>
+                                                <div class="modal fade" id="desc<?= $batch['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit Batch Info</h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+
+                                                                    <div class="row">
+
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>NAME:</label>
+                                                                                    <div class="col-md-9"><input type="text" name="name" value='<?= $batch['name'] ?>' readonly /> <span></span></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Maintainance Status:</label>
+                                                                                    <select name="maintainance_status" style="width: 100%;" required>
+                                                                                        <option value="">Select Type</option>
+                                                                                        <?php foreach ($override->getData('maintainance_status') as $study) { ?>
+                                                                                            <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
+                                                                                        <?php } ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Check Date:</label>
+                                                                                    <div class="col-md-9"><input type="date" name="check_date" id="check_date" /> <span></span></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Next Check Date:</label>
+                                                                                    <div class="col-md-9"><input type="date" name="next_check" id="next_check" /> <span></span></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dr"><span></span></div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="id" value="<?= $batch['id'] ?>">
+                                                                    <input type="hidden" name="batch_id" value="<?= $batchId ?>">
+                                                                    <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
+                                                                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="delete<?= $batch['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Delete Batch</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <strong style="font-weight: bold;color: red">
+                                                                        <p>Are you sure you want to delete this Batch</p>
+                                                                    </strong>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="id" value="<?= $batch['id'] ?>">
+                                                                    <input type="submit" name="delete_batch" value="Delete" class="btn btn-danger">
+                                                                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             <?php } ?>
                                         </tbody>
                                     </table>
@@ -608,8 +710,16 @@ if ($user->isLoggedIn()) {
     </div>
 </body>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> -->
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
 
 <script>
     <?php if ($user->data()->pswd == 0) { ?>
@@ -625,54 +735,55 @@ if ($user->isLoggedIn()) {
     }
 
     $(document).ready(function() {
-                $('#FullReport').DataTable({
+        $('#FullReport').DataTable({
 
-                    "language": {
-                        "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-                    },
+            "language": {
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+            },
 
 
-                    dom: 'Bfrtip',
-                    buttons: [{
+            dom: 'Bfrtip',
+            buttons: [{
 
-                            extend: 'excelHtml5',
-                            title: 'REPORT',
-                            className: 'btn-primary',
-                            // displayFormat: 'dddd D MMMM YYYY',
-                            // wireFormat: 'YYYY-MM-DD',
-                            // columnDefs: [{
-                            // targets: [6],
-                            // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
-                            // }],
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            title: 'REPORT',
-                            className: 'btn-primary',
-                            orientation: 'landscape',
-                            pageSize: 'LEGAL'
+                    extend: 'excelHtml5',
+                    title: 'REPORT',
+                    className: 'btn-primary',
+                    // displayFormat: 'dddd D MMMM YYYY',
+                    // wireFormat: 'YYYY-MM-DD',
+                    // columnDefs: [{
+                    // targets: [6],
+                    // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
+                    // }],
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'REPORT',
+                    className: 'btn-primary',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL'
 
-                        },
-                        {
-                            extend: 'csvHtml5',
-                            title: 'REPORT',
-                            className: 'btn-primary'
-                        },
-                        {
-                            extend: 'copyHtml5',
-                            title: 'VISITS',
-                            className: 'btn-primary'
-                        },
-                        //     {
-                        //         extend: 'print',
-                        //         // name: 'printButton'
-                        //         title: 'VISITS'
-                        //     }
-                    ],
+                },
+                // {
+                //     extend: 'csvHtml5',
+                //     title: 'REPORT',
+                //     className: 'btn-primary'
+                // },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
+                //     {
+                //         extend: 'print',
+                //         // name: 'printButton'
+                //         title: 'VISITS'
+                //     }
+            ],
 
-                    // paging: true,
-                    // scrollY: 10
-                });
+            // paging: true,
+            // scrollY: 10
+        });
+    });
 </script>
 
 </html>

@@ -761,7 +761,7 @@ if ($user->isLoggedIn()) {
                                     <h2>Filterable</h2>
                                     <input class="form-control" id="myInput" type="text" placeholder="Search..">
                                     <br>
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table id='tableId4' cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">Date</th>
@@ -1095,7 +1095,7 @@ if ($user->isLoggedIn()) {
                                     </ul>
                                 </div>
                                 <div class="block-fluid">
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table  id='tableId4' cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">Date</th>
@@ -1846,6 +1846,13 @@ if ($user->isLoggedIn()) {
         </div>
 </body>
 
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> -->
 
 <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> -->
@@ -1921,53 +1928,48 @@ if ($user->isLoggedIn()) {
             });
         });
 
-        $('#FullReport').DataTable({
+        $('#tableId4').DataTable({
 
             "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
             },
+            // columns: columnDefs,
 
-
-            dom: 'Bfrtip',
+            dom: 'lBfrtip',
             buttons: [{
 
                     extend: 'excelHtml5',
-                    title: 'REPORT',
-                    className: 'btn-primary',
-                    // displayFormat: 'dddd D MMMM YYYY',
-                    // wireFormat: 'YYYY-MM-DD',
-                    // columnDefs: [{
-                    // targets: [6],
-                    // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
-                    // }],
+                    title: 'Stock_report',
+                    className: 'btn-primary'
                 },
+
                 {
                     extend: 'pdfHtml5',
-                    title: 'REPORT',
+                    title: 'Stock_report',
                     className: 'btn-primary',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
 
                 },
+
+
                 {
                     extend: 'csvHtml5',
-                    title: 'REPORT',
+                    title: 'Stock_report',
                     className: 'btn-primary'
                 },
-                {
-                    extend: 'copyHtml5',
-                    title: 'VISITS',
-                    className: 'btn-primary'
-                },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
                 //     {
                 //         extend: 'print',
                 //         // name: 'printButton'
                 //         title: 'VISITS'
                 //     }
             ],
-
-            // paging: true,
-            // scrollY: 10
+            "pageLength": 100
         });
     });
 </script>

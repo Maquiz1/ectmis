@@ -132,7 +132,7 @@ if ($user->isLoggedIn()) {
                             </ul>
                         </div>
                         <div class="block-fluid">
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                            <table id='inventory_report1' cellpadding="0" cellspacing="0" width="100%" class="table">
                                 <thead>
                                     <tr>
                                         <th width="10%">Generic</th>
@@ -140,8 +140,6 @@ if ($user->isLoggedIn()) {
                                         <th width="5%"> Use Case</th>
                                         <th width="5%">Form</th>
                                         <th width="5%">Current Quantity</th>
-                                        <!-- <th width="5%">Current Used</th> -->
-                                        <!-- <th width="5%">Re-stock Level</th> -->
                                         <th width="5%"> ICU</th>
                                         <th width="5%"> EmKit</th>
                                         <th width="5%"> EmBuffer</th>
@@ -153,7 +151,7 @@ if ($user->isLoggedIn()) {
                                         <th width="15%">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="myTable">
+                                <tbody>
                                     <?php
                                     $amnt = 0;
                                     $pagNum = $override->getCount('batch_description', 'status', 1);
@@ -165,7 +163,6 @@ if ($user->isLoggedIn()) {
                                     }
 
                                     foreach ($override->getWithLimit('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
-                                        // $useGroup = $override->get('use_group', 'id', $bDiscription['type'])[0]['name'];
                                         $generic = $override->get('batch', 'id', $bDiscription['batch_id'])[0]['name'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['cat_id'])[0]['name'];
@@ -177,10 +174,10 @@ if ($user->isLoggedIn()) {
                                         $Exam = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 6)[0]['quantity'];
                                         $Pharmacy = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 7)[0]['quantity'];
                                         $sumLoctn = $override->getSumD1('batch_guide_records', 'quantity', 'batch_description_id', $bDiscription['id'])[0]['SUM(quantity)'];
-                                        // $assigned = ($override->getNews('batch_description_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
                                     ?>
                                         <tr>
-                                            <td><?= $generic ?></td>
+
+                                            <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
                                             <td><?= $bDiscription['name'] ?></td>
                                             <td><?= $useCase ?></td>
                                             <td><?= $form ?></td>
@@ -249,11 +246,6 @@ if ($user->isLoggedIn()) {
                                                     <a href="#" role="button" class="btn btn-success">Sufficient</a>
                                                 <?php } ?>
                                             </td>
-                                            <!-- <td>
-                                                <a href="info.php?id=5&bt=<?= $batch['id'] ?>" class="btn btn-default">View</a>
-                                                <a href="#user<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
-                                                <a href="#delete<?= $batch['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
-                                            </td> -->
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                                 <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>
@@ -376,6 +368,16 @@ if ($user->isLoggedIn()) {
 
         </div>
     </div>
+
+    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> -->
+
+
     <script>
         $(document).ready(function() {
             $("#myInput").on("keyup", function() {
@@ -383,6 +385,31 @@ if ($user->isLoggedIn()) {
                 $("#myTable tr").filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
+            });
+
+            $('#inventory_report1').DataTable({
+
+                "language": {
+                    "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+                },
+
+
+                dom: 'Bfrtip',
+                buttons: [{
+
+                        extend: 'excelHtml5',
+                        title: 'Inventory_status_report',
+                        className: 'btn-primary',
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Inventory_status_report',
+                        className: 'btn-primary',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL'
+
+                    },
+                ],
             });
         });
 
