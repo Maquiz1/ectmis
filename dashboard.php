@@ -135,8 +135,8 @@ if ($user->isLoggedIn()) {
                             <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                 <thead>
                                     <tr>
-                                        <th width="10%">Generic Name</th>
-                                        <th width="5%"> Group</th>
+                                        <th width="10%">Generic</th>
+                                        <th width="5%"> BRAND</th>
                                         <th width="5%"> Use Case</th>
                                         <th width="5%">Form</th>
                                         <th width="5%">Current Quantity</th>
@@ -165,7 +165,8 @@ if ($user->isLoggedIn()) {
                                     }
 
                                     foreach ($override->getWithLimit('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
-                                        $useGroup = $override->get('use_group', 'id', $bDiscription['type'])[0]['name'];
+                                        // $useGroup = $override->get('use_group', 'id', $bDiscription['type'])[0]['name'];
+                                        $generic = $override->get('batch', 'id', $bDiscription['batch_id'])[0]['name'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['cat_id'])[0]['name'];
                                         $icu = ($override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
@@ -179,8 +180,8 @@ if ($user->isLoggedIn()) {
                                         // $assigned = ($override->getNews('batch_description_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
                                     ?>
                                         <tr>
+                                            <td><?= $generic ?></td>
                                             <td><?= $bDiscription['name'] ?></td>
-                                            <td><?= $useGroup ?></td>
                                             <td><?= $useCase ?></td>
                                             <td><?= $form ?></td>
                                             <td><?= $bDiscription['quantity'] ?></td>
@@ -249,6 +250,11 @@ if ($user->isLoggedIn()) {
                                                     <a href="#" role="button" class="btn btn-success">Sufficient</a>
                                                 <?php } ?>
                                             </td>
+                                            <!-- <td>
+                                                <a href="info.php?id=5&bt=<?= $batch['id'] ?>" class="btn btn-default">View</a>
+                                                <a href="#user<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
+                                                <a href="#delete<?= $batch['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                            </td> -->
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                                 <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>

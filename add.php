@@ -308,7 +308,7 @@ if ($user->isLoggedIn()) {
                                     'create_on' => date('Y-m-d'),
                                     'use_case' => Input::get('use_case'),
                                     'added' => $BatchLastRow[0]['amount'],
-        
+
                                 ));
 
                                 $successMessage = 'Batch Description Successful Added';
@@ -453,6 +453,47 @@ if ($user->isLoggedIn()) {
                     } else {
                         $errorMessage = 'Insufficient Amount on Stock';
                     }
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('add_generic')) {
+            $validate = $validate->check($_POST, array(
+                'name' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                try {
+                    $user->createRecord('generic', array(
+                        'name' => Input::get('name'),
+                    ));
+                    $successMessage = 'Generic Name Added Successful';
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('add_brand')) {
+            $validate = $validate->check($_POST, array(
+                'name' => array(
+                    'required' => true,
+                ),
+                'generic' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                try {
+                    $user->createRecord('brand', array(
+                        'name' => Input::get('name'),
+                        'generic_id' => Input::get('generic'),
+                        'generic_name' => Input::get('gen_id'),
+                    ));
+                    $successMessage = 'Brand Name Added Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
                 }
@@ -732,7 +773,12 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Generic Name::</label>
-                                                        <input value="" class="validate[required]" type="text" name="name" id="name" required />
+                                                        <select name="name" style="width: 100%;" required>
+                                                            <option value="">Select Generic Name</option>
+                                                            <?php foreach ($override->getData('generic') as $dCat) { ?>
+                                                                <option value="<?= $dCat['name'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -745,7 +791,12 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Brand Name:</label>
-                                                        <input value="" class="validate[required]" type="text" name="brand_name" id="brand_name" />
+                                                        <select name="brand_name" style="width: 100%;" required>
+                                                            <option value="">Select Brand Name</option>
+                                                            <?php foreach ($override->getData('brand') as $dCat) { ?>
+                                                                <option value="<?= $dCat['name'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -816,7 +867,7 @@ if ($user->isLoggedIn()) {
 
                                         <div class="row">
 
-                                        <div class="col-sm-4">
+                                            <div class="col-sm-4">
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
@@ -1014,7 +1065,7 @@ if ($user->isLoggedIn()) {
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
-                                <h1>Add Batch Descriptions</h1>
+                                <h1>Add BRAND Descriptions</h1>
                             </div>
                             <div class="block-fluid">
                                 <form id="validation" method="post">
@@ -1161,6 +1212,62 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
+                    <?php } elseif ($_GET['id'] == 9 && $user->data()->position == 1) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add Generic Name</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Name:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="text" name="name" id="name" />
+                                        </div>
+                                    </div>
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="add_generic" value="Submit" class="btn btn-default">
+                                    </div>
+
+                                </form>
+                            </div>
+
+                        </div>
+                    <?php } elseif ($_GET['id'] == 10 && $user->data()->position == 1) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add Brand</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">BRAND NAME:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="text" name="name" id="name" />
+                                        </div>
+                                    </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">GENERIC NAME</div>
+                                        <div class="col-md-9">
+                                            <select name="generic" id="gen_id" style="width: 100%;" required>
+                                                <option value="">Select brand</option>
+                                                <?php foreach ($override->getData('generic') as $cat) { ?>
+                                                    <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="add_brand" value="Submit" class="btn btn-default">
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
                     <?php } ?>
                     <div class="dr"><span></span></div>
                 </div>
@@ -1281,6 +1388,26 @@ if ($user->isLoggedIn()) {
                     success: function(data) {
                         $('#s2_2').html(data);
                         $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $('#gen_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?cnt=gen",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        // $('#gen_id').html(data);
+                        console.log(data.gen_name);
+                        // $('#gen_id').val(data.gen_name);
+                        // $('#fl_wait').hide();
                     }
                 });
 

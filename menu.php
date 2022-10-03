@@ -88,7 +88,7 @@ if ($user->data()->accessLevel == 1) {
             </li>
 
             <li class="openable">
-                <a href="#"><span class="isw-archive"></span><span class="text">Manage Device/Medicine</span></a>
+                <a href="#"><span class="isw-archive"></span><span class="text">Receive Device/Medicine</span></a>
                 <ul>
                     <li>
                         <a href="add.php?id=4">
@@ -147,6 +147,52 @@ if ($user->data()->accessLevel == 1) {
                             <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
                         </a>
                     </li>
+                </ul>
+            </li>
+            <li class="openable">
+                <a href="#"><span class="isw-lock"></span><span class="text">Managements</span></a>
+                <ul>
+                    <!-- <li class="">
+                        <a href="add.php?id=2">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Position</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="add.php?id=3">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Room</span>
+                        </a>
+                    </li> -->
+                    <li class="">
+                        <a href="add.php?id=9">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Generic Name</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="add.php?id=10">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Brand Name</span>
+                        </a>
+                    </li>
+                    <!-- <li class="">
+                        <a href="add.php?id=11">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Bill Type</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="add.php?id=13">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Payment Method</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="info.php?id=13">
+                            <span class="glyphicon glyphicon-list"></span><span class="text">Drink Brands</span>
+                        </a>
+                    </li> -->
+                    <li class="">
+                        <a href="info.php?id=2">
+                            <span class="glyphicon glyphicon-list"></span><span class="text">View</span>
+                        </a>
+                    </li>
+
                 </ul>
             </li>
             <li class="openable">

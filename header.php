@@ -51,7 +51,7 @@ $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 
         <div class="col-md-4">
             <div class="wBlock yellow clearfix">
-                <a href="info.php?id=3&type=3">
+                <a href="info.php?id=12&type=3">
                     <div class="dSpace">
                         <h3>ACCESSORIES / SUPPLIES </h3>
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">

@@ -764,8 +764,8 @@ if ($user->isLoggedIn()) {
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th width="10%">Name</th>
-                                                <th width="10%">Study</th>
+                                                <th width="10%">Generic</th>
+                                                <th width="10%">Brand</th>
                                                 <th width="10%">Amount</th>
                                                 <th width="10%">Exp Date</th>
                                                 <th width="5%">Status</th>
@@ -777,14 +777,15 @@ if ($user->isLoggedIn()) {
                                             $type = $_GET['type'];
                                             foreach ($override->getNews('batch', 'status', 1, 'type', $type) as $batch) {
                                                 $study = $override->get('study', 'id', $batch['study_id'])[0];
+                                                $use_case = $override->get('use_case', 'id', $batch['use_case'])[0];
                                                 $batchItems = $override->getSumD1('batch_description', 'assigned', 'batch_id', $batch['id']);
-                                                // print_r($batchItems[0]['SUM(assigned)']);
+                                                // print_r($use_case);
                                                 $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; ?>
                                                 <tr>
                                                     <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
-                                                    <td><?= $study['name'] ?></td>
+                                                    <td><?= $batch['name'] ?></td>
                                                     <td><?= $batch['amount'] ?></td>
-                                                    <td><?= $batch['expire_date'] ?></td>
+                                                    <td><?= $use_case ?></td>
                                                     <td>
                                                         <?php if ($amnt <= $batch['notify_amount'] && $amnt > 0) { ?>
                                                             <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>

@@ -66,4 +66,15 @@ if($_GET['cnt'] == 'region'){
         </div>
     </div>
 
-<?php }?>
+<?php 
+}elseif ($_GET['content'] == 'gen') {
+    if ($_GET['getUid']) {
+        $output = array();
+        $project_id = $override->get('generic', 'id', $_GET['getUid']);
+        foreach ($project_id as $name) {
+            $output['gen_name'] = $name['name'];
+        }
+        echo json_encode($output);
+        // print_r($output);
+    }
+}?>
