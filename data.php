@@ -760,6 +760,7 @@ if ($user->isLoggedIn()) {
                                             $nextCheck = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
                                             $status = $override->get('batch_description', 'batch_id', $batch['id'])[0]['check_status'];
                                             $batchId = $override->get('batch_description', 'batch_id', $batch['id'])[0]['batch_id'];
+                                            // $nextCheck2 = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
 
                                             $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)'];
                                             // print_r($nextCheck);
@@ -769,9 +770,9 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batch['name'] ?></td>
                                                 <td><?= $batch['last_check'] ?></td>
                                                 <td>
-                                                    <?php if ($nextCheck == date('Y-m-d')) { ?>
+                                                    <?php if ($batch['next_check'] == date('Y-m-d')) { ?>
                                                         <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
-                                                    <?php } elseif ($nextCheck < date('Y-m-d')) { ?>
+                                                    <?php } elseif ($batch['next_check'] < date('Y-m-d')) { ?>
                                                         <a href="#" role="button" class="btn btn-danger">NOT CHECKED!</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success">OK!</a>
