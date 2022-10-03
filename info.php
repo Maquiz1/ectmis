@@ -764,6 +764,7 @@ if ($user->isLoggedIn()) {
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
+                                                <th width="10%">Date</th>
                                                 <th width="10%">Generic</th>
                                                 <th width="10%">Brand</th>
                                                 <th width="10%">Amount</th>
@@ -781,6 +782,7 @@ if ($user->isLoggedIn()) {
                                                 // print_r($use_case);
                                                 $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; ?>
                                                 <tr>
+                                                    <td><?= $batch['create_on'] ?></td>
                                                     <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                     <td><?= $batch['name'] ?></td>
                                                     <td><?= $batch['amount'] ?></td>
@@ -1096,16 +1098,16 @@ if ($user->isLoggedIn()) {
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th><input type="checkbox" name="checkall" /></th>
-                                                <th width="20%">Generic</th>
-                                                <th width="20%">Brand</th>
+                                                <th width="10%">Date</th>
+                                                <th width="10%">Generic</th>
+                                                <th width="10%">Brand</th>
                                                 <th width="10%">Batch No</th>
-                                                <th width="10%">Drug Category</th>
-                                                <th width="10%">Quantity</th>
-                                                <th width="10%">Assigned</th>
-                                                <th width="10%">Remained</th>
-                                                <th width="15%">Status</th>
-                                                <th width="25%">Action</th>
+                                                <th width="10%">FORM</th>
+                                                <th width="5%">Received</th>
+                                                <th width="5%">Used</th>
+                                                <th width="5%">Balance</th>
+                                                <th width="5%">Status</th>
+                                                <th width="20%">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1115,7 +1117,7 @@ if ($user->isLoggedIn()) {
                                                 $dCat = $override->get('drug_cat', 'id', $batchDesc['cat_id'])[0];
                                                 $amnt = $batchDesc['quantity'] - $batchDesc['assigned'] ?>
                                                 <tr>
-                                                    <td><input type="checkbox" name="checkbox" /></td>
+                                                    <td> <?= $batchDesc['create_on'] ?></td>
                                                     <td> <?= $batchDesc['name'] ?></td>
                                                     <td> <?= $batchDesc['name'] ?></td>
                                                     <td><?= $batch_no['batch_no'] ?></td>
@@ -1660,7 +1662,7 @@ if ($user->isLoggedIn()) {
                                     </table>
                                 </div>
                             </div>
-                            <?php } elseif ($_GET['id'] == 12) {
+                        <?php } elseif ($_GET['id'] == 12) {
                         ?>
                             <div class="col-md-12">
                                 <div class="head clearfix">

@@ -392,9 +392,10 @@ if ($user->isLoggedIn()) {
                     ));
 
                     $BatchLastRow = $override->lastRow('check_records', 'batch_desc_id', Input::get('id'));
+                    // print_r($BatchLastRow);
 
                     $user->updateRecord('batch_description', array('next_check' => Input::get('next_check')), $BatchLastRow[0]['batch_desc_id']);
-                    $user->updateRecord('batch_description', array('check_status' => Input::get('maintainance_status')), $BatchLastRow[0]['batch_desc_id']);
+                    $user->updateRecord('batch_description', array('check_status' => Input::get('maintainance_status')), Input::get('id'));
                     $successMessage = 'Check Status Updated Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -722,8 +723,8 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="15%">Generic Name</th>
-                                            <th width="15%">Study</th>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
                                             <th width="10%">Check Date</th>
                                             <th width="5%">Status</th>
                                             <th width="10%">Next Check</th>
@@ -753,15 +754,16 @@ if ($user->isLoggedIn()) {
                                             $lastStatus2 = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['status'];
                                             $checkDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['check_date'];
                                             $nextCheck = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
+                                            $status = $override->get('batch_description', 'batch_id', $batch['id'])[0]['check_status'];
 
                                             $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)'];
-                                            print_r($nextCheck);
+                                            // print_r($nextCheck);
                                         ?>
                                             <tr>
                                                 <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
-                                                <td><?= $study['name'] ?></td>
+                                                <td><?= $batch['name'] ?></td>
                                                 <td><?= $checkDate ?></td>
-                                                <td>
+                                                <!-- <td>
                                                     <?php if ($nextCheck == date('Y-m-d')) { ?>
                                                         <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
                                                     <?php } elseif ($nextCheck < date('Y-m-d')) { ?>
@@ -769,7 +771,15 @@ if ($user->isLoggedIn()) {
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success">OK!</a>
                                                     <?php } ?>
+                                                </td> -->
+                                                <td>
+                                                    <?php if ($status == 1) { ?>
+                                                        <a href="#" role="button" class="btn btn-success btn-sm">Checked</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-danger">Not Checked!</a>
+                                                    <?php } ?>
                                                 </td>
+                                                <!-- <td><?= $status ?></td> -->
                                                 <td><?= $nextCheck ?></td>
                                                 <td>
                                                     <a href="data.php?id=8&updateId=<?= $batch['id'] ?>" class="btn btn-default">View</a>
@@ -1193,7 +1203,7 @@ if ($user->isLoggedIn()) {
                                         foreach ($override->getWithLimit('batch_description_records', 'batch_description_id', $_GET['did'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $name = $override->get('batch_description', 'batch_id', $_GET['did'])[0]['name'];
-                                            // $batch = $override->get('batch', 'id', $batch['batch_description_id'])[0]['name'];
+                                            // $batch = $override->get('batch', 'id', $batch['batch_description_id'])[0]['batch'];
                                             // print_r($batch);
                                         ?>
                                             <tr>
@@ -1202,7 +1212,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $name ?></td>
                                                 <td><?= $batch ?></td>
                                                 <td><?= $batch['quantity'] ?></td>
-                                                <td><?= $batch['added'] ?></td>
+                                                <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $staff ?></td>
                                             </tr>
