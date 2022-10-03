@@ -1168,12 +1168,13 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="10%">Added Date</th>
+                                            <th width="10%">Date</th>
                                             <th width="15%">Generic</th>
                                             <th width="15%">Brand</th>
-                                            <th width="15%">Quantity</th>
+                                            <th width="15%">Batch</th>
+                                            <th width="15%">Received</th>
+                                            <th width="10%">Used</th>
                                             <th width="10%">Balance</th>
-                                            <th width="10%">Added</th>
                                             <th width="10%">Staff</th>
                                         </tr>
                                     </thead>
@@ -1192,14 +1193,17 @@ if ($user->isLoggedIn()) {
                                         foreach ($override->getWithLimit('batch_description_records', 'batch_description_id', $_GET['did'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $name = $override->get('batch_description', 'batch_id', $_GET['did'])[0]['name'];
+                                            // $batch = $override->get('batch', 'id', $batch['batch_description_id'])[0]['name'];
+                                            // print_r($batch);
                                         ?>
                                             <tr>
                                                 <td><?= $batch['create_on'] ?></td>
                                                 <td><?= $name ?></td>
                                                 <td><?= $name ?></td>
-                                                <td><?= $batch['quantity'] ?></td>
+                                                <td><?= $batch ?></td>
                                                 <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $batch['added'] ?></td>
+                                                <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $staff ?></td>
                                             </tr>
                                         <?php } ?>
