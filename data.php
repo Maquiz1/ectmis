@@ -391,11 +391,10 @@ if ($user->isLoggedIn()) {
                         'status' => Input::get('maintainance_status'),
                     ));
 
-                    $BatchLastRow = $override->lastRow('check_records', 'batch_desc_id', Input::get('id'));
-                    // print_r($BatchLastRow);
-
-                    $user->updateRecord('batch_description', array('next_check' => Input::get('next_check')), $BatchLastRow[0]['batch_desc_id']);
-                    $user->updateRecord('batch_description', array('check_status' => Input::get('maintainance_status')), Input::get('id'));
+                    $BatchLastRow1 = $override->lastRow('check_records', 'id');
+                    // print_r($BatchLastRow1[0]['batch_desc_id']);
+                    $user->updateRecord('batch_description', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['batch_desc_id']);
+                    $user->updateRecord('batch_description', array('check_status' => Input::get('maintainance_status')), $BatchLastRow1[0]['batch_desc_id']);
                     $successMessage = 'Check Status Updated Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -763,7 +762,7 @@ if ($user->isLoggedIn()) {
                                                 <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                 <td><?= $batch['name'] ?></td>
                                                 <td><?= $checkDate ?></td>
-                                                <!-- <td>
+                                                <td>
                                                     <?php if ($nextCheck == date('Y-m-d')) { ?>
                                                         <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
                                                     <?php } elseif ($nextCheck < date('Y-m-d')) { ?>
@@ -771,14 +770,14 @@ if ($user->isLoggedIn()) {
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success">OK!</a>
                                                     <?php } ?>
-                                                </td> -->
-                                                <td>
+                                                </td>
+                                                <!-- <td>
                                                     <?php if ($status == 1) { ?>
                                                         <a href="#" role="button" class="btn btn-success btn-sm">Checked</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-danger">Not Checked!</a>
                                                     <?php } ?>
-                                                </td>
+                                                </td> -->
                                                 <!-- <td><?= $status ?></td> -->
                                                 <td><?= $nextCheck ?></td>
                                                 <td>
@@ -852,6 +851,7 @@ if ($user->isLoggedIn()) {
                                                             <div class="dr"><span></span></div>
                                                             <div class="modal-footer">
                                                                 <input type="hidden" name="id" value="<?= $batch['id'] ?>">
+                                                                <input type="hidden" name="batch_id" value="<?= $batchDescId ?>">
                                                                 <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
