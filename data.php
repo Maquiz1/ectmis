@@ -381,6 +381,7 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
+                // print_r($_POST);
                 try {
                     $user->createRecord('check_records', array(
                         'batch_desc_id' => Input::get('batch_id'),
@@ -392,9 +393,13 @@ if ($user->isLoggedIn()) {
                     ));
 
                     $BatchLastRow1 = $override->lastRow('check_records', 'id');
-                    // print_r($BatchLastRow1[0]['batch_desc_id']);
+                    // $BatchLastRow1 = $override->lastRow2('check_records', 'status', 1, 'id');
+                    // print_r($BatchLastRow1);
                     $user->updateRecord('batch_description', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['batch_desc_id']);
                     $user->updateRecord('batch_description', array('check_status' => Input::get('maintainance_status')), $BatchLastRow1[0]['batch_desc_id']);
+                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['batch_desc_id']);
+                    $user->updateRecord('batch', array('check_status' => Input::get('maintainance_status')), $BatchLastRow1[0]['batch_desc_id']);
+                    $user->updateRecord('batch', array('last_check' => Input::get('check_date')), $BatchLastRow1[0]['batch_desc_id']);
                     $successMessage = 'Check Status Updated Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -724,7 +729,7 @@ if ($user->isLoggedIn()) {
                                         <tr>
                                             <th width="15%">Generic</th>
                                             <th width="15%">Brand</th>
-                                            <th width="10%">Check Date</th>
+                                            <th width="10%">Last Check</th>
                                             <th width="5%">Status</th>
                                             <th width="10%">Next Check</th>
                                             <th width="20%">Manage</th>
@@ -762,7 +767,7 @@ if ($user->isLoggedIn()) {
                                             <tr>
                                                 <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                 <td><?= $batch['name'] ?></td>
-                                                <td><?= $checkDate ?></td>
+                                                <td><?= $batch['last_check'] ?></td>
                                                 <td>
                                                     <?php if ($nextCheck == date('Y-m-d')) { ?>
                                                         <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
@@ -771,16 +776,8 @@ if ($user->isLoggedIn()) {
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success">OK!</a>
                                                     <?php } ?>
-                                                </td>
-                                                <!-- <td>
-                                                    <?php if ($status == 1) { ?>
-                                                        <a href="#" role="button" class="btn btn-success btn-sm">Checked</a>
-                                                    <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-danger">Not Checked!</a>
-                                                    <?php } ?>
-                                                </td> -->
-                                                <!-- <td><?= $status ?></td> -->
-                                                <td><?= $nextCheck ?></td>
+                                                </td>                                              
+                                                <td><?= $batch['next_check'] ?></td>
                                                 <td>
                                                     <a href="data.php?id=8&updateId=<?= $batch['id'] ?>" class="btn btn-default">View</a>
                                                     <a href="#desc<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>
