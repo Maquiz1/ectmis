@@ -383,7 +383,7 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 try {
                     $user->createRecord('check_records', array(
-                        'batch_desc_id' => Input::get('id'),
+                        'batch_desc_id' => Input::get('batch_id'),
                         'check_date' => Input::get('check_date'),
                         'next_check' => Input::get('next_check'),
                         'create_on' => date('Y-m-d'),
@@ -754,6 +754,7 @@ if ($user->isLoggedIn()) {
                                             $checkDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['check_date'];
                                             $nextCheck = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
                                             $status = $override->get('batch_description', 'batch_id', $batch['id'])[0]['check_status'];
+                                            $batchId = $override->get('batch_description', 'batch_id', $batch['id'])[0]['batch_id'];
 
                                             $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)'];
                                             // print_r($nextCheck);
@@ -851,7 +852,7 @@ if ($user->isLoggedIn()) {
                                                             <div class="dr"><span></span></div>
                                                             <div class="modal-footer">
                                                                 <input type="hidden" name="id" value="<?= $batch['id'] ?>">
-                                                                <input type="hidden" name="batch_id" value="<?= $batchDescId ?>">
+                                                                <input type="hidden" name="batch_id" value="<?= $batchId ?>">
                                                                 <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
