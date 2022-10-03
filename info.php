@@ -767,7 +767,6 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">Generic</th>
                                                 <th width="10%">Brand</th>
                                                 <th width="10%">Amount</th>
-                                                <th width="10%">Exp Date</th>
                                                 <th width="5%">Status</th>
                                                 <th width="20%">Manage</th>
                                             </tr>
@@ -785,7 +784,6 @@ if ($user->isLoggedIn()) {
                                                     <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                     <td><?= $batch['name'] ?></td>
                                                     <td><?= $batch['amount'] ?></td>
-                                                    <td><?= $use_case ?></td>
                                                     <td>
                                                         <?php if ($amnt <= $batch['notify_amount'] && $amnt > 0) { ?>
                                                             <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
@@ -1099,7 +1097,8 @@ if ($user->isLoggedIn()) {
                                         <thead>
                                             <tr>
                                                 <th><input type="checkbox" name="checkall" /></th>
-                                                <th width="20%">Product Name</th>
+                                                <th width="20%">Generic</th>
+                                                <th width="20%">Brand</th>
                                                 <th width="10%">Batch No</th>
                                                 <th width="10%">Drug Category</th>
                                                 <th width="10%">Quantity</th>
@@ -1117,6 +1116,7 @@ if ($user->isLoggedIn()) {
                                                 $amnt = $batchDesc['quantity'] - $batchDesc['assigned'] ?>
                                                 <tr>
                                                     <td><input type="checkbox" name="checkbox" /></td>
+                                                    <td> <?= $batchDesc['name'] ?></td>
                                                     <td> <?= $batchDesc['name'] ?></td>
                                                     <td><?= $batch_no['batch_no'] ?></td>
                                                     <td><?= $dCat['name'] ?></td>

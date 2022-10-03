@@ -88,7 +88,7 @@ if ($user->data()->accessLevel == 1) {
             </li>
 
             <li class="openable">
-                <a href="#"><span class="isw-archive"></span><span class="text">Receive Device/Medicine</span></a>
+                <a href="#"><span class="isw-archive"></span><span class="text">Receive Equipment/Medication</span></a>
                 <ul>
                     <li>
                         <a href="add.php?id=4">
@@ -108,7 +108,7 @@ if ($user->data()->accessLevel == 1) {
                 </ul>
             </li>
             <li class="openable">
-                <a href="#"><span class="isw-folder"></span><span class="text">Manage Dispensing Drugs</span></a>
+                <a href="#"><span class="isw-folder"></span><span class="text">Remove Equipment/Medication</span></a>
                 <ul>
                     <li>
                         <a href="add.php?id=8">

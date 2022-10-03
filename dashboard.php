@@ -141,7 +141,7 @@ if ($user->isLoggedIn()) {
                                         <th width="5%">Form</th>
                                         <th width="5%">Current Quantity</th>
                                         <!-- <th width="5%">Current Used</th> -->
-                                        <th width="5%">Re-stock Level</th>
+                                        <!-- <th width="5%">Re-stock Level</th> -->
                                         <th width="5%"> ICU</th>
                                         <th width="5%"> EmKit</th>
                                         <th width="5%"> EmBuffer</th>
@@ -185,7 +185,6 @@ if ($user->isLoggedIn()) {
                                             <td><?= $useCase ?></td>
                                             <td><?= $form ?></td>
                                             <td><?= $bDiscription['quantity'] ?></td>
-                                            <td><?= $bDiscription['notify_amount'] ?></td>
                                             <td><?php if ($icu) {
                                                 ?>
                                                     <a href="#" role="button" class="btn btn-info"><?= $icu; ?></a>

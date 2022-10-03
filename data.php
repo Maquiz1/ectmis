@@ -1168,9 +1168,12 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="15%">Generic Name</th>
-                                            <th width="10%">Added</th>
                                             <th width="10%">Added Date</th>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
+                                            <th width="15%">Quantity</th>
+                                            <th width="10%">Balance</th>
+                                            <th width="10%">Added</th>
                                             <th width="10%">Staff</th>
                                         </tr>
                                     </thead>
@@ -1191,9 +1194,12 @@ if ($user->isLoggedIn()) {
                                             $name = $override->get('batch_description', 'batch_id', $_GET['did'])[0]['name'];
                                         ?>
                                             <tr>
-                                                <td><?= $name ?></td>
-                                                <td><?= $batch['added'] ?></td>
                                                 <td><?= $batch['create_on'] ?></td>
+                                                <td><?= $name ?></td>
+                                                <td><?= $name ?></td>
+                                                <td><?= $batch['quantity'] ?></td>
+                                                <td><?= $batch['quantity'] ?></td>
+                                                <td><?= $batch['added'] ?></td>
                                                 <td><?= $staff ?></td>
                                             </tr>
                                         <?php } ?>
