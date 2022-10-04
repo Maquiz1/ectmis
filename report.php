@@ -55,6 +55,31 @@ if ($user->isLoggedIn()) {
                 $pageError = $validate->errors();
             }
         }
+
+        if (Input::get('report') == 11) {
+            $data = null;
+            $filename = null;
+            if (Input::get('full_report')) {
+                $data = $override->getFull('batch', 'amount', 'notify_amount', 'status', 1);
+                $filename = 'Full Report' . '-' . date('Y-m-d');
+            } elseif (Input::get('sufficient')) {
+                $data = $override->get4('batch', 'amount', 'notify_amount', 'status', 1, 'type', 1);
+                $filename = 'SUFFICIENT' . '-' . date('Y-m-d');
+            } elseif (Input::get('running_low')) {
+                $data = $override->get5('batch', 'amount', 'notify_amount', 'status', 1, 'type', 1);
+                $filename = 'RUNNING LOW' . '-' . date('Y-m-d');
+            } elseif (Input::get('out_stock')) {
+                $data = $override->get6('batch', 'amount', 0, 'status', 1, 'type', 1);
+                $filename = 'Out of Stock' . '-' . date('Y-m-d');
+            } elseif (Input::get('expired')) {
+                $data = $override->get7('batch', 'expire_date', date('Y-m-d'), 'status', 1, 'type', 1);
+                $filename = 'Expired' . '-' . date('Y-m-d');
+            } elseif (Input::get('not_checked')) {
+                $data = $override->get4('batch', 'amount', 'notify_amount', 'status', 1, 'type', 2);
+                $filename = 'NOT CHECKED' . '-' . date('Y-m-d');
+            }
+            $user->exportData($data, $filename);
+        }
     }
 } else {
     Redirect::to('index.php');

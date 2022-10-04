@@ -956,12 +956,10 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="10%">Generic Name</th>
-                                            <th width="5%"> Group</th>
+                                            <th width="10%">Generic</th>
+                                            <th width="10%">Brand</th>
                                             <th width="5%"> Use Case</th>
-                                            <th width="5%">Current Quantity</th>
-                                            <!-- <th width="5%">Current Used</th> -->
-                                            <th width="5%">Re-stock Level</th>
+                                            <th width="5%">Quantity</th>
                                             <th width="5%"> ICU</th>
                                             <th width="5%"> EmKit</th>
                                             <th width="5%"> EmBuffer</th>
@@ -984,7 +982,7 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-                                        foreach ($override->get4('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
+                                        foreach ($override->get4b('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
                                             $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                             $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                             $icu = ($override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
@@ -996,14 +994,12 @@ if ($user->isLoggedIn()) {
                                             $Pharmacy = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 7)[0]['quantity'];
                                             $sumLoctn = $override->getSumD1('batch_guide_records', 'quantity', 'batch_description_id', $bDiscription['id'])[0]['SUM(quantity)'];
 
-                                            // var_dump($bDiscription);
                                         ?>
                                             <tr>
                                                 <td><?= $bDiscription['name'] ?></td>
-                                                <td><?= $useGroup ?></td>
+                                                <td><?= $bDiscription['name'] ?></td>
                                                 <td><?= $useCase ?></td>
                                                 <td><?= $bDiscription['quantity'] ?></td>
-                                                <td><?= $bDiscription['notify_amount'] ?></td>
                                                 <td><?php if ($icu) {
                                                     ?>
                                                         <a href="#" role="button" class="btn btn-info"><?= $icu; ?></a>
@@ -1202,8 +1198,15 @@ if ($user->isLoggedIn()) {
                                         foreach ($override->getWithLimit('batch_description_records', 'batch_description_id', $_GET['did'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $name = $override->get('batch_description', 'batch_id', $_GET['did'])[0]['name'];
-                                            // $batch = $override->get('batch', 'id', $batch['batch_description_id'])[0]['batch'];
+                                            // $batch = $override->get('batch_description', 'batch_id', $batch['batch_description_id'])[0]['batch_id'];
                                             // print_r($batch);
+                                            $balance = $batch['quantity'] - $batch['assigned'];
+                                            if($balance > 0){
+                                                echo $balance;
+                                            }else{
+                                                echo 0;
+                                            }
+                                            $balance2 = ($batch['quantity'] + $balance) - $batch['assigned'];
                                         ?>
                                             <tr>
                                                 <td><?= $batch['create_on'] ?></td>
@@ -1212,7 +1215,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batch ?></td>
                                                 <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
-                                                <td><?= $batch['quantity'] ?></td>
+                                                <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>
                                             </tr>
                                         <?php } ?>

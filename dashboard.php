@@ -28,14 +28,18 @@ if ($user->isLoggedIn()) {
                 $total_quantity = 0;
                 if (Input::get('amount') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('amount');
+                    $balance = Input::get('quantity_db') - Input::get('amount');
                     try {
                         $user->updateRecord('batch_description', array(
                             'quantity' => $total_quantity,
                         ), Input::get('id'));
 
+                        $user->updateRecord('batch', array(
+                            'amount' => $total_quantity,
+                        ), Input::get('id'));
+
                         $user->createRecord('batch_description_records', array(
                             'quantity' => Input::get('amount'),
-                            // 'assigned' => Input::get('amount'),
                             'batch_description_id' => Input::get('batch'),
                             'notify_amount' => Input::get('notify_amount'),
                             'staff_id' => $user->data()->id,
@@ -43,6 +47,7 @@ if ($user->isLoggedIn()) {
                             'create_on' => date('Y-m-d'),
                             'use_case' => Input::get('use_case'),
                             'added' => Input::get('amount'),
+                            'balance' => $balance,
 
                         ));
 
