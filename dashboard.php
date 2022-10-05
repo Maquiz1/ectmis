@@ -136,10 +136,6 @@ if ($user->isLoggedIn()) {
                                     <tr>                                      
 
                                         <th width="10%">Generic</th>
-                                        <th width="5%"> BRAND</th>
-                                        <th width="5%"> Use Case</th>
-                                        <th width="5%">Form</th>
-                                        <th width="5%">Quantity</th>
                                         <th width="5%"> EmKits</th>
                                         <th width="5%"> AmbKits</th>
                                         <th width="5%"> ECRm</th>
@@ -188,10 +184,6 @@ if ($user->isLoggedIn()) {
                                         <tr>
 
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
-                                            <td><?= $brand ?></td>
-                                            <td><?= $useCase ?></td>
-                                            <td><?= $form ?></td>
-                                            <td><?= $bDiscription['quantity'] ?></td>
                                             <td><?php if ($EmKits) {
                                                 ?>
                                                     <a href="#" role="button" class="btn btn-info"><?= $EmKits; ?></a>
