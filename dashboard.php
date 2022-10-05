@@ -67,7 +67,7 @@ if ($user->isLoggedIn()) {
 <html lang="en">
 
 <head>
-    <title> Dashboard | CTMIS </title>
+    <title> Dashboard | e-CTMIS </title>
     <?php include "head.php"; ?>
 </head>
 
