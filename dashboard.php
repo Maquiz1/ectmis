@@ -33,6 +33,8 @@ if ($user->isLoggedIn()) {
                             'quantity' => $total_quantity,
                         ), Input::get('id'));
 
+                        print_r($_POST);
+
                         $user->createRecord('batch_records', array(
                             'quantity' => $total_quantity,
                             'product_id' => Input::get('id'),
@@ -42,6 +44,7 @@ if ($user->isLoggedIn()) {
                             'create_on' => date('Y-m-d'),
                             'use_case' => Input::get('use_case'),
                             'added' => Input::get('added'),
+                            'study_id' => Input::get('study_id'),
                             'balance' => $total_quantity,
                             'status' => 1
 
@@ -337,6 +340,7 @@ if ($user->isLoggedIn()) {
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
                                                             <input type="hidden" name="batch_id" value="<?= $bDiscription['batch_no'] ?>">
+                                                            <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
                                                             <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
                                                             <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
