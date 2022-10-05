@@ -29,7 +29,7 @@ $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">
                             <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
                         </span>
-                        <span class="number"><?= $override->countData('batch', 'type', 1, 'status', 1) ?></span>
+                        <span class="number"><?= $override->countData('batch_product', 'use_group', 1, 'status', 1) ?></span>
                     </div>
                 </a>
             </div>
@@ -43,7 +43,7 @@ $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">
                             <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
                         </span>
-                        <span class="number"><?= $override->countData('batch', 'type', 2, 'status', 1) ?></span>
+                        <span class="number"><?= $override->countData('batch_product', 'use_group', 2, 'status', 1) ?></span>
                     </div>
                 </a>
             </div>
@@ -57,7 +57,7 @@ $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">
                             <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
                         </span>
-                        <span class="number"><?= $override->countData('batch', 'type', 3, 'status', 1) ?></span>
+                        <span class="number"><?= $override->countData('batch_product', 'use_group', 3, 'status', 1) ?></span>
                     </div>
                 </a>
             </div>

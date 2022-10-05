@@ -20,34 +20,30 @@ if ($user->isLoggedIn()) {
         $validate = new validate();
         if (Input::get('update_stock_guide')) {
             $validate = $validate->check($_POST, array(
-                'amount' => array(
+                'added' => array(
                     'required' => true,
                 ),
             ));
             if ($validate->passed()) {
                 $total_quantity = 0;
-                if (Input::get('amount') > 0) {
-                    $total_quantity = Input::get('quantity_db') + Input::get('amount');
-                    $balance = Input::get('quantity_db') - Input::get('amount');
+                if (Input::get('added') > 0) {
+                    $total_quantity = Input::get('quantity_db') + Input::get('added');
                     try {
-                        $user->updateRecord('batch_description', array(
+                        $user->updateRecord('batch_product', array(
                             'quantity' => $total_quantity,
                         ), Input::get('id'));
 
-                        $user->updateRecord('batch', array(
-                            'amount' => $total_quantity,
-                        ), Input::get('id'));
-
-                        $user->createRecord('batch_description_records', array(
-                            'quantity' => Input::get('amount'),
-                            'batch_description_id' => Input::get('batch'),
-                            'notify_amount' => Input::get('notify_amount'),
+                        $user->createRecord('batch_records', array(
+                            'quantity' => $total_quantity,
+                            'product_id' => Input::get('id'),
+                            'batch_id' => Input::get('batch_id'),
                             'staff_id' => $user->data()->id,
                             'use_group' => Input::get('use_group'),
                             'create_on' => date('Y-m-d'),
                             'use_case' => Input::get('use_case'),
-                            'added' => Input::get('amount'),
-                            'balance' => $balance,
+                            'added' => Input::get('added'),
+                            'balance' => $total_quantity,
+                            'status' => 1
 
                         ));
 
@@ -117,9 +113,6 @@ if ($user->isLoggedIn()) {
                             </div>
                         <?php } ?>
 
-                        <h2>Filterable</h2>
-                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
-                        <br>
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>INVENTORY STATUS SUMMARY</h1>
@@ -139,19 +132,24 @@ if ($user->isLoggedIn()) {
                         <div class="block-fluid">
                             <table id='inventory_report1' cellpadding="0" cellspacing="0" width="100%" class="table">
                                 <thead>
-                                    <tr>
+                                    <tr>                                      
+
                                         <th width="10%">Generic</th>
                                         <th width="5%"> BRAND</th>
                                         <th width="5%"> Use Case</th>
                                         <th width="5%">Form</th>
-                                        <th width="5%">Current Quantity</th>
-                                        <th width="5%"> ICU</th>
-                                        <th width="5%"> EmKit</th>
-                                        <th width="5%"> EmBuffer</th>
-                                        <th width="5%"> AmbKit</th>
-                                        <th width="5%"> CTM Room</th>
-                                        <th width="5%"> Exam Room</th>
+                                        <th width="5%">Quantity</th>
+                                        <th width="5%"> EmKits</th>
+                                        <th width="5%"> AmbKits</th>
+                                        <th width="5%"> ECRm</th>
+                                        <th width="5%"> DRm</th>
+                                        <th width="5%"> ScRm</th>
+                                        <th width="5%"> VSrm</th>
+                                        <th width="5%"> Exam Rms</th>
+                                        <th width="5%"> Ward</th>
+                                        <th width="5%"> CTMr</th>
                                         <th width="5%"> Pharmacy</th>
+                                        <th width="5%"> Other</th>
                                         <th width="5%">Status</th>
                                         <th width="15%">Action</th>
                                     </tr>
@@ -159,7 +157,7 @@ if ($user->isLoggedIn()) {
                                 <tbody>
                                     <?php
                                     $amnt = 0;
-                                    $pagNum = $override->getCount('batch_description', 'status', 1);
+                                    $pagNum = $override->getCount('batch_product', 'status', 1);
                                     $pages = ceil($pagNum / $numRec);
                                     if (!$_GET['page'] || $_GET['page'] == 1) {
                                         $page = 0;
@@ -167,83 +165,120 @@ if ($user->isLoggedIn()) {
                                         $page = ($_GET['page'] * $numRec) - $numRec;
                                     }
 
-                                    foreach ($override->getWithLimit('batch_description', 'status', 1, $page, $numRec) as $bDiscription) {
-                                        $generic = $override->get('batch', 'id', $bDiscription['batch_id'])[0]['name'];
+                                    foreach ($override->getWithLimit('batch_product', 'status', 1, $page, $numRec) as $bDiscription) {
+                                        $generic = $override->get('generic', 'id', $bDiscription['generic_id'])[0]['name'];
+                                        $brand = $override->get('brand', 'id', $bDiscription['brand_id'])[0]['name'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
-                                        $form = $override->get('drug_cat', 'id', $bDiscription['cat_id'])[0]['name'];
-                                        $icu = ($override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
-                                        $EmKit = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 2)[0]['quantity'];
-                                        $EmBuffer = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 3)[0]['quantity'];
-                                        $AmKit = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 4)[0]['quantity'];
-                                        $CTM = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 5)[0]['quantity'];
-                                        $Exam = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 6)[0]['quantity'];
-                                        $Pharmacy = $override->getNews('batch_guide_records', 'batch_description_id', $bDiscription['id'], 'location_id', 7)[0]['quantity'];
-                                        $sumLoctn = $override->getSumD1('batch_guide_records', 'quantity', 'batch_description_id', $bDiscription['id'])[0]['SUM(quantity)'];
+                                        $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
+                                        $form = $override->get('drug_cat', 'id', $bDiscription['category_id'])[0]['name'];
+                                        $EmKits = ($override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
+                                        $AmKits = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 2)[0]['quantity'];
+                                        $ECRm = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 3)[0]['quantity'];
+                                        $DRm = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 4)[0]['quantity'];
+                                        $ScRm = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 5)[0]['quantity'];
+                                        $VSrm = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 6)[0]['quantity'];
+                                        $ExamRms = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 7)[0]['quantity'];
+                                        $Ward = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 8)[0]['quantity'];
+                                        $CTMr = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 9)[0]['quantity'];
+                                        $Pharmacy = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 10)[0]['quantity'];
+                                        $Other = $override->getNews('batch_guide_records', 'product_id', $bDiscription['id'], 'location_id', 96)[0]['quantity'];
+                                        $sumLoctn = $override->getSumD1('batch_guide_records', 'quantity', 'product_id', $bDiscription['id'])[0]['SUM(quantity)'];
                                     ?>
                                         <tr>
 
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
-                                            <td><?= $bDiscription['name'] ?></td>
+                                            <td><?= $brand ?></td>
                                             <td><?= $useCase ?></td>
                                             <td><?= $form ?></td>
                                             <td><?= $bDiscription['quantity'] ?></td>
-                                            <td><?php if ($icu) {
+                                            <td><?php if ($EmKits) {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $icu; ?></a>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $EmKits; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
                                                 } ?>
                                             </td>
-                                            <td><?php if ($EmKit) {
+                                            <td><?php if ($AmKits) {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $EmKit; ?></a>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $AmKits; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
                                                 } ?>
                                             </td>
-                                            <td><?php if ($EmBuffer) {
+                                            <td><?php if ($ECRm) {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $EmBuffer; ?></a>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $ECRm; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
                                                 } ?>
                                             </td>
-                                            <td><?php if ($AmKit) {
+                                            <td><?php if ($DRm) {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $AmKit; ?></a>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $DRm; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
                                                 } ?>
                                             </td>
-                                            <td><?php if ($CTM) {
+                                            <td><?php if ($ScRm) {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $CTM; ?></a>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $ScRm; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
                                                 } ?>
                                             </td>
-                                            <td><?php if ($Exam) {
+                                            <td><?php if ($VSrm) {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $Exam; ?></a>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $VSrm; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
+                                                } ?>
+                                            </td>
+                                            <td><?php if ($ExamRms) {
+                                                ?>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $ExamRms; ?></a>
+                                                <?php
+                                                } else {
+                                                    echo 0;
+                                                } ?>
+                                            </td>
+                                            <td><?php if ($Ward) {
+                                                ?>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $Ward; ?></a>
+                                                <?php
+                                                } else {
+                                                    echo 0;
+                                                } ?>
+                                            </td>
+                                            <td><?php if ($CTMr) {
+                                                ?>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $CTMr; ?></a>
+                                                <?php
+                                                } else {
+                                                    echo 0;
                                                 } ?>
                                             </td>
                                             <td><?php if ($Pharmacy) { ?>
                                                     <a href="#" role="button" class="btn btn-info"><?= $Pharmacy; ?></a>
                                                 <?php
                                                 } else {
-                                                    echo 'N/A';
+                                                    echo 0;
+                                                } ?>
+                                            </td>
+                                            <td><?php if ($Other) { ?>
+                                                    <a href="#" role="button" class="btn btn-info"><?= $Other; ?></a>
+                                                <?php
+                                                } else {
+                                                    echo 0;
                                                 } ?>
                                             </td>
                                             <td>
-                                                <?php if ($bDiscription['quantity'] <= $bDiscription['notify_amount'] && $bDiscription['quantity'] > 0) { ?>
+                                                <?php if ($bDiscription['quantity'] <= $bDiscription['notify_quantity'] && $bDiscription['quantity'] > 0) { ?>
                                                     <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
                                                 <?php } elseif ($bDiscription['quantity'] == 0) { ?>
                                                     <a href="#" role="button" class="btn btn-danger">Out of Stock</a>
@@ -254,7 +289,6 @@ if ($user->isLoggedIn()) {
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                                 <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>
-                                                <!-- <a href="#delete<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a> -->
                                             </td>
                                         </tr>
 
@@ -272,14 +306,14 @@ if ($user->isLoggedIn()) {
                                                                     <div class="row-form clearfix">
                                                                         <div class="col-md-3">Generic Name</div>
                                                                         <div class="col-md-9">
-                                                                            <input value="<?= $override->get('batch', 'id', $bDiscription['batch_id'])[0]['name'] ?>" type="text" id="name" disabled />
+                                                                            <input value="<?= $override->get('generic', 'id', $bDiscription['generic_id'])[0]['name'] ?>" type="text" id="name" disabled />
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="row-form clearfix">
                                                                         <div class="col-md-3">Brand Name:</div>
                                                                         <div class="col-md-9">
-                                                                            <input value="<?= $bDiscription['name'] ?>" class="validate[required]" type="text" name="name" id="name" disabled />
+                                                                            <input value="<?= $override->get('brand', 'id', $bDiscription['brand_id'])[0]['name'] ?>" class="validate[required]" type="text" name="name" id="name" disabled />
                                                                         </div>
                                                                     </div>
 
@@ -293,7 +327,7 @@ if ($user->isLoggedIn()) {
                                                                     <div class="row-form clearfix">
                                                                         <div class="col-md-3">Quantity to Add:</div>
                                                                         <div class="col-md-9">
-                                                                            <input value=" " class="validate[required]" type="number" name="amount" id="amount" />
+                                                                            <input value=" " class="validate[required]" type="number" name="added" id="added" />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -301,12 +335,11 @@ if ($user->isLoggedIn()) {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <input type="hidden" name="batch" value="<?= $bDiscription['batch_id'] ?>">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
+                                                            <input type="hidden" name="batch_id" value="<?= $bDiscription['batch_no'] ?>">
                                                             <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="hidden" name="notify_amount" value="<?= $bDiscription['notify_amount'] ?>">
-                                                            <input type="hidden" name="status" value="<?= $bDiscription['maintainance_status'] ?>">
-                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['type'] ?>">
+                                                            <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
+                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
                                                             <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
@@ -384,39 +417,39 @@ if ($user->isLoggedIn()) {
 
 
     <script>
-        $(document).ready(function() {
-            $("#myInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#myTable tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
+        // $(document).ready(function() {
+        //     $("#myInput").on("keyup", function() {
+        //         var value = $(this).val().toLowerCase();
+        //         $("#myTable tr").filter(function() {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        //         });
+        //     });
 
-            $('#inventory_report1').DataTable({
+        //     $('#inventory_report1').DataTable({
 
-                "language": {
-                    "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-                },
+        //         "language": {
+        //             "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+        //         },
 
 
-                dom: 'Bfrtip',
-                buttons: [{
+        //         dom: 'Bfrtip',
+        //         buttons: [{
 
-                        extend: 'excelHtml5',
-                        title: 'Inventory_status_report',
-                        className: 'btn-primary',
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Inventory_status_report',
-                        className: 'btn-primary',
-                        orientation: 'landscape',
-                        pageSize: 'LEGAL'
+        //                 extend: 'excelHtml5',
+        //                 title: 'Inventory_status_report',
+        //                 className: 'btn-primary',
+        //             },
+        //             {
+        //                 extend: 'pdfHtml5',
+        //                 title: 'Inventory_status_report',
+        //                 className: 'btn-primary',
+        //                 orientation: 'landscape',
+        //                 pageSize: 'LEGAL'
 
-                    },
-                ],
-            });
-        });
+        //             },
+        //         ],
+        //     });
+        // });
 
 
         <?php if ($user->data()->pswd == 0) { ?>

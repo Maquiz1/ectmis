@@ -375,31 +375,24 @@ if ($user->isLoggedIn()) {
                 ),
                 'next_check' => array(
                     'required' => true,
-                ),
-                'maintainance_status' => array(
-                    'required' => true,
-                ),
+                )
             ));
             if ($validate->passed()) {
-                // print_r($_POST);
                 try {
                     $user->createRecord('check_records', array(
-                        'batch_desc_id' => Input::get('batch_id'),
-                        'check_date' => Input::get('check_date'),
+                        'product_id' => Input::get('id'),
+                        'last_check' => Input::get('check_date'),
                         'next_check' => Input::get('next_check'),
                         'create_on' => date('Y-m-d'),
                         'staff_id' => $user->data()->id,
+                        'check_type' => Input::get('maintainance'),
                         'status' => Input::get('maintainance_status'),
+                        'remark' => Input::get('remark'),
                     ));
 
                     $BatchLastRow1 = $override->lastRow('check_records', 'id');
-                    // $BatchLastRow1 = $override->lastRow2('check_records', 'status', 1, 'id');
-                    // print_r($BatchLastRow1);
-                    $user->updateRecord('batch_description', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['batch_desc_id']);
-                    $user->updateRecord('batch_description', array('check_status' => Input::get('maintainance_status')), $BatchLastRow1[0]['batch_desc_id']);
-                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['batch_desc_id']);
-                    $user->updateRecord('batch', array('check_status' => Input::get('maintainance_status')), $BatchLastRow1[0]['batch_desc_id']);
-                    $user->updateRecord('batch', array('last_check' => Input::get('check_date')), $BatchLastRow1[0]['batch_desc_id']);
+                    $user->updateRecord('batch_product', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['product_id']);
+                    $user->updateRecord('batch_product', array('last_check' => Input::get('check_date')), $BatchLastRow1[0]['product_id']);
                     $successMessage = 'Check Status Updated Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -732,13 +725,14 @@ if ($user->isLoggedIn()) {
                                             <th width="10%">Last Check</th>
                                             <th width="5%">Status</th>
                                             <th width="10%">Next Check</th>
+                                            <th width="10%">Remarks</th>
                                             <th width="20%">Manage</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch', 'status', 1);
+                                        $pagNum = $override->getCount('batch_product', 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
@@ -746,28 +740,13 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
                                         $type = $_GET['type'];
-                                        foreach ($override->getNews('batch', 'status', 1, 'type', $type) as $batch) {
-                                            // foreach ($override->getWithLimit('batch', 'status', 1, $page, $numRec) as $batch) {
-                                            $study = $override->get('study', 'id', $batch['study_id'])[0];
-                                            $name = $override->get('batch_description', 'assigned', 'batch_id', $batch['id']);
-                                            $batchItems = $override->getSumD1('batch_description', 'assigned', 'batch_id', $batch['id']);
-                                            $currentAmount = $override->get('batch_description', 'batch_id', $batch['id'])[0]['quantity'];
-                                            $notifyAmount = $override->get('batch_description', 'batch_id', $batch['id'])[0]['quantity'];
-                                            $batchDescId = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['batch_desc_id'];
-                                            $maintainance_type = $override->get('check_records', 'batch_desc_id', $batch['id'])[0]['check_type'];
-                                            $lastStatus2 = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['status'];
-                                            $checkDate = $override->lastRow2('check_records', 'batch_desc_id', $batchDescId, 'id')[0]['check_date'];
-                                            $nextCheck = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
-                                            $status = $override->get('batch_description', 'batch_id', $batch['id'])[0]['check_status'];
-                                            $batchId = $override->get('batch_description', 'batch_id', $batch['id'])[0]['batch_id'];
-                                            // $nextCheck2 = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check'];
-
-                                            $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)'];
-                                            // print_r($nextCheck);
+                                        foreach ($override->getNews('batch_product', 'status', 1, 'use_group', $type) as $batch) {
+                                            $generic = $override->get('generic', 'id', $batch['generic_id'])[0]['name'];
+                                            $brand = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
                                         ?>
                                             <tr>
-                                                <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
-                                                <td><?= $batch['name'] ?></td>
+                                                <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $generic ?></a></td>
+                                                <td><?= $brand ?></td>
                                                 <td><?= $batch['last_check'] ?></td>
                                                 <td>
                                                     <?php if ($batch['next_check'] == date('Y-m-d')) { ?>
@@ -779,6 +758,7 @@ if ($user->isLoggedIn()) {
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $batch['next_check'] ?></td>
+                                                <td><?= $batch['remark'] ?></td>
                                                 <td>
                                                     <a href="data.php?id=8&updateId=<?= $batch['id'] ?>" class="btn btn-default">View</a>
                                                     <a href="#desc<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>
@@ -794,20 +774,23 @@ if ($user->isLoggedIn()) {
                                                                 <h4>Edit Batch Info</h4>
                                                             </div>
                                                             <div class="modal-body modal-body-np">
-
                                                                 <div class="row">
 
-                                                                    <div class="col-sm-4">
+                                                                    <div class="col-sm-12">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
                                                                                 <label>NAME:</label>
-                                                                                <div class="col-md-9"><input type="text" name="name" value='<?= $batch['name'] ?>' readonly /> <span></span></div>
+                                                                                <div class="col-md-9"><input type="text" name="name" value='<?= $brand ?>' readonly /> <span></span></div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
 
-                                                                    <div class="col-sm-4">
+                                                                <div class="row">
+
+
+                                                                    <div class="col-sm-6">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -821,11 +804,7 @@ if ($user->isLoggedIn()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-
-                                                                <div class="row">
-
-                                                                    <div class="col-sm-4">
+                                                                    <div class="col-sm-6">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -834,8 +813,22 @@ if ($user->isLoggedIn()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
 
-                                                                    <div class="col-sm-4">
+                                                                <div class="row">
+
+
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Remark:</label>
+                                                                                <div class="col-md-9"><input type="text" name="remark" id="remark" /> <span></span></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-6">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -850,7 +843,7 @@ if ($user->isLoggedIn()) {
                                                             <div class="dr"><span></span></div>
                                                             <div class="modal-footer">
                                                                 <input type="hidden" name="id" value="<?= $batch['id'] ?>">
-                                                                <input type="hidden" name="batch_id" value="<?= $batchId ?>">
+                                                                <input type="hidden" name="maintainance" value="<?= $batch['maintainance'] ?>">
                                                                 <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
@@ -1177,16 +1170,17 @@ if ($user->isLoggedIn()) {
                                             <th width="15%">Generic</th>
                                             <th width="15%">Brand</th>
                                             <th width="15%">Batch</th>
-                                            <th width="15%">Received</th>
-                                            <th width="10%">Used</th>
-                                            <th width="10%">Balance</th>
-                                            <th width="10%">Staff</th>
+                                            <th width="10%">Current Received</th>
+                                            <th width="5%">Added</th>
+                                            <th width="5%">Used</th>
+                                            <th width="5%">Balance</th>
+                                            <th width="5%">Staff</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch_description_records', 'batch_description_id', $_GET['did']);
+                                        $pagNum = $override->getCount('batch_records', 'product_id', $_GET['did']);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
@@ -1195,25 +1189,19 @@ if ($user->isLoggedIn()) {
                                         }
 
 
-                                        foreach ($override->getWithLimit('batch_description_records', 'batch_description_id', $_GET['did'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('batch_records', 'product_id', $_GET['did'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $name = $override->get('batch_description', 'batch_id', $_GET['did'])[0]['name'];
-                                            // $batch = $override->get('batch_description', 'batch_id', $batch['batch_description_id'])[0]['batch_id'];
-                                            // print_r($batch);
-                                            $balance = $batch['quantity'] - $batch['assigned'];
-                                            if($balance > 0){
-                                                echo $balance;
-                                            }else{
-                                                echo 0;
-                                            }
-                                            $balance2 = ($batch['quantity'] + $balance) - $batch['assigned'];
+                                            $generic = $override->get('generic', 'id', $_GET['did'])[0]['name'];
+                                            $brand = $override->get('brand', 'id', $_GET['did'])[0]['name'];
+
                                         ?>
                                             <tr>
                                                 <td><?= $batch['create_on'] ?></td>
-                                                <td><?= $name ?></td>
-                                                <td><?= $name ?></td>
-                                                <td><?= $batch ?></td>
+                                                <td><?= $generic ?></td>
+                                                <td><?= $brand ?></td>
+                                                <td><?= $batch['batch_id'] ?></td>
                                                 <td><?= $batch['quantity'] ?></td>
+                                                <td><?= $batch['added'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>
@@ -1246,34 +1234,42 @@ if ($user->isLoggedIn()) {
                                     <thead>
                                         <tr>
                                             <th width="15%">Generic Name</th>
+                                            <th width="15%">Brand Name</th>
                                             <th width="10%">check date</th>
                                             <th width="10%">Status</th>
                                             <th width="10%">Date Changed</th>
+                                            <th width="10%">Remarks</th>
                                             <th width="10%">Staff</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('check_records', 'batch_desc_id', $_GET['updateId']);
+                                        $pagNum = $override->getCount('check_records', 'product_id', $_GET['updateId']);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
                                         } else {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
-                                        foreach ($override->getWithLimit('check_records', 'batch_desc_id', $_GET['updateId'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('check_records', 'product_id', $_GET['updateId'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $status = $override->get('maintainance_status', 'id', $batch['status'])[0]['name'];
-                                            $name = $override->get('batch_description', 'id', $_GET['updateId'])[0]['name'];
-                                            $last_check_date = $override->get('batch_description', 'id', $_GET['updateId'])[0]['last_check_date'];
-                                            $last_check_date = $override->get('batch_description', 'id', $_GET['updateId'])[0]['next_check_date'];
-                                        ?>
+                                            $brand_id = $override->get('brand', 'id', $_GET['updateId'])[0]['generic_id'];
+                                            $generic = $override->get('generic', 'id', $brand_id)[0]['name'];
+                                            $brand = $override->get('brand', 'id', $_GET['updateId'])[0]['name'];
+                                            if ($status == 1) {
+                                                $status = 'OK!';
+                                            } else {
+                                                $status = 'NOT OK!';
+                                            } ?>
+
                                             <tr>
-                                                <td><?= $name ?></td>
-                                                <td><?= $batch['check_date'] ?></td>
+                                                <td><?= $generic ?></td>
+                                                <td><?= $brand ?></td>
+                                                <td><?= $batch['last_check'] ?></td>
                                                 <td><?= $status ?></td>
                                                 <td><?= $batch['create_on'] ?></td>
+                                                <td><?= $batch['remark'] ?></td>
                                                 <td><?= $staff ?></td>
                                             </tr>
                                         <?php } ?>

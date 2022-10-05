@@ -25,11 +25,10 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                // print_r($_POST);
                 try {
                     switch (Input::get('report')) {
                         case 1:
-                            $data = $override->searchBtnDate2('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
+                            $data = $override->searchBtnDate2('batch_product', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
                             break;
                             // case 2:
                             //     $data = $override->searchBtnDateSufficient('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'notify_amount', 'amount', 'type', 1, 'status', 1);
@@ -60,22 +59,22 @@ if ($user->isLoggedIn()) {
             $data = null;
             $filename = null;
             if (Input::get('full_report')) {
-                $data = $override->getFull('batch', 'amount', 'notify_amount', 'status', 1);
+                $data = $override->getFull('batch_product', 'quantity', 'notify_quantity', 'status', 1);
                 $filename = 'Full Report' . '-' . date('Y-m-d');
             } elseif (Input::get('sufficient')) {
-                $data = $override->get4('batch', 'amount', 'notify_amount', 'status', 1, 'type', 1);
+                $data = $override->get4('batch_product', 'quantity', 'notify_quantity', 'status', 1, 'use_group', 1);
                 $filename = 'SUFFICIENT' . '-' . date('Y-m-d');
             } elseif (Input::get('running_low')) {
-                $data = $override->get5('batch', 'amount', 'notify_amount', 'status', 1, 'type', 1);
+                $data = $override->get5('batch_product', 'quantity', 'notify_quantity', 'status', 1, 'use_group', 1);
                 $filename = 'RUNNING LOW' . '-' . date('Y-m-d');
             } elseif (Input::get('out_stock')) {
-                $data = $override->get6('batch', 'amount', 0, 'status', 1, 'type', 1);
+                $data = $override->get6('batch_product', 'quantity', 0, 'status', 1, 'type', 1);
                 $filename = 'Out of Stock' . '-' . date('Y-m-d');
             } elseif (Input::get('expired')) {
-                $data = $override->get7('batch', 'expire_date', date('Y-m-d'), 'status', 1, 'type', 1);
+                $data = $override->get7('batch_product', 'expire_date', date('Y-m-d'), 'status', 1, 'use_group', 1);
                 $filename = 'Expired' . '-' . date('Y-m-d');
             } elseif (Input::get('not_checked')) {
-                $data = $override->get4('batch', 'amount', 'notify_amount', 'status', 1, 'type', 2);
+                $data = $override->get4('batch_product', 'quantity', 'notify_quantity', 'status', 1, 'use_group', 2);
                 $filename = 'NOT CHECKED' . '-' . date('Y-m-d');
             }
             $user->exportData($data, $filename);
@@ -191,7 +190,7 @@ if ($user->isLoggedIn()) {
                             <div class="block-fluid">
                                 <?php if ($user->data()->power == 1) {
                                     $pagNum = 0;
-                                    $pagNum = $override->getNo('batch');
+                                    $pagNum = $override->getNo('batch_product');
                                     $pages = ceil($pagNum / $numRec);
                                     if (!$_GET['page'] || $_GET['page'] == 1) {
                                         $page = 0;
@@ -201,7 +200,7 @@ if ($user->isLoggedIn()) {
                                     // $data = $override->getDataWithLimit('batch', $page, $numRec);
                                 } else {
                                     $pagNum = 0;
-                                    $pagNum = $override->getNo('batch');
+                                    $pagNum = $override->getNo('batch_product');
                                     $pages = ceil($pagNum / $numRec);
                                     if (!$_GET['page'] || $_GET['page'] == 1) {
                                         $page = 0;
@@ -229,7 +228,7 @@ if ($user->isLoggedIn()) {
                                         </thead>
                                         <tbody>
                                             <?php foreach ($data as $records) {
-                                                $used = $override->get('batch_description', 'batch_id', $records['id'])[0]['assigned'];
+                                                $used = $override->get('batch_product', 'batch_id', $records['id'])[0]['assigned'];
                                                 $remained = $records['amount'] - $used;
                                                 $notify = $records['notify_amount'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];

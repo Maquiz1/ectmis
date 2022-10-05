@@ -22,22 +22,23 @@ if($_GET['cnt'] == 'region'){
     <?php foreach ($sts as $st){?>
         <option value="<?=$st['id']?>"><?=$st['name']?></option>
 <?php }}elseif ($_GET['cnt'] == 'a_study'){
-    $batches=$override->get('batch', 'study_id', $_GET['getUid']) ?>
+    $batches=$override->get('batch_product', 'study_id', $_GET['getUid']) ?>
     <option value="">Select Batch</option>
     <?php foreach ($batches as $batch){?>
-        <option value="<?=$batch['id']?>"><?=$batch['name']?></option>
+        <option value="<?=$batch['id']?>"><?=$batch['batch_no']?></option>
 <?php }}elseif ($_GET['cnt'] == 'a_batch'){
-    $a_batch=$override->get('batch', 'id', $_GET['getUid'])[0];
+    $a_batch=$override->get('batch_product', 'brand_id', $_GET['getUid'])[0];
+    // print_r($a_batch);
     $a_study_staff=$override->get('staff_study', 'study_id', $a_batch['study_id']);
-    $a_desc=$override->getNews('batch_description', 'batch_id',$_GET['getUid'], 'status', 1);
+    // $a_desc=$override->getNews('brand', 'id',$_GET['getUid'], 'status', 1);
     $study_sites=$override->get('study_sites', 'study_id', $a_batch['study_id'])?>
     <div class="row-form clearfix">
-        <div class="col-md-3">Drug</div>
+        <div class="col-md-3">Mediction/Equipment</div>
         <div class="col-md-9">
             <select name="drug" style="width: 100%;" id="s2_1" required>
-                <option value="">Select Drug</option>
-                <?php foreach ($a_desc as $dec){?>
-                    <option value="<?=$dec['id']?>"><?=$dec['name']?></option>
+                <option value="">Select Mediction/Equipment</option>
+                <?php foreach ($a_batch as $dec){?>
+                    <option value="<?=$dec['id']?>"><?=$dec['batch_no']?></option>
                 <?php }?>
             </select>
         </div>
