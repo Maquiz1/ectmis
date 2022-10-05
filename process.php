@@ -28,7 +28,7 @@ if($_GET['cnt'] == 'region'){
         <option value="<?=$batch['id']?>"><?=$batch['batch_no']?></option>
 <?php }}elseif ($_GET['cnt'] == 'a_batch'){
     $a_batch=$override->get('batch_product', 'brand_id', $_GET['getUid'])[0];
-    // print_r($a_batch);
+    print_r($a_batch);
     $a_study_staff=$override->get('staff_study', 'study_id', $a_batch['study_id']);
     // $a_desc=$override->getNews('brand', 'id',$_GET['getUid'], 'status', 1);
     $study_sites=$override->get('study_sites', 'study_id', $a_batch['study_id'])?>
