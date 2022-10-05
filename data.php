@@ -1188,12 +1188,12 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-
                                         foreach ($override->getWithLimit('batch_records', 'product_id', $_GET['did'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $generic = $override->get('generic', 'id', $_GET['did'])[0]['name'];
-                                            $brand = $override->get('brand', 'id', $_GET['did'])[0]['name'];
-
+                                            $brand_id = $override->get('batch_product', 'batch_no', $batch['batch_id'])[0]['brand_id'];
+                                            $generic_id = $override->get('batch_product', 'batch_no', $batch['batch_id'])[0]['generic_id'];
+                                            $brand = $override->get('brand', 'id', $brand_id)[0]['name'];
+                                            $generic = $override->get('generic', 'id', $generic_id)[0]['name'];
                                         ?>
                                             <tr>
                                                 <td><?= $batch['create_on'] ?></td>

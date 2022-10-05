@@ -33,8 +33,6 @@ if ($user->isLoggedIn()) {
                             'quantity' => $total_quantity,
                         ), Input::get('id'));
 
-                        print_r($_POST);
-
                         $user->createRecord('batch_records', array(
                             'quantity' => $total_quantity,
                             'product_id' => Input::get('id'),
