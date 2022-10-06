@@ -581,7 +581,7 @@ if ($user->isLoggedIn()) {
                     ));
 
                     $BatchLastRow = $override->lastRow('batch', 'id');
-                    
+
                     $user->createRecord('batch_records', array(
                         'generic_id' => Input::get('generic_id'),
                         'brand_id' => Input::get('brand_id'),
@@ -1491,9 +1491,9 @@ if ($user->isLoggedIn()) {
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
-                                                    <label>Received</label>
-                                                    <select name="generic" id="gen_id" style="width: 100%;" required>
-                                                        <option value="">Select brand</option>
+                                                    <label>Generic Name</label>
+                                                    <select name="generic" style="width: 100%;" required>
+                                                        <option value="">Select Generic</option>
                                                         <?php foreach ($override->getData('generic') as $cat) { ?>
                                                             <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
                                                         <?php } ?>
@@ -1506,11 +1506,10 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>BRAND NAME:</label>
-                                                    <input value="" class="validate[required]" type="text" name="name" id="name" />
-
+                                                    <input value="" type="text" name="name" />
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>                                        
                                     </div>
 
                                     <div class="row">
@@ -1585,7 +1584,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Generic Name::</label>
-                                                    <select name="generic_id" style="width: 100%;" required>
+                                                    <select name="generic_id" id="generic_id" style="width: 100%;" required>
                                                         <option value="">Select Generic Name</option>
                                                         <?php foreach ($override->getData('generic') as $dCat) { ?>
                                                             <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
@@ -1594,21 +1593,19 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-4">
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
-                                                    <label>Brand Name:</label>
-                                                    <select name="brand_id" style="width: 100%;" required>
-                                                        <option value="">Select Brand Name</option>
-                                                        <?php foreach ($override->getData('brand') as $dCat) { ?>
-                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
-                                                        <?php } ?>
+                                                    <label></label>
+                                                    <select name="name" id="brand_id" style="width: 100%;" required>
+                                                        <option value="">Select brand</option>
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-sm-4">
                                             <div class="row-form clearfix">
                                                 <div class="form-group">
@@ -1851,21 +1848,18 @@ if ($user->isLoggedIn()) {
 
             });
 
-            $('#gen_id').change(function() {
+            $('#generic_id').change(function() {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?cnt=gen",
+                $.ajax({                    
+                    url: "process.php?content=gen",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
-                    dataType: "json",
                     success: function(data) {
-                        // $('#gen_id').html(data);
-                        console.log(data.gen_name);
-                        // $('#gen_id').val(data.gen_name);
-                        // $('#fl_wait').hide();
+                        $('#brand_id').html(data);
+                        $('#fl_wait').hide();
                     }
                 });
 

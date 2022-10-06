@@ -25,29 +25,30 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                print_r($_POST);
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('added');
                     try {
                         $user->updateRecord('generic', array(
                             'quantity' => $total_quantity,
-                        ), Input::get('generic_id'));
+                        ), Input::get('id'));
 
                         $user->createRecord('batch_records', array(
-                            'quantity' => $total_quantity,
-                            'generic_id' => Input::get('generic_id'),
-                            'batch_id' => Input::get('generic_id'),
-                            'batch_no' => Input::get('generic_id'),
-                            'staff_id' => $user->data()->id,
-                            'use_group' => Input::get('use_group'),
-                            'create_on' => date('Y-m-d'),
-                            'use_case' => Input::get('use_case'),
+                            'generic_id' => Input::get('id'),
+                            'brand_id' => Input::get('brand_id'),
+                            'batch_id' => Input::get('batch_id'),
+                            'batch_no' => Input::get('batch_no'),
+                            'quantity' => 0,
+                            'assigned' => 0,
                             'added' => Input::get('added'),
-                            'study_id' => Input::get('study_id'),
                             'balance' => $total_quantity,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
                             'status' => 1,
+                            'study_id' => Input::get('study_id'),
+                            'category' => Input::get('category'),
                         ));
+
 
                         $successMessage = 'Stock guied Successful Updated';
                     } catch (Exception $e) {
@@ -148,10 +149,9 @@ if ($user->isLoggedIn()) {
                                         <th width="3%"> CTMr</th>
                                         <th width="3%"> Pharmacy</th>
                                         <th width="3%"> Other</th>
-                                        <th width="4%">Check</th>
-                                        <th width="4%">Remark</th>
-                                        <th width="4%">Validity</th>
-                                        <th width="4%">Quantity</th>
+                                        <th width="3%">Check</th>
+                                        <th width="3%">Validity</th>
+                                        <th width="3%">Quantity</th>
                                         <th width="30%">Action</th>
                                     </tr>
                                 </thead>
@@ -168,8 +168,8 @@ if ($user->isLoggedIn()) {
 
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
-                                        $generic_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['generic_id'];
-                                        // $brand_id = $override->get('batch_records', 'brand_id', $generic_id)[0]['brand_id'];
+                                        $generic_id = $bDiscription['id'];
+                                        $brand_id = $override->get('batch_records', 'brand_id', $generic_id)[0]['brand_id'];
                                         $batch_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['name'];
                                         $batch_no = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['name'];
                                         $category = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['category'];
@@ -290,7 +290,6 @@ if ($user->isLoggedIn()) {
                                                     <a href="#" role="button" class="btn btn-success">OK!</a>
                                                 <?php } ?>
                                             </td>
-                                            <td><?= $batch['remark'] ?></td>
                                             <td>
                                                 <?php if ($bDiscription['expire_date'] <= $today) { ?>
                                                     <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
@@ -320,7 +319,7 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
-                                                <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Update</a>
+                                                <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="update">Update</a>
                                                 <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Archive</a>
                                                 <!-- <a href="#burn<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Burn / Destroy</a> -->
                                             </td>
@@ -336,39 +335,77 @@ if ($user->isLoggedIn()) {
                                                         </div>
                                                         <div class="modal-body modal-body-np">
                                                             <div class="row">
-                                                                <div class="block-fluid">
-                                                                    <div class="row-form clearfix">
-                                                                        <div class="col-md-3">Generic Name</div>
-                                                                        <div class="col-md-9">
-                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="name" disabled />
-                                                                        </div>
-                                                                    </div>
 
+                                                                <div class="col-sm-6">
                                                                     <div class="row-form clearfix">
-                                                                        <div class="col-md-3">Current Quantity:</div>
-                                                                        <div class="col-md-9">
-                                                                            <input value="<?= $bDiscription['quantity'] ?>" class="validate[required]" type="number" name="quantity" id="name" disabled />
-                                                                        </div>
-                                                                    </div>
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Generic Name:</label>
+                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="name" name="name" disabled />
 
-                                                                    <div class="row-form clearfix">
-                                                                        <div class="col-md-3">Quantity to Add:</div>
-                                                                        <div class="col-md-9">
-                                                                            <input value=" " class="validate[required]" type="number" name="added" id="added" />
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="dr"><span></span></div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Brand Name</label>
+                                                                            <select name="brand_id" id="brand_id" style="width: 100%;" required>
+                                                                                <option value="">Select brand</option>
+
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Batch No:</label>
+                                                                            <select name="batch_id" id="batch_id" style="width: 100%;" required>
+                                                                                <option value="">Select Batch</option>
+
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Current Quantity::</label>
+                                                                            <input value="<?= $bDiscription['quantity'] ?>" class="validate[required]" type="number" name="quantity" id="name" disabled />
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Quantity to Add:</label>
+                                                                            <input value=" " class="validate[required]" type="number" name="added" id="added" />
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="dr"><span></span></div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="generic_id" value="<?= $generic_id ?>">
                                                             <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
                                                             <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
                                                             <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
                                                             <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
+                                                            <input type="hidden" name="category" value="<?= $bDiscription['category'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -377,6 +414,7 @@ if ($user->isLoggedIn()) {
                                                 </form>
                                             </div>
                                         </div>
+
                                         <div class="modal fade" id="delete<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <form method="post">
@@ -435,51 +473,7 @@ if ($user->isLoggedIn()) {
         </div>
     </div>
 
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> -->
-
-
     <script>
-        // $(document).ready(function() {
-        //     $("#myInput").on("keyup", function() {
-        //         var value = $(this).val().toLowerCase();
-        //         $("#myTable tr").filter(function() {
-        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        //         });
-        //     });
-
-        //     $('#inventory_report1').DataTable({
-
-        //         "language": {
-        //             "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-        //         },
-
-
-        //         dom: 'Bfrtip',
-        //         buttons: [{
-
-        //                 extend: 'excelHtml5',
-        //                 title: 'Inventory_status_report',
-        //                 className: 'btn-primary',
-        //             },
-        //             {
-        //                 extend: 'pdfHtml5',
-        //                 title: 'Inventory_status_report',
-        //                 className: 'btn-primary',
-        //                 orientation: 'landscape',
-        //                 pageSize: 'LEGAL'
-
-        //             },
-        //         ],
-        //     });
-        // });
-
-
         <?php if ($user->data()->pswd == 0) { ?>
             $(window).on('load', function() {
                 $("#change_password_n").modal({
@@ -491,6 +485,41 @@ if ($user->isLoggedIn()) {
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
         }
+
+        $(document).ready(function() {
+            $(document).on('click', '.update', function() {
+                var getUid = $(this).attr('gen_id');
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=gen",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#brand_id').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+            })
+
+            $('#brand_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({                    
+                    url: "process.php?content=bat",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#batch_id').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+        });
     </script>
 </body>
 

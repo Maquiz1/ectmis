@@ -1180,7 +1180,7 @@ if ($user->isLoggedIn()) {
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch_records', 'product_id', $_GET['did']);
+                                        $pagNum = $override->getCount('batch_records', 'generic_id', $_GET['did']);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
@@ -1188,10 +1188,11 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-                                        foreach ($override->getWithLimit('batch_records', 'product_id', $_GET['did'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('batch_records', 'generic_id', $_GET['did'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $brand_id = $override->get('batch_product', 'batch_no', $batch['batch_id'])[0]['brand_id'];
-                                            $generic_id = $override->get('batch_product', 'batch_no', $batch['batch_id'])[0]['generic_id'];
+                                            $brand_id = $override->get('batch', 'brand_id', $batch['brand_id'])[0]['brand_id'];
+                                            $generic_id = $override->get('batch', 'generic_id', $batch['generic_id'])[0]['generic_id'];
+                                            $batch_no = $override->get('batch', 'brand_id', $batch['brand_id'])[0]['batch_no'];
                                             $brand = $override->get('brand', 'id', $brand_id)[0]['name'];
                                             $generic = $override->get('generic', 'id', $generic_id)[0]['name'];
                                         ?>
@@ -1199,7 +1200,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batch['create_on'] ?></td>
                                                 <td><?= $generic ?></td>
                                                 <td><?= $brand ?></td>
-                                                <td><?= $batch['batch_id'] ?></td>
+                                                <td><?= $batch_no ?></td>
                                                 <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $batch['added'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
