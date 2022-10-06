@@ -25,18 +25,20 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
+                print_r($_POST);
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('added');
                     try {
-                        $user->updateRecord('batch_product', array(
+                        $user->updateRecord('generic', array(
                             'quantity' => $total_quantity,
-                        ), Input::get('id'));
+                        ), Input::get('generic_id'));
 
                         $user->createRecord('batch_records', array(
                             'quantity' => $total_quantity,
-                            'product_id' => Input::get('id'),
-                            'batch_id' => Input::get('batch_id'),
+                            'generic_id' => Input::get('generic_id'),
+                            'batch_id' => Input::get('generic_id'),
+                            'batch_no' => Input::get('generic_id'),
                             'staff_id' => $user->data()->id,
                             'use_group' => Input::get('use_group'),
                             'create_on' => date('Y-m-d'),
@@ -44,8 +46,7 @@ if ($user->isLoggedIn()) {
                             'added' => Input::get('added'),
                             'study_id' => Input::get('study_id'),
                             'balance' => $total_quantity,
-                            'status' => 1
-
+                            'status' => 1,
                         ));
 
                         $successMessage = 'Stock guied Successful Updated';
@@ -167,7 +168,12 @@ if ($user->isLoggedIn()) {
 
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
-                                        // $brand = $override->get('brand', 'id', $bDiscription['brand_id'])[0]['name'];
+                                        $generic_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['generic_id'];
+                                        // $brand_id = $override->get('batch_records', 'brand_id', $generic_id)[0]['brand_id'];
+                                        $batch_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['name'];
+                                        $batch_no = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['name'];
+                                        $category = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['category'];
+                                        $study_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['study_id'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['category_id'])[0]['name'];
@@ -334,14 +340,7 @@ if ($user->isLoggedIn()) {
                                                                     <div class="row-form clearfix">
                                                                         <div class="col-md-3">Generic Name</div>
                                                                         <div class="col-md-9">
-                                                                            <input value="<?= $override->get('generic', 'id', $bDiscription['generic_id'])[0]['name'] ?>" type="text" id="name" disabled />
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="row-form clearfix">
-                                                                        <div class="col-md-3">Brand Name:</div>
-                                                                        <div class="col-md-9">
-                                                                            <input value="<?= $override->get('brand', 'id', $bDiscription['brand_id'])[0]['name'] ?>" class="validate[required]" type="text" name="name" id="name" disabled />
+                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="name" disabled />
                                                                         </div>
                                                                     </div>
 
@@ -364,7 +363,7 @@ if ($user->isLoggedIn()) {
                                                         </div>
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="batch_id" value="<?= $bDiscription['batch_no'] ?>">
+                                                            <input type="hidden" name="generic_id" value="<?= $generic_id ?>">
                                                             <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
                                                             <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
