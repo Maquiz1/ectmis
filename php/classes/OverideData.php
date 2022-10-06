@@ -163,6 +163,12 @@ class OverideData{
         return $result;
     }
 
+    public function getWithLimit3($table,$value,$where,$id,$page,$numRec){
+        $query = $this->_pdo->query("SELECT DISTINCT $value FROM $table WHERE $where = '$id' limit $page,$numRec");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
     public function getWithLimitAscendOrder($table,$where,$id,$page,$numRec,$value){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' limit $page,$numRec ORDER BY $value DESC");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);

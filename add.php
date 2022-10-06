@@ -399,22 +399,95 @@ if ($user->isLoggedIn()) {
                 $pageError = $validate->errors();
             }
         } elseif (Input::get('add_generic')) {
-            $validate = $validate->check($_POST, array(
-                'name' => array(
-                    'required' => true,
-                ),
-            ));
-            if ($validate->passed()) {
-                try {
-                    $user->createRecord('generic', array(
-                        'name' => Input::get('name'),
-                    ));
-                    $successMessage = 'Generic Name Added Successful';
-                } catch (Exception $e) {
-                    die($e->getMessage());
+            if (Input::get('complete_batch')) {
+                $validate = $validate->check($_POST, array(
+                    'name' => array(
+                        'required' => true,
+                    ),
+                    'quantity' => array(
+                        'required' => true,
+                    ),
+                    'notify_quantity' => array(
+                        'required' => true,
+                    ),
+                    'use_case' => array(
+                        'required' => true,
+                    ),
+                    'use_group' => array(
+                        'required' => true,
+                    ),
+                    'study_id' => array(
+                        'required' => true,
+                    ),
+                    'maintainance' => array(
+                        'required' => true,
+                    ),
+                    'category' => array(
+                        'required' => true,
+                    ),
+                ));
+                if ($validate->passed()) {
+
+                    $sii = 0;
+                    $q = 0;
+                    foreach (Input::get('location') as $sid) {
+                        $q = $q + Input::get('amount')[$sii];
+                        $sii++;
+                    }
+
+                    if (Input::get('quantity') >= $q) {
+
+                        try {
+                            $user->createRecord('generic', array(
+                                'name' => Input::get('name'),
+                                'status' => 1,
+                                'quantity' => Input::get('quantity'),
+                                'notify_quantity' => Input::get('notify_quantity'),
+                                'create_on' => date('Y-m-d'),
+                                'use_group' => Input::get('use_group'),
+                                'use_case' => Input::get('use_case'),
+                                'study_id' => Input::get('study_id'),
+                                'maintainance' => Input::get('maintainance'),
+                                'category' => Input::get('category'),
+                                'staff_id' => $user->data()->id,
+                            ));
+
+                            $si = 0;
+                            foreach (Input::get('location') as $sid) {
+                                $q = Input::get('amount')[$si];
+                                $location = $override->get('location', 'id', $sid['id'])[0];
+                                $generic_id = $override->lastRow('generic', 'id')[0]['id'];
+                                $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
+                                $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
+                                $user->createRecord('generic_guide', array(
+                                    'generic_id' => $generic_id,
+                                    'quantity' => $q,
+                                    'notify_quantity' => Input::get('notify_quantity'),
+                                    'assigned' => 0,
+                                    'added' => 0,
+                                    'balance' => $q,
+                                    'use_group' => $use_group,
+                                    'location_id' => $location['id'],
+                                    'create_on' => date('Y-m-d'),
+                                    'staff_id' => $user->data()->id,
+                                    'status' => 1,
+                                    'use_case' => $use_case,
+                                    'study_id' => Input::get('study_id'),
+                                    'category' => Input::get('category'),
+
+                                ));
+                                $si++;
+                            }
+                            $successMessage = 'Generic Name Added Successful';
+                        } catch (Exception $e) {
+                            die($e->getMessage());
+                        }
+                    } else {
+                        $successMessage = 'Sum of locations exceeded Received Quantity';
+                    }
+                } else {
+                    $pageError = $validate->errors();
                 }
-            } else {
-                $pageError = $validate->errors();
             }
         } elseif (Input::get('add_brand')) {
             $validate = $validate->check($_POST, array(
@@ -424,14 +497,100 @@ if ($user->isLoggedIn()) {
                 'generic' => array(
                     'required' => true,
                 ),
+                'quantity' => array(
+                    'required' => true,
+                ),
+                'notify_quantity' => array(
+                    'required' => true,
+                ),
             ));
             if ($validate->passed()) {
                 try {
                     $user->createRecord('brand', array(
                         'name' => Input::get('name'),
                         'generic_id' => Input::get('generic'),
+                        'status' => 1,
+                        'quantity' => Input::get('quantity'),
+                        'notify_quantity' => Input::get('notify_quantity'),
+                        'create_on' => date('Y-m-d'),
                     ));
                     $successMessage = 'Brand Name Added Successful';
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('register_batch')) {
+            $validate = new validate();
+            $validate = $validate->check($_POST, array(
+                'generic_id' => array(
+                    'required' => true,
+                ),
+                'brand_id' => array(
+                    'required' => true,
+                ),
+                'batch_no' => array(
+                    'required' => true,
+                ),
+                'quantity' => array(
+                    'required' => true,
+                ),
+                'notify_quantity' => array(
+                    'required' => true,
+                ),
+                'manufactured' => array(
+                    'required' => true,
+                ),
+                'manufactured_date' => array(
+                    'required' => true,
+                ),
+                'expire_date' => array(
+                    'required' => true,
+                ),
+                'study_id' => array(
+                    'required' => true,
+                )
+            ));
+            if ($validate->passed()) {
+
+                try {
+                    $user->createRecord('batch', array(
+                        'generic_id' => Input::get('generic_id'),
+                        'brand_id' => Input::get('brand_id'),
+                        'batch_no' => Input::get('batch_no'),
+                        'study_id' => Input::get('study_id'),
+                        'quantity' => Input::get('quantity'),
+                        'notify_quantity' => Input::get('notify_quantity'),
+                        'manufacturer' => Input::get('manufacturer'),
+                        'manufactured_date' => Input::get('manufactured_date'),
+                        'expire_date' => Input::get('expire_date'),
+                        'details' => Input::get('details'),
+                        'status' => 1,
+                        'staff_id' => $user->data()->id,
+                        'create_on' => date('Y-m-d'),
+                        'maintainance' => Input::get('maintainance'),
+                    ));
+
+                    $BatchLastRow = $override->lastRow('batch', 'id');
+
+                    $user->createRecord('batch_records', array(
+                        'generic_id' => Input::get('generic_id'),
+                        'brand_id' => Input::get('brand_id'),
+                        'product_id' => $BatchLastRow[0]['id'],
+                        'batch_id' => $BatchLastRow[0]['id'],
+                        'batch_no' => Input::get('batch_no'),
+                        'quantity' => Input::get('quantity'),
+                        'assigned' => 0,
+                        'added' => 0,
+                        'balance' => Input::get('quantity'),
+                        'create_on' => date('Y-m-d'),
+                        'staff_id' => $user->data()->id,
+                        'status' => 1,
+                        'study_id' => Input::get('study_id'),
+                    ));
+
+                    $successMessage = 'Batch Added Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
                 }
@@ -448,7 +607,7 @@ if ($user->isLoggedIn()) {
 <html lang="en">
 
 <head>
-    <title> Pharmacy </title>
+    <title> e-CTMIS </title>
     <?php include "head.php"; ?>
 </head>
 
@@ -1134,16 +1293,179 @@ if ($user->isLoggedIn()) {
                             </div>
                             <div class="block-fluid">
                                 <form id="validation" method="post">
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Name:</div>
-                                        <div class="col-md-9">
-                                            <input value="" class="validate[required]" type="text" name="name" id="name" />
-                                        </div>
-                                    </div>
+                                    <?php if (!Input::get('location') && !Input::get('location_1')) { ?>
 
-                                    <div class="footer tar">
-                                        <input type="submit" name="add_generic" value="Submit" class="btn btn-default">
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Name:</label>
+                                                        <input value="" class="validate[required]" type="text" name="name" id="name" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Received Quantity: :</label>
+                                                        <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Required Quantity: :</label>
+                                                        <input value="" class="validate[required]" type="number" name="notify_quantity" id="notify_quantity" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Category:</label>
+                                                        <select name="category" style="width: 100%;" required>
+                                                            <option value="">Select category</option>
+                                                            <?php foreach ($override->getData('drug_cat') as $dCat) { ?>
+                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Use Form (Group):</label>
+                                                        <select name="use_group" style="width: 100%;" required>
+                                                            <option value="">Select Use Group</option>
+                                                            <?php foreach ($override->getData('use_group') as $dCat) { ?>
+                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <!-- select -->
+                                                <div class="row-form clearfix">
+                                                    <div class="form-group">
+                                                        <label>Use Case:</label>
+                                                        <select name="use_case" style="width: 100%;" required>
+                                                            <option value="">Select Use Case</option>
+                                                            <?php foreach ($override->getData('use_case') as $dCat) { ?>
+                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>maintainance Type:</label>
+                                                        <select name="maintainance" style="width: 100%;" required>
+                                                            <option value="">Select Brand Name</option>
+                                                            <?php foreach ($override->getData('maintainance_type') as $dCat) { ?>
+                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Study :</label>
+                                                        <select name="study_id" style="width: 100%;" required>
+                                                            <option value="">Select Study</option>
+                                                            <?php foreach ($override->getData('study') as $dCat) { ?>
+                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="row-form clearfix">
+                                                    <!-- select -->
+                                                    <div class="form-group">
+                                                        <label>Item Location:</label>
+                                                        <select name="location[]" id="s2_2" style="width: 100%;" multiple="multiple" required>
+                                                            <option value="">Select Use Case Location...</option>
+                                                            <?php foreach ($override->getData('location') as $drinks) {
+                                                            ?>
+                                                                <option value="<?= $drinks['id'] ?>"><?= $drinks['name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="footer tar">
+                                            <input type="submit" name="add_generic" value="Submit" class="btn btn-default">
+                                        </div>
+
+                                    <?php
+                                    }
+                                    ?>
+
+                                    <?php if (Input::get('location')) { ?>
+                                        <label> Complete Stock Guide:
+                                        </label>
+                                        <div class="col-md-2"><strong>Current Amount Is<?php echo ' '; ?><?= Input::get('quantity') ?> : </strong>
+
+                                            <span>Notification Amount Is<?php echo ' '; ?><?= Input::get('notify_quantity') ?> </span>
+
+                                        </div>
+                                        <?php
+                                        $f = 0;
+                                        foreach (Input::get('location') as $lctn) {
+                                            $location = $override->get('location', 'id', $lctn['id'])[0];
+                                        ?>
+                                            <div class="row-form clearfix">
+                                                <div class="col-md-2"><strong><?= $location['name'] ?> : </strong></div>
+                                                <input type="hidden" name="location[<?= $f ?>]" value="<?= $lctn ?>">
+                                                <input type="hidden" name="name" value="<?= Input::get('name') ?>">
+                                                <input type="hidden" name="use_group" value="<?= Input::get('use_group') ?>">
+                                                <input type="hidden" name="use_case" value="<?= Input::get('use_case') ?>">
+                                                <input type="hidden" name="study_id" value="<?= Input::get('study_id') ?>">
+                                                <input type="hidden" name="quantity" value="<?= Input::get('quantity') ?>">
+                                                <input type="hidden" name="notify_quantity" value="<?= Input::get('notify_quantity') ?>">
+                                                <input type="hidden" name="category" value="<?= Input::get('category') ?>">
+                                                <input type="hidden" name="location_1[<?= $f ?>]" value="<?= $lctn ?>">
+                                                <input type="hidden" name="maintainance" value="<?= Input::get('maintainance') ?>">
+                                                <div class="col-md-3"><input value="" class="validate[required]" type="number" name="amount[]" id="amount" /> <span></span></div>
+                                            </div>
+                                        <?php $f++;
+                                        } ?>
+                                        <div class="footer tar">
+                                            <input type="hidden" name="complete_batch" value="1">
+                                            <input type="submit" name="add_generic" value="Submit" class="btn btn-default">
+                                        </div>
+                                    <?php } ?>
 
                                 </form>
                             </div>
@@ -1158,12 +1480,6 @@ if ($user->isLoggedIn()) {
                             <div class="block-fluid">
                                 <form id="validation" method="post">
                                     <div class="row-form clearfix">
-                                        <div class="col-md-3">BRAND NAME:</div>
-                                        <div class="col-md-9">
-                                            <input value="" class="validate[required]" type="text" name="name" id="name" />
-                                        </div>
-                                    </div>
-                                    <div class="row-form clearfix">
                                         <div class="col-md-3">GENERIC NAME</div>
                                         <div class="col-md-9">
                                             <select name="generic" id="gen_id" style="width: 100%;" required>
@@ -1175,8 +1491,168 @@ if ($user->isLoggedIn()) {
                                         </div>
                                     </div>
 
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">BRAND NAME:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="text" name="name" id="name" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Received:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
+                                        </div>
+                                    </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Required Quantity:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="number" name="notify_quantity" id="notify_quantity" />
+                                        </div>
+                                    </div>
+
                                     <div class="footer tar">
                                         <input type="submit" name="add_brand" value="Submit" class="btn btn-default">
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    <?php } elseif ($_GET['id'] == 11 && $user->data()->position == 1) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add Batch Details</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Generic Name::</label>
+                                                    <select name="generic_id" style="width: 100%;" required>
+                                                        <option value="">Select Generic Name</option>
+                                                        <?php foreach ($override->getData('generic') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Brand Name:</label>
+                                                    <select name="brand_id" style="width: 100%;" required>
+                                                        <option value="">Select Brand Name</option>
+                                                        <?php foreach ($override->getData('brand') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <div class="form-group">
+                                                    <label>Batch No:</label>
+                                                    <input value="" class="validate[required]" type="text" name="batch_no" id="batch_no" required />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Received Quantity:</label>
+                                                    <input value="" class="validate[required]" type="text" name="quantity" id="quantity" required />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Re-Stock Level:</label>
+                                                    <input value="" class="validate[required]" type="text" name="notify_quantity" id="notify_quantity" required />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Study:</label>
+                                                    <select name="study_id" style="width: 100%;" required>
+                                                        <option value="">Select Study</option>
+                                                        <?php foreach ($override->getData('study') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Manufacturer:</label>
+                                                    <div class="col-md-9"><input type="text" name="manufacturer" id="manufacturer" /></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Manufactured Date:</label>
+                                                    <div class="col-md-9"><input type="date" name="manufactured_date" required /> <span>Example: 2012-01-01</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Valid / Check / Expire Date:</label>
+                                                    <div class="col-md-9"><input type="date" name="expire_date" required /> <span>Example: 2012-01-0</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="row-form clearfix">
+                                                <div class="col-md-3">Details: </div>
+                                                <div class="col-md-9">
+                                                    <textarea class="" name="details" id="details" rows="4"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="register_batch" value="Submit" class="btn btn-default">
                                     </div>
 
                                 </form>
@@ -1251,7 +1727,7 @@ if ($user->isLoggedIn()) {
                         getUid: getUid
                     },
                     success: function(data) {
-                                                alert(data);
+                        alert(data);
                         $('#desc').html(data);
                         $('#ld_staff').hide();
                     }
