@@ -25,6 +25,7 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
+                print_r($_POST);
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('added');
@@ -46,9 +47,14 @@ if ($user->isLoggedIn()) {
                             'staff_id' => $user->data()->id,
                             'status' => 1,
                             'study_id' => Input::get('study_id'),
+                            'last_check' => Input::get('last_check'),
+                            'next_check' => Input::get('next_check'),
                             'category' => Input::get('category'),
+                            'use_group' => Input::get('use_group'),
+                            'maintainance' => Input::get('maintainance'),
+                            'use_case' => Input::get('use_case'),
+                            'remarks' => Input::get('remarks'),
                         ));
-
 
                         $successMessage = 'Stock guied Successful Updated';
                     } catch (Exception $e) {
@@ -235,18 +241,23 @@ if ($user->isLoggedIn()) {
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
 
+                                        $check = 0;
+                                        $check1 = 0;
                                         foreach ($override->get('batch', 'generic_id', $bDiscription['id']) as $batch2) {
-                                            $nextCheck[] = $batch2['next_check'];
-                                            $lastCheck = $batch2['last_check'];
-                                            // if ($nextCheck <= date('Y-m-d')) {
-                                            //     echo 1;
-                                            // } else {
-                                            //     echo 0;
-                                            // }
-                                        }
+                                            $nextCheck = $batch2['next_check'];
+                                            $expireDate = $batch2['expire_date'];
+                                            // $lastCheck = $batch2['last_check'];
+                                            if ($nextCheck <= date('Y-m-d')) {
+                                                $check = 1;
+                                            }
 
+                                            if ($expireDate <= date('Y-m-d')) {
+                                                $check1 = 1;
+                                            }
+                                        }
                                         // $marks = array(100, 65, 70, 87);
-                                        $marks = $nextCheck;
+                                        // $marks = $nextCheck;
+                                        // $marks2 = $expireDate;
                                         // if (in_array(date('Y-m-d'), $marks)) {
                                         //     $nextCheck == true;
                                         //     return $nextCheck;
@@ -255,7 +266,6 @@ if ($user->isLoggedIn()) {
                                         //     return $nextCheck;
                                         // }
 
-                                        // print_r(in_array(date('Y-m-d'), $marks));
 
                                         // $dates = array("2013-12-24", "2013-12-25", "2014-12-24", "2013-12-27");
                                         // $start = strtotime('2013-12-25');
@@ -362,22 +372,19 @@ if ($user->isLoggedIn()) {
                                                 } ?>
                                             </td>
                                             <td>
-                                                <?php if (in_array(date('Y-m-d'), $marks)) { ?>
-                                                    <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>                                                
+                                                <?php if ($check) { ?>
+                                                    <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>
                                                 <?php } else { ?>
                                                     <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-success btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">OK!</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <?php if ($bDiscription['expire_date'] <= $today) { ?>
+                                                <?php if ($check1) { ?>
                                                     <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
-                                                <?php } elseif ($bDiscription['expire_date'] > $today) { ?>
-                                                    <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Not Expired</a>
                                                 <?php } else { ?>
-                                                    <a href="#" role="button" class="btn btn-success" data-toggle="modal">Un - Checked</a>
+                                                    <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
                                                 <?php } ?>
                                             </td>
-
                                             <td>
                                                 <?php if ($sumLoctn <= $Notify && $sumLoctn > 0) { ?>
                                                     <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
@@ -477,6 +484,9 @@ if ($user->isLoggedIn()) {
                                                             <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
                                                             <input type="hidden" name="category" value="<?= $bDiscription['category'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
+                                                            <input type="hidden" name="batch_no" value="" id="batch_no2">
+                                                            <input type="hidden" name="category" value="" id="category">
+                                                            <input type="hidden" name="maintainance" value="" id="maintainance">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
@@ -776,6 +786,34 @@ if ($user->isLoggedIn()) {
                         $('#gen_id').val(data.gen_id);
                         $('#gen_name').val(data.gen_name);
                         $('#batch_no').val(data.batch_no);
+                        $('#batch_id').val(data.batch_id);
+                        $('#maintainance').val(data.maintainance);
+                        $('#brand_id').val(data.brand_id);
+                        $('#category').val(data.category);
+                        $('#fl_wait').hide();
+                    }
+                });
+            })
+
+            $(document).on('click', '.update', function() {
+                var getUid = $(this).attr('gen_id');
+                console.log(getUid);
+
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=bat3",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        $('#use_group').val(data.use_group);
+                        $('#use_case').val(data.use_case);
+                        $('#gen_id').val(data.gen_id);
+                        $('#gen_name').val(data.gen_name);
+                        $('#batch_no2').val(data.batch_no);
                         $('#batch_id').val(data.batch_id);
                         $('#maintainance').val(data.maintainance);
                         $('#brand_id').val(data.brand_id);

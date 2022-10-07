@@ -124,4 +124,22 @@ elseif ($_GET['content'] == 'bat2') {
         echo json_encode($output);
     }
 }
+
+elseif ($_GET['content'] == 'bat3') {
+    if ($_GET['getUid']) {
+        $output = array();
+        $project_id = $override->get('batch', 'generic_id', $_GET['getUid']);
+        foreach ($project_id as $name) {
+            $output['gen_id'] = $name['id'];
+            $output['use_case'] = $name['use_case'];
+            $output['use_group'] = $name['use_group'];
+            $output['maintainance'] = $name['maintainance'];
+            $output['category'] = $name['category'];
+            $output['batch_no'] = $name['batch_no'];
+            $output['brand_id'] = $name['brand_id'];
+            $output['batch_id'] = $name['id'];
+        }
+        echo json_encode($output);
+    }
+}
 ?>
