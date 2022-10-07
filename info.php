@@ -1875,7 +1875,7 @@ if ($user->isLoggedIn()) {
             var getUid = $(this).val();
             $('#wait_ds').show();
             $.ajax({
-                url: "process.php?cnt=region",
+                url: "process.php?content=region",
                 method: "GET",
                 data: {
                     getUid: getUid
@@ -1892,7 +1892,7 @@ if ($user->isLoggedIn()) {
             $('#wait_wd').hide();
             var getUid = $(this).val();
             $.ajax({
-                url: "process.php?cnt=district",
+                url: "process.php?content=district",
                 method: "GET",
                 data: {
                     getUid: getUid
@@ -1907,7 +1907,7 @@ if ($user->isLoggedIn()) {
         $('#download').change(function() {
             var getUid = $(this).val();
             $.ajax({
-                url: "process.php?cnt=download",
+                url: "process.php?content=download",
                 method: "GET",
                 data: {
                     getUid: getUid

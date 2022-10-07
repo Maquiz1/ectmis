@@ -4,28 +4,28 @@ $user = new User();
 $override = new OverideData();
 $email = new Email();
 $random = new Random();
-if ($_GET['cnt'] == 'region') {
+if ($_GET['content'] == 'region') {
     $districts = $override->get('district', 'region_id', $_GET['getUid']); ?>
     <option value="">Select District</option>
     <?php foreach ($districts as $district) { ?>
         <option value="<?= $district['id'] ?>"><?= $district['name'] ?></option>
     <?php }
-} elseif ($_GET['cnt'] == 'district') {
+} elseif ($_GET['content'] == 'district') {
     $wards = $override->get('ward', 'district_id', $_GET['getUid']); ?>
     <option value="">Select Ward</option>
     <?php foreach ($wards as $ward) { ?>
         <option value="<?= $ward['id'] ?>"><?= $ward['name'] ?></option>
     <?php }
-} elseif ($_GET['cnt'] == 'download') {
+} elseif ($_GET['content'] == 'download') {
     $user->exportData('citizen', 'citizen_data'); ?>
 
-<?php } elseif ($_GET['cnt'] == 'study') {
+<?php } elseif ($_GET['content'] == 'study') {
     $sts = $override->get('study_files', 'study_id', $_GET['getUid']) ?>
     <option value="">Select File</option>
     <?php foreach ($sts as $st) { ?>
         <option value="<?= $st['id'] ?>"><?= $st['name'] ?></option>
     <?php }
-} elseif ($_GET['cnt'] == 'a_study') {
+} elseif ($_GET['content'] == 'a_study') {
     $batches = $override->get('batch_product', 'study_id', $_GET['getUid']) ?>
     <option value="">Select Batch</option>
     <?php foreach ($batches as $batch) { ?>
@@ -43,7 +43,13 @@ if ($_GET['cnt'] == 'region') {
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['batch_no'] ?></option>
     <?php }
-} elseif ($_GET['cnt'] == 'a_batch') {
+} elseif ($_GET['content'] == 'bat') {
+    $batches = $override->get('maintainance_type', 'id', $_GET['getUid']) ?>
+    <option value="">Select Batch</option>
+    <?php foreach ($batches as $batch) { ?>
+        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+    <?php }
+} elseif ($_GET['content'] == 'a_batch') {
     $a_batch = $override->get('batch_product', 'brand_id', $_GET['getUid'])[0];
     print_r($a_batch);
     $a_study_staff = $override->get('staff_study', 'study_id', $a_batch['study_id']);
@@ -86,13 +92,34 @@ if ($_GET['cnt'] == 'region') {
     </div>
 
 <?php
-} elseif ($_GET['content'] == 'gen1') {
+} elseif ($_GET['content'] == 'gen2') {
     if ($_GET['getUid']) {
         $output = array();
         $project_id = $override->get('generic', 'id', $_GET['getUid']);
         foreach ($project_id as $name) {
-            $output['gen_name'] = $name['name'];
+            $output['gen_name'] = $name['batch_no'];
             $output['gen_id'] = $name['id'];
+            $output['use_case'] = $name['use_case'];
+            $output['use_group'] = $name['use_group'];
+            $output['maintainance'] = $name['maintainance'];
+            $output['category'] = $name['category'];
+        }
+        echo json_encode($output);
+    }
+}
+elseif ($_GET['content'] == 'bat2') {
+    if ($_GET['getUid']) {
+        $output = array();
+        $project_id = $override->get('batch', 'generic_id', $_GET['getUid']);
+        foreach ($project_id as $name) {
+            $output['gen_id'] = $name['id'];
+            $output['use_case'] = $name['use_case'];
+            $output['use_group'] = $name['use_group'];
+            $output['maintainance'] = $name['maintainance'];
+            $output['category'] = $name['category'];
+            $output['batch_no'] = $name['batch_no'];
+            $output['brand_id'] = $name['brand_id'];
+            $output['batch_id'] = $name['id'];
         }
         echo json_encode($output);
     }

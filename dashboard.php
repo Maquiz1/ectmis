@@ -60,6 +60,49 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('update_check')) {
+            $validate = new validate();
+            $validate = $validate->check($_POST, array(
+                'last_check' => array(
+                    'required' => true,
+                ),
+                'next_check' => array(
+                    'required' => true,
+                )
+            ));
+            if ($validate->passed()) {
+                try {
+                    $user->createRecord('check_records', array(
+                        'generic_id' => Input::get('id'),
+                        'brand_id' => Input::get('brand_id'),
+                        'batch_id' => Input::get('batch_id'),
+                        'batch_no' => Input::get('batch_no'),
+                        'quantity' => 0,
+                        'added' => 0,
+                        'assigned' => 0,
+                        'balance' => Input::get('quantity_db'),
+                        'create_on' => date('Y-m-d'),
+                        'staff_id' => $user->data()->id,
+                        'status' => 1,
+                        'study_id' => Input::get('study_id'),
+                        'last_check' => Input::get('last_check'),
+                        'next_check' => Input::get('next_check'),
+                        'category' => Input::get('category'),
+                        'use_group' => Input::get('use_group'),
+                        'maintainance' => Input::get('maintainance'),
+                        'use_case' => Input::get('use_case'),
+                        'remarks' => Input::get('remarks'),
+                    ));
+                    $BatchLastRow1 = $override->lastRow('check_records', 'id');
+                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['generic_id']);
+                    $user->updateRecord('batch', array('last_check' => Input::get('last_check')), $BatchLastRow1[0]['generic_id']);
+                    $successMessage = 'Check Status Updated Successful';
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
         }
     }
 } else {
@@ -191,6 +234,43 @@ if ($user->isLoggedIn()) {
                                         $sumLoctn = $override->getSumD1('generic_guide', 'quantity', 'generic_id', $bDiscription['id'])[0]['SUM(quantity)'];
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
+
+                                        foreach ($override->get('batch', 'generic_id', $bDiscription['id']) as $batch2) {
+                                            $nextCheck[] = $batch2['next_check'];
+                                            $lastCheck = $batch2['last_check'];
+                                            // if ($nextCheck <= date('Y-m-d')) {
+                                            //     echo 1;
+                                            // } else {
+                                            //     echo 0;
+                                            // }
+                                        }
+
+                                        // $marks = array(100, 65, 70, 87);
+                                        $marks = $nextCheck;
+                                        // if (in_array(date('Y-m-d'), $marks)) {
+                                        //     $nextCheck == true;
+                                        //     return $nextCheck;
+                                        // } elseif(in_array(date('Y-m-d'), $marks)) {
+                                        //     $nextCheck == false;
+                                        //     return $nextCheck;
+                                        // }
+
+                                        // print_r(in_array(date('Y-m-d'), $marks));
+
+                                        // $dates = array("2013-12-24", "2013-12-25", "2014-12-24", "2013-12-27");
+                                        // $start = strtotime('2013-12-25');
+                                        // $end =   strtotime('2013-12-26');
+
+                                        // foreach ($dates as $date) {
+                                        //     $timestamp = strtotime($date);
+                                        //     if ($timestamp >= $start && $timestamp <= $end) {
+                                        //         echo "The date $date is within our date range\n";
+                                        //     } else {
+                                        //         echo "The date $date is NOT within our date range\n";
+                                        //     }
+                                        // }
+
+
                                     ?>
                                         <tr>
 
@@ -282,12 +362,10 @@ if ($user->isLoggedIn()) {
                                                 } ?>
                                             </td>
                                             <td>
-                                                <?php if ($batch['next_check'] == date('Y-m-d')) { ?>
-                                                    <a href="#" role="button" class="btn btn-warning btn-sm">Check Date!</a>
-                                                <?php } elseif ($batch['next_check'] < date('Y-m-d')) { ?>
-                                                    <a href="#" role="button" class="btn btn-danger">NOT CHECKED!</a>
+                                                <?php if (in_array(date('Y-m-d'), $marks)) { ?>
+                                                    <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>                                                
                                                 <?php } else { ?>
-                                                    <a href="#" role="button" class="btn btn-success">OK!</a>
+                                                    <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-success btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">OK!</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
@@ -299,15 +377,7 @@ if ($user->isLoggedIn()) {
                                                     <a href="#" role="button" class="btn btn-success" data-toggle="modal">Un - Checked</a>
                                                 <?php } ?>
                                             </td>
-                                            <!-- <td>
-                                                <?php if ($bDiscription['quantity'] <= $bDiscription['notify_quantity'] && $bDiscription['quantity'] > 0) { ?>
-                                                    <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
-                                                <?php } elseif ($bDiscription['quantity'] == 0) { ?>
-                                                    <a href="#" role="button" class="btn btn-danger">Out of Stock</a>
-                                                <?php } else { ?>
-                                                    <a href="#" role="button" class="btn btn-success">Sufficient</a>
-                                                <?php } ?>
-                                            </td> -->
+
                                             <td>
                                                 <?php if ($sumLoctn <= $Notify && $sumLoctn > 0) { ?>
                                                     <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
@@ -320,7 +390,7 @@ if ($user->isLoggedIn()) {
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                                 <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="update">Update</a>
-                                                <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Archive</a>
+                                                <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                 <!-- <a href="#burn<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Burn / Destroy</a> -->
                                             </td>
                                         </tr>
@@ -408,6 +478,122 @@ if ($user->isLoggedIn()) {
                                                             <input type="hidden" name="category" value="<?= $bDiscription['category'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
+                                                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" id="check_stock<?= $bDiscription['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <form method="post">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                            <h4>Update Stock Info</h4>
+                                                        </div>
+                                                        <div class="modal-body modal-body-np">
+                                                            <div class="row">
+
+                                                                <div class="col-sm-6">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Generic Name:</label>
+                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="name" name="name" disabled />
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Brand Name</label>
+                                                                            <select name="brand_id" id="brand_id2" style="width: 100%;" required>
+                                                                                <option value="">Select brand</option>
+
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Batch No:</label>
+                                                                            <select name="batch_id" id="batch_id2" style="width: 100%;" required>
+                                                                                <option value="">Select Batch</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Check Date:</label>
+                                                                            <input value=" " class="validate[required]" type="date" name="last_check" id="last_check" />
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Next Check:</label>
+                                                                            <input value=" " class="validate[required]" type="date" name="next_check" id="next_check" />
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-4">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <!-- <div class="form-group">
+                                                                            <label>Check Type:</label>
+                                                                            <input value=" " class="validate[required]" type="text" name="maintainance" id="maintainance" disabled/>
+                                                                        </div> -->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-8">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Remarks:</label>
+                                                                            <div class="col-md-9">
+                                                                                <textarea class="" name="remarks" id="remarks" rows="4"></textarea>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="dr"><span></span></div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
+                                                            <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
+                                                            <input type="hidden" name="batch_no" value="" id="batch_no">
+                                                            <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
+                                                            <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
+                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
+                                                            <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
+                                                            <input type="hidden" name="category" value="" id="category">
+                                                            <input type="hidden" name="maintainance" value="" id="maintainance">
+                                                            <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
+                                                            <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
                                                     </div>
@@ -506,7 +692,7 @@ if ($user->isLoggedIn()) {
             $('#brand_id').change(function() {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
-                $.ajax({                    
+                $.ajax({
                     url: "process.php?content=bat",
                     method: "GET",
                     data: {
@@ -519,6 +705,85 @@ if ($user->isLoggedIn()) {
                 });
 
             });
+
+            $(document).on('click', '.check', function() {
+                var getUid = $(this).attr('check_id');
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=gen",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#brand_id2').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $('#brand_id2').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=bat",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#batch_id2').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $(document).on('click', '.check', function() {
+                var getUid = $(this).attr('check_id');
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=gen2",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#maintainance').val(data.maintainance);
+                        $('#category').val(data.category);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $(document).on('click', '.check', function() {
+                var getUid = $(this).attr('check_id');
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=bat2",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        $('#use_group').val(data.use_group);
+                        $('#use_case').val(data.use_case);
+                        $('#gen_id').val(data.gen_id);
+                        $('#gen_name').val(data.gen_name);
+                        $('#batch_no').val(data.batch_no);
+                        $('#batch_id').val(data.batch_id);
+                        $('#maintainance').val(data.maintainance);
+                        $('#brand_id').val(data.brand_id);
+                        $('#category').val(data.category);
+                        $('#fl_wait').hide();
+                    }
+                });
+            })
         });
     </script>
 </body>

@@ -20,22 +20,22 @@ $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 
     <div class="row">
 
-        <div class="col-md-4">
+        <div class="col-md-3">
 
             <div class="wBlock green clearfix">
                 <a href="info.php?id=3&type=1">
                     <div class="dSpace">
-                        <h3>MEDICATIONS</h3>
+                        <h3>MEDICINES</h3>
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">
                             <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
                         </span>
-                        <span class="number"><?= $override->countData('batch_product', 'use_group', 1, 'status', 1) ?></span>
+                        <span class="number"><?= $override->countData('batch', 'use_group', 1, 'status', 1) ?></span>
                     </div>
                 </a>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="wBlock blue clearfix">
                 <a href="data.php?id=4&type=2">
                     <div class="dSpace">
@@ -43,21 +43,35 @@ $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">
                             <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
                         </span>
-                        <span class="number"><?= $override->countData('batch_product', 'use_group', 2, 'status', 1) ?></span>
+                        <span class="number"><?= $override->countData('batch', 'use_group', 2, 'status', 1) ?></span>
                     </div>
                 </a>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="wBlock yellow clearfix">
                 <a href="info.php?id=12&type=3">
                     <div class="dSpace">
-                        <h3>ACCESSORIES / SUPPLIES </h3>
+                        <h3>ACCESSORIES</h3>
                         <span class="mChartBar" sparkType="bar" sparkBarColor="white">
                             <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
                         </span>
-                        <span class="number"><?= $override->countData('batch_product', 'use_group', 3, 'status', 1) ?></span>
+                        <span class="number"><?= $override->countData('batch', 'use_group', 3, 'status', 1) ?></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="wBlock orrange clearfix">
+                <a href="info.php?id=12&type=4">
+                    <div class="dSpace">
+                        <h3>SUPPLIES </h3>
+                        <span class="mChartBar" sparkType="bar" sparkBarColor="white">
+                            <!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
+                        </span>
+                        <span class="number"><?= $override->countData('batch', 'use_group', 4, 'status', 1) ?></span>
                     </div>
                 </a>
             </div>

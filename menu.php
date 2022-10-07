@@ -195,16 +195,16 @@ if ($user->data()->accessLevel == 1) {
                 <ul>
                     <li>
                         <a href="data.php?id=1">
-                            <span class="text">Expired Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount1('batch_product', 'expire_date', $today, 'status', 1) ?></span>
+                            <span class="text">Expired Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount1('batch', 'expire_date', $today, 'status', 1) ?></span>
                         </a>
                         <a href="data.php?id=9">
-                            <span class="text">Quarantined</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch_product', 'status', 4) ?></span>
+                            <span class="text">Quarantined</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span>
                         </a>
                         <a href="data.php?id=2">
-                            <span class="text">30 Days To Expire</span> <span class="badge badge-primary badge-pill"><?= $override->getCount2('batch_product', 'expire_date', $todayPlus30, 'status', 1) ?></span>
+                            <span class="text">30 Days To Expire</span> <span class="badge badge-primary badge-pill"><?= $override->getCount2('batch', 'expire_date', $todayPlus30, 'status', 1) ?></span>
                         </a>
                         <a href="data.php?id=9">
-                            <span class="text"> Unchecked! </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch_product', 'status', 4) ?></span>
+                            <span class="text"> Unchecked! </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span>
                         </a>
                     </li>
                     <li>

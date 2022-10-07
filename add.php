@@ -578,6 +578,7 @@ if ($user->isLoggedIn()) {
                         'staff_id' => $user->data()->id,
                         'create_on' => date('Y-m-d'),
                         'category' => Input::get('category'),
+                        'use_group' => Input::get('use_group'),
                     ));
 
                     $BatchLastRow = $override->lastRow('batch', 'id');
@@ -596,6 +597,7 @@ if ($user->isLoggedIn()) {
                         'status' => 1,
                         'study_id' => Input::get('study_id'),
                         'category' => Input::get('category'),
+                        'use_group' => Input::get('use_group'),
                     ));
                     $successMessage = 'Batch Added Successful';
                 } catch (Exception $e) {
@@ -1509,7 +1511,7 @@ if ($user->isLoggedIn()) {
                                                     <input value="" type="text" name="name" />
                                                 </div>
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -1598,9 +1600,9 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label></label>
-                                                    <select name="name" id="brand_id" style="width: 100%;" required>
+                                                    <select name="brand_id" id="brand_id" style="width: 100%;" required>
                                                         <option value="">Select brand</option>
-                                                        
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -1714,6 +1716,7 @@ if ($user->isLoggedIn()) {
                                     </div>
 
                                     <div class="footer tar">
+                                        <input value="" type="hidden" name="use_group" id="use_group" />
                                         <input type="submit" name="register_batch" value="Submit" class="btn btn-default">
                                     </div>
 
@@ -1749,7 +1752,7 @@ if ($user->isLoggedIn()) {
                 var getUid = $(this).val();
                 $('#wait_ds').show();
                 $.ajax({
-                    url: "process.php?cnt=region",
+                    url: "process.php?content=region",
                     method: "GET",
                     data: {
                         getUid: getUid
@@ -1765,7 +1768,7 @@ if ($user->isLoggedIn()) {
                 var getUid = $(this).val();
                 $('#ld_batch').show();
                 $.ajax({
-                    url: "process.php?cnt=a_study",
+                    url: "process.php?content=a_study",
                     method: "GET",
                     data: {
                         getUid: getUid
@@ -1783,7 +1786,7 @@ if ($user->isLoggedIn()) {
 
                 $('#ld_staff').show();
                 $.ajax({
-                    url: "process.php?cnt=a_batch",
+                    url: "process.php?content=a_batch",
                     method: "GET",
                     data: {
                         getUid: getUid
@@ -1803,7 +1806,7 @@ if ($user->isLoggedIn()) {
                 $('#wait_wd').hide();
                 var getUid = $(this).val();
                 $.ajax({
-                    url: "process.php?cnt=district",
+                    url: "process.php?content=district",
                     method: "GET",
                     data: {
                         getUid: getUid
@@ -1819,7 +1822,7 @@ if ($user->isLoggedIn()) {
                 var getUid = $(this).val();
                 $('#wait').show();
                 $.ajax({
-                    url: "process.php?cnt=payAc",
+                    url: "process.php?content=payAc",
                     method: "GET",
                     data: {
                         getUid: getUid
@@ -1835,7 +1838,7 @@ if ($user->isLoggedIn()) {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?cnt=study",
+                    url: "process.php?content=study",
                     method: "GET",
                     data: {
                         getUid: getUid
@@ -1851,7 +1854,7 @@ if ($user->isLoggedIn()) {
             $('#generic_id').change(function() {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
-                $.ajax({                    
+                $.ajax({
                     url: "process.php?content=gen",
                     method: "GET",
                     data: {
@@ -1859,6 +1862,27 @@ if ($user->isLoggedIn()) {
                     },
                     success: function(data) {
                         $('#brand_id').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $('#generic_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=gen2",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType:"json",
+                    success: function(data) {
+                        $('#use_group').val(data.use_group);
+                        $('#use_case').val(data.use_case);
+                        $('#gen_id').val(data.gen_id);
+                        $('#gen_name').val(data.gen_name);
                         $('#fl_wait').hide();
                     }
                 });
