@@ -487,6 +487,8 @@ if ($user->isLoggedIn()) {
                                                             <input type="hidden" name="batch_no" value="" id="batch_no2">
                                                             <input type="hidden" name="category" value="" id="category">
                                                             <input type="hidden" name="maintainance" value="" id="maintainance">
+                                                            <input type="hidden" name="last_check" value="" id="last_check">
+                                                            <input type="hidden" name="next_check" value="" id="next_check">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
@@ -818,6 +820,8 @@ if ($user->isLoggedIn()) {
                         $('#maintainance').val(data.maintainance);
                         $('#brand_id').val(data.brand_id);
                         $('#category').val(data.category);
+                        $('#last_check').val(data.last_check);
+                        $('#next_check').val(data.next_check);
                         $('#fl_wait').hide();
                     }
                 });

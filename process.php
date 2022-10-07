@@ -138,6 +138,8 @@ elseif ($_GET['content'] == 'bat3') {
             $output['batch_no'] = $name['batch_no'];
             $output['brand_id'] = $name['brand_id'];
             $output['batch_id'] = $name['id'];
+            $output['last_check'] = $name['last_check'];
+            $output['next_check'] = $name['next_check'];
         }
         echo json_encode($output);
     }
