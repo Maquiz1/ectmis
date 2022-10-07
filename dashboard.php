@@ -25,7 +25,6 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                print_r($_POST);
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('added');
@@ -283,7 +282,6 @@ if ($user->isLoggedIn()) {
 
                                     ?>
                                         <tr>
-
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
                                             <td><?php if ($EmKits) {
                                                 ?>
@@ -396,7 +394,7 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
-                                                <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="update">Update</a>
+                                                <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Update</a>
                                                 <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                 <!-- <a href="#burn<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Burn / Destroy</a> -->
                                             </td>
@@ -428,9 +426,8 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Brand Name</label>
-                                                                            <select name="brand_id" id="brand_id" style="width: 100%;" required>
+                                                                            <select name="brand_id" id="brands_id" style="width: 100%;" required>
                                                                                 <option value="">Select brand</option>
-
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -695,7 +692,7 @@ if ($user->isLoggedIn()) {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#brand_id').html(data);
+                        $('#brands_id').html(data);
                         $('#fl_wait').hide();
                     }
                 });
