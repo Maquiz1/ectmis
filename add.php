@@ -417,7 +417,7 @@ if ($user->isLoggedIn()) {
                             'brand_id' => Input::get('brand'),
                             'batch_id' => Input::get('batch'),
                             'batch_no' => Input::get('batch_no2'),
-                            'quantity' => '',
+                            'quantity' => $checkBatch['quantity'],
                             'assigned' => Input::get('quantity'),
                             'added' => 0,
                             'balance' => $newBalance,
