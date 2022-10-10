@@ -410,13 +410,14 @@ if ($user->isLoggedIn()) {
                             'admin_id' => $user->data()->id,
                         ));
 
+                        // print_r($checkBatch['quantity']);
 
                         $user->createRecord('batch_records', array(
                             'generic_id' => Input::get('generic'),
                             'brand_id' => Input::get('brand'),
                             'batch_id' => Input::get('batch'),
                             'batch_no' => Input::get('batch_no2'),
-                            'quantity' => $checkBatch['quantity'],
+                            'quantity' => '',
                             'assigned' => Input::get('quantity'),
                             'added' => 0,
                             'balance' => $newBalance,
