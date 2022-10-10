@@ -345,7 +345,7 @@ if ($user->isLoggedIn()) {
                 'batch' => array(
                     'required' => true,
                 ),
-                'batch_no' => array(
+                'batch_no2' => array(
                     'required' => true,
                 ),
                 'staff' => array(
@@ -359,20 +359,24 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                // print_r($_POST);
+
                 try {
                     // $checkData = $override->selectData('assigned_stock', 'staff_id', Input::get('staff'), 'batch_id', Input::get('batch'), 'study_id', Input::get('study'))[0];
-                    // $assignStock = $override->get('batch_product', 'id', Input::get('drug'))[0];
-                    // $newAssigned = $assignStock['assigned'] + Input::get('quantity');
-                    // $newQty = $checkData['quantity'] +  Input::get('quantity');
-                    // if ($newAssigned <= $assignStock['quantity']) {
-                    //     if ($checkData) {
-                    //         $user->updateRecord('assigned_stock', array(
-                    //             'quantity' => $newQty,
-                    //             'status' => 1,
-                    //         ), $checkData['id']);
-                    //         $user->updateRecord('batch_description', array('assigned' => $newAssigned), Input::get('drug'));
-                    //     } else {
+                    $checkBatch = $override->selectData('batch', 'status', 1, 'id', Input::get('batch'), 'study_id', Input::get('study'))[0];
+                    $assignStock = $override->get('batch', 'id', Input::get('batch'))[0];
+                    $newAssigned = $assignStock['assigned'] + Input::get('quantity');
+                    $newQty = $checkBatch['quantity'] +  Input::get('quantity');
+                    $newBalance = $checkBatch['quantity'] - Input::get('quantity');
+                    if ($newAssigned <= $assignStock['quantity']) {
+                        if ($checkBatch) {
+                            $user->updateRecord('assigned_stock', array(
+                                'quantity' => $newQty,
+                                'status' => 1,
+                            ), $checkBatch['batch_id']);
+                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('batch'));
+                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('batch'));
+                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('batch'));
+                        } else {
                             $user->createRecord('assigned_stock', array(
                                 'study_id' => Input::get('study'),
                                 'generic_id' => Input::get('generic'),
@@ -387,8 +391,10 @@ if ($user->isLoggedIn()) {
                                 'admin_id' => $user->data()->id,
                             ));
 
-                            // $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('drug'));
-                        // }
+                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('batch'));
+                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('batch'));
+                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('batch'));
+                        }
 
                         $user->createRecord('assigned_stock_rec', array(
                             'study_id' => Input::get('study'),
@@ -403,10 +409,34 @@ if ($user->isLoggedIn()) {
                             'status' => 1,
                             'admin_id' => $user->data()->id,
                         ));
+
+
+                        $user->createRecord('batch_records', array(
+                            'generic_id' => Input::get('generic'),
+                            'brand_id' => Input::get('brand'),
+                            'batch_id' => Input::get('batch'),
+                            'batch_no' => Input::get('batch_no2'),
+                            'quantity' => $checkBatch['quantity'],
+                            'assigned' => Input::get('quantity'),
+                            'added' => 0,
+                            'balance' => $newBalance,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                            'status' => 1,
+                            'study_id' => Input::get('study'),
+                            'last_check' => '',
+                            'next_check' => '',
+                            'category' => Input::get('category2'),
+                            'use_group' => Input::get('use_group2'),
+                            'use_case' => Input::get('use_case2'),
+                            'maintainance' => Input::get('maintainance2'),
+                            'remarks' => '',
+                            'expire_date' => '',
+                        ));
                         $successMessage = 'Stock Assigned Successful';
-                // //     } else {
-                // //         $errorMessage = 'Insufficient Amount on Stock';
-                //     }
+                    } else {
+                        $errorMessage = 'Insufficient Amount on Stock';
+                    }
                 } catch (Exception $e) {
                     die($e->getMessage());
                 }
@@ -458,6 +488,9 @@ if ($user->isLoggedIn()) {
                                 'status' => 1,
                                 'quantity' => Input::get('quantity'),
                                 'notify_quantity' => Input::get('notify_quantity'),
+                                'assigned' => 0,
+                                'added' => 0,
+                                'balance' => Input::get('quantity'),
                                 'create_on' => date('Y-m-d'),
                                 'use_group' => Input::get('use_group'),
                                 'use_case' => Input::get('use_case'),
@@ -466,20 +499,6 @@ if ($user->isLoggedIn()) {
                                 'category' => Input::get('category'),
                                 'staff_id' => $user->data()->id,
                             ));
-
-                            // $user->updateRecord('generic_records', array(
-                            //     'name' => Input::get('name'),
-                            //     'status' => 1,
-                            //     'quantity' => Input::get('quantity'),
-                            //     'notify_quantity' => Input::get('notify_quantity'),
-                            //     'create_on' => date('Y-m-d'),
-                            //     'use_group' => Input::get('use_group'),
-                            //     'use_case' => Input::get('use_case'),
-                            //     'study_id' => Input::get('study_id'),
-                            //     'maintainance' => Input::get('maintainance'),
-                            //     'category' => Input::get('category'),
-                            //     'staff_id' => $user->data()->id,
-                            // ));
 
                             $si = 0;
                             foreach (Input::get('location') as $sid) {
@@ -547,6 +566,9 @@ if ($user->isLoggedIn()) {
                         'status' => 1,
                         'quantity' => Input::get('quantity'),
                         'notify_quantity' => Input::get('notify_quantity'),
+                        'assigned' => 0,
+                        'added' => 0,
+                        'balance' => Input::get('quantity'),
                         'create_on' => date('Y-m-d'),
                         'category' => Input::get('category'),
                         'staff_id' => $user->data()->id,
@@ -608,6 +630,8 @@ if ($user->isLoggedIn()) {
                         'create_on' => date('Y-m-d'),
                         'category' => Input::get('category'),
                         'use_group' => Input::get('use_group'),
+                        'use_case' => Input::get('use_case'),
+                        'maintainance' => Input::get('maintainance'),
                     ));
 
                     $BatchLastRow = $override->lastRow('batch', 'id');
@@ -625,8 +649,14 @@ if ($user->isLoggedIn()) {
                         'staff_id' => $user->data()->id,
                         'status' => 1,
                         'study_id' => Input::get('study_id'),
+                        'last_check' => '',
+                        'next_check' => '',
                         'category' => Input::get('category'),
                         'use_group' => Input::get('use_group'),
+                        'use_case' => Input::get('use_case'),
+                        'maintainance' => Input::get('maintainance'),
+                        'remarks' => '',
+                        'expire_date' => Input::get('expire_date'),
                     ));
                     $successMessage = 'Batch Added Successful';
                 } catch (Exception $e) {
@@ -1289,9 +1319,6 @@ if ($user->isLoggedIn()) {
                                     </div>
                                     <div class="row-form clearfix">
                                         <div class="col-md-3">Brand</div>
-                                        <!-- <div id="ld_batch">
-                                            <span><img src="img/loaders/loader.gif" id="wait_ds1" title="loader.gif" /></span>
-                                        </div> -->
                                         <div class="col-md-9">
                                             <select name="brand" style="width: 100%;" id="brand" required>
                                                 <option value="">Select Brand</option>
@@ -1300,26 +1327,26 @@ if ($user->isLoggedIn()) {
                                     </div>
                                     <div class="row-form clearfix">
                                         <div class="col-md-3">Batch</div>
-                                        <!-- <div id="ld_batch">
-                                            <span><img src="img/loaders/loader.gif" id="wait_ds1" title="loader.gif" /></span>
-                                        </div> -->
                                         <div class="col-md-9">
                                             <select name="batch" style="width: 100%;" id="batch" required>
                                                 <option value="">Select batch</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div id="desc">
-                                        <div class="row-form clearfix">
-                                            <div class="col-md-3">Staff</div>
-                                            <div id="ld_staff">
-                                                <span><img src="img/loaders/loader.gif" id="wait_ds1" title="loader.gif" /></span>
-                                            </div>
-                                            <div class="col-md-9">
-                                                <select name="staff" style="width: 100%;" id="s2_1" required>
-                                                    <option value="">Select</option>
-                                                </select>
-                                            </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Staff</div>
+                                        <div class="col-md-9">
+                                            <select name="staff" style="width: 100%;" id="staff" required>
+                                                <option value="">Select Staff</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Site</div>
+                                        <div class="col-md-9">
+                                            <select name="site" style="width: 100%;" id="site" required>
+                                                <option value="">Select Site</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -1338,7 +1365,11 @@ if ($user->isLoggedIn()) {
                                     </div>
 
                                     <div class="footer tar">
-                                    <input value="" type="hidden" name="batch_no" id="batch_no2" />
+                                        <input value="" type="hidden" name="batch_no2" id="batch_no2" />
+                                        <input value="" type="hidden" name="maintainance2" id="maintainance2" />
+                                        <input value="" type="hidden" name="use_case2" id="use_case2" />
+                                        <input value="" type="hidden" name="use_group2" id="use_group2" />
+                                        <input value="" type="hidden" name="category2" id="category2" />
                                         <input type="submit" name="assign_stock" value="Submit" class="btn btn-default">
                                     </div>
 
@@ -1768,6 +1799,8 @@ if ($user->isLoggedIn()) {
                                     </div>
 
                                     <div class="footer tar">
+                                        <input value="" type="hidden" name="maintainance" id="maintainance" />
+                                        <input value="" type="hidden" name="use_case" id="use_case" />
                                         <input value="" type="hidden" name="use_group" id="use_group" />
                                         <input type="submit" name="register_batch" value="Submit" class="btn btn-default">
                                     </div>
@@ -1877,40 +1910,62 @@ if ($user->isLoggedIn()) {
                     },
                     dataType: "json",
                     success: function(data) {
+                        // console.log(data.batch_no);
                         $('#batch_no2').val(data.batch_no);
                         $('#fl_wait').hide();
                     }
                 });
             });
 
-            // $('#study').change(function() {
-            //     var getUid = $(this).val();
-            //     $('#ld_staff').show();
-            //     $.ajax({
-            //         url: "process.php?content=a_batch",
-            //         method: "GET",
-            //         data: {
-            //             getUid: getUid
-            //         },
-            //         dataType: "json",
-            //         success: function(data) {
-            //             $('#staff').val(data.staff);
-            //             $('#fl_wait').hide();
-            //         }
-            //     });
-            // });
-
-            $('#batch').change(function() {
+            $('#generic').change(function() {
                 var getUid = $(this).val();
                 $('#ld_staff').show();
                 $.ajax({
-                    url: "process.php?cnt=a_batch",
+                    url: "process.php?content=a_generic2",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#generic_id2').val(data.generic_id);
+                        $('#maintainance2').val(data.maintainance);
+                        $('#use_case2').val(data.use_case);
+                        $('#use_group2').val(data.use_group);
+                        $('#category2').val(data.category);
+                        $('#fl_wait').hide();
+                    }
+                });
+            });
+
+            $('#study').change(function() {
+                var getUid = $(this).val();
+                $('#ld_staff').show();
+                $.ajax({
+                    url: "process.php?content=a_batch",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#desc').html(data);
+                        $('#staff').html(data);
+                        $('#ld_staff').hide();
+                    }
+                });
+
+            });
+
+            $('#study').change(function() {
+                var getUid = $(this).val();
+                $('#ld_staff').show();
+                $.ajax({
+                    url: "process.php?content=a_batch2",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#site').html(data);
                         $('#ld_staff').hide();
                     }
                 });
@@ -1996,6 +2051,7 @@ if ($user->isLoggedIn()) {
                     },
                     dataType: "json",
                     success: function(data) {
+                        $('#maintainance').val(data.maintainance);
                         $('#use_group').val(data.use_group);
                         $('#use_case').val(data.use_case);
                         $('#gen_id').val(data.gen_id);

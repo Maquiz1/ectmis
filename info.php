@@ -775,7 +775,7 @@ if ($user->isLoggedIn()) {
                                         <tbody id="myTable">
                                             <?php $amnt = 0;
                                             $type = $_GET['type'];
-                                            foreach ($override->getNews('batch_product', 'status', 1, 'use_grop', $type) as $batch) {
+                                            foreach ($override->getNews('generic', 'status', 1, 'use_grop', $type) as $batch) {
                                                 $study = $override->get('study', 'id', $batch['study_id'])[0];
                                                 $use_case = $override->get('use_case', 'id', $batch['use_case'])[0];
                                                 $batchItems = $override->getSumD1('batch_product', 'assigned', 'batch_id', $batch['id']);

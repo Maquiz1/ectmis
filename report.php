@@ -190,7 +190,7 @@ if ($user->isLoggedIn()) {
                             <div class="block-fluid">
                                 <?php if ($user->data()->power == 1) {
                                     $pagNum = 0;
-                                    $pagNum = $override->getNo('batch_product');
+                                    $pagNum = $override->getNo('batch');
                                     $pages = ceil($pagNum / $numRec);
                                     if (!$_GET['page'] || $_GET['page'] == 1) {
                                         $page = 0;
@@ -210,7 +210,7 @@ if ($user->isLoggedIn()) {
                                     // $data = $override->getDataWithLimit('batch', $page, $numRec);
                                 } ?>
                                 <?php if ($_POST && Input::get('report') == 1) { ?>
-                                    <table id="FullReport" cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">DATE</th>
@@ -228,11 +228,11 @@ if ($user->isLoggedIn()) {
                                         </thead>
                                         <tbody>
                                             <?php foreach ($data as $records) {
-                                                $used = $override->get('batch_product', 'batch_id', $records['id'])[0]['assigned'];
-                                                $remained = $records['amount'] - $used;
+                                                $used = $override->get('batch', 'id', $records['id'])[0]['assigned'];
+                                                $remained = $records['balance'] - $used;
                                                 $notify = $records['notify_amount'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
-                                                $balance = $override->get('batch_description', 'batch_id', $records['id'])[0]['quantity'];
+                                                $balance = $override->get('batch', 'id', $records['id'])[0]['quantity'];
                                             ?>
                                                 <tr>
                                                     <td><?= $records['create_on'] ?></td>
@@ -267,7 +267,7 @@ if ($user->isLoggedIn()) {
                                         </tbody>
                                     </table>
                                 <?php } elseif ($_POST && Input::get('report') == 2) { ?>
-                                    <table id='FullReport' cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table  cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="15%">Generic</th>
@@ -737,13 +737,13 @@ if ($user->isLoggedIn()) {
 <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> -->
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> -->
 
 <script>
     <?php if ($user->data()->pswd == 0) { ?>

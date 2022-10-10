@@ -13,7 +13,7 @@ $errorMessage = null;
 $noE = 0;
 $noC = 0;
 $noD = 0;
-$numRec = 13;
+$numRec = 100;
 $users = $override->getData('user');
 
 // $number = $nextCheck;
@@ -185,9 +185,9 @@ if ($user->isLoggedIn()) {
         } elseif (Input::get('archive_batch')) {
             $user->updateRecord('batch', array(
                 'status' => 4,
-            ), Input::get('id'));
+            ), Input::get('batch_id'));
 
-            $user->updateRecord('batch_description', array(
+            $user->updateRecord('batch_records', array(
                 'status' => 4,
             ), Input::get('id'));
 
@@ -1163,18 +1163,19 @@ if ($user->isLoggedIn()) {
                                 </ul>
                             </div>
                             <div class="block-fluid">
-                                <table id='tableId7' cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
                                             <th width="10%">Date</th>
-                                            <th width="15%">Generic</th>
-                                            <th width="15%">Brand</th>
-                                            <th width="15%">Batch</th>
-                                            <th width="10%">Current Received</th>
+                                            <th width="25%">Generic</th>
+                                            <th width="25%">Brand</th>
+                                            <th width="10%">Batch</th>
+                                            <th width="5%">Received</th>
                                             <th width="5%">Added</th>
                                             <th width="5%">Used</th>
                                             <th width="5%">Balance</th>
                                             <th width="5%">Staff</th>
+                                            <th width="5%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1200,13 +1201,54 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batch['create_on'] ?></td>
                                                 <td><?= $generic ?></td>
                                                 <td><?= $brand ?></td>
-                                                <td><?= $batch_no ?></td>
+                                                <td>
+                                                    <?php if ($batch['expire_date'] <= date('Y-m-d')) { ?>
+                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $batch_no ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $batch_no ?></a>
+                                                    <?php } ?>
+                                                </td>
                                                 <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $batch['added'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>
+                                                <td>
+                                                    <?php if ($batch['expire_date'] <= date('Y-m-d')) { ?>
+                                                        <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>                                                   
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal">Not Expired</a>
+                                                    <?php } ?>
+                                                </td>
+                                                </td>
+                                                <td>
+                                                </td>
+
                                             </tr>
+
+                                            <div class="modal fade" id="archive<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                <h4>Quarantine Batch Product</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <strong style="font-weight: bold;color: red">
+                                                                    <p>Are you sure you want to Quarantine this Batch Product</p>
+                                                                </strong>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id" value="<?= $batch['id'] ?>">
+                                                                <input type="hidden" name="batch_id" value="<?= $batch['batch_id'] ?>">
+                                                                <input type="submit" name="archive_batch" value="Archive" class="btn btn-danger">
+                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -1451,13 +1493,13 @@ if ($user->isLoggedIn()) {
     </div>
 </body>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> -->
 
 <script>
     <?php if ($user->data()->pswd == 0) { ?>
@@ -1562,7 +1604,7 @@ if ($user->isLoggedIn()) {
                 //         title: 'VISITS'
                 //     }
             ],
-            "pageLength": 100
+            // "pageLength": 100
         });
 
         $('#tableId8').DataTable({
@@ -1606,7 +1648,7 @@ if ($user->isLoggedIn()) {
                 //         title: 'VISITS'
                 //     }
             ],
-            "pageLength": 100
+            // "pageLength": 100
         });
 
         $('#tableId7').DataTable({
@@ -1650,7 +1692,7 @@ if ($user->isLoggedIn()) {
                 //         title: 'VISITS'
                 //     }
             ],
-            "pageLength": 100
+            // "pageLength": 100
         });
     });
 </script>

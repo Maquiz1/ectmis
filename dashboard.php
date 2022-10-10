@@ -53,6 +53,7 @@ if ($user->isLoggedIn()) {
                             'maintainance' => Input::get('maintainance'),
                             'use_case' => Input::get('use_case'),
                             'remarks' => Input::get('remarks'),
+                            'expire_date' => Input::get('expire_date'),
                         ));
 
                         $successMessage = 'Stock guied Successful Updated';
@@ -78,25 +79,26 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 try {
                     $user->createRecord('check_records', array(
-                        'generic_id' => Input::get('id'),
-                        'brand_id' => Input::get('brand_id'),
-                        'batch_id' => Input::get('batch_id'),
-                        'batch_no' => Input::get('batch_no'),
-                        'quantity' => 0,
+                        'generic_id' => Input::get('id2'),
+                        'brand_id' => Input::get('brand_id2'),
+                        'batch_id' => Input::get('batch_id2'),
+                        'batch_no' => Input::get('batch_no2'),
+                        'quantity' => Input::get('quantity2'),
                         'added' => 0,
                         'assigned' => 0,
-                        'balance' => Input::get('quantity_db'),
+                        'balance' => Input::get('quantity_db2'),
                         'create_on' => date('Y-m-d'),
                         'staff_id' => $user->data()->id,
                         'status' => 1,
-                        'study_id' => Input::get('study_id'),
+                        'study_id' => Input::get('study_id2'),
                         'last_check' => Input::get('last_check'),
                         'next_check' => Input::get('next_check'),
-                        'category' => Input::get('category'),
-                        'use_group' => Input::get('use_group'),
-                        'maintainance' => Input::get('maintainance'),
-                        'use_case' => Input::get('use_case'),
-                        'remarks' => Input::get('remarks'),
+                        'category' => Input::get('category2'),
+                        'use_group' => Input::get('use_group2'),
+                        'maintainance' => Input::get('maintainance2'),
+                        'use_case' => Input::get('use_case2'),
+                        'remarks' => Input::get('remarks2'),
+                        'expire_date' => '',
                     ));
                     $BatchLastRow1 = $override->lastRow('check_records', 'id');
                     $user->updateRecord('batch', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['generic_id']);
@@ -185,7 +187,7 @@ if ($user->isLoggedIn()) {
                                 <thead>
                                     <tr>
 
-                                        <th width="15%">Generic</th>
+                                        <th width="25%">Generic</th>
                                         <th width="3%"> EmKits</th>
                                         <th width="3%"> AmbKits</th>
                                         <th width="3%"> ECRm</th>
@@ -200,7 +202,7 @@ if ($user->isLoggedIn()) {
                                         <th width="3%">Check</th>
                                         <th width="3%">Validity</th>
                                         <th width="3%">Quantity</th>
-                                        <th width="30%">Action</th>
+                                        <th width="20%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -217,11 +219,11 @@ if ($user->isLoggedIn()) {
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
                                         $generic_id = $bDiscription['id'];
-                                        $brand_id = $override->get('batch_records', 'brand_id', $generic_id)[0]['brand_id'];
-                                        $batch_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['name'];
-                                        $batch_no = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['name'];
-                                        $category = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['category'];
-                                        $study_id = $override->get('batch_records', 'generic_id', $bDiscription['id'])[0]['study_id'];
+                                        $brand_id = $override->getNews('batch_records', 'brand_id', $generic_id, 'status', 1)[0]['brand_id'];
+                                        $batch_id = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
+                                        $batch_no = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
+                                        $category = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['category'];
+                                        $study_id = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['study_id'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['category_id'])[0]['name'];
@@ -239,13 +241,15 @@ if ($user->isLoggedIn()) {
                                         $sumLoctn = $override->getSumD1('generic_guide', 'quantity', 'generic_id', $bDiscription['id'])[0]['SUM(quantity)'];
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
+                                        $batchBalance = $override->getSumD1('batch', 'balance', 'generic_id', $bDiscription['id'])[0]['SUM(balance)'];
+
 
                                         $check = 0;
                                         $check1 = 0;
-                                        foreach ($override->get('batch', 'generic_id', $bDiscription['id']) as $batch2) {
+                                        foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
                                             $nextCheck = $batch2['next_check'];
                                             $expireDate = $batch2['expire_date'];
-                                            // $lastCheck = $batch2['last_check'];
+                                            // $Quantity = $batch2['balance'];
                                             if ($nextCheck <= date('Y-m-d')) {
                                                 $check = 1;
                                             }
@@ -254,31 +258,6 @@ if ($user->isLoggedIn()) {
                                                 $check1 = 1;
                                             }
                                         }
-                                        // $marks = array(100, 65, 70, 87);
-                                        // $marks = $nextCheck;
-                                        // $marks2 = $expireDate;
-                                        // if (in_array(date('Y-m-d'), $marks)) {
-                                        //     $nextCheck == true;
-                                        //     return $nextCheck;
-                                        // } elseif(in_array(date('Y-m-d'), $marks)) {
-                                        //     $nextCheck == false;
-                                        //     return $nextCheck;
-                                        // }
-
-
-                                        // $dates = array("2013-12-24", "2013-12-25", "2014-12-24", "2013-12-27");
-                                        // $start = strtotime('2013-12-25');
-                                        // $end =   strtotime('2013-12-26');
-
-                                        // foreach ($dates as $date) {
-                                        //     $timestamp = strtotime($date);
-                                        //     if ($timestamp >= $start && $timestamp <= $end) {
-                                        //         echo "The date $date is within our date range\n";
-                                        //     } else {
-                                        //         echo "The date $date is NOT within our date range\n";
-                                        //     }
-                                        // }
-
 
                                     ?>
                                         <tr>
@@ -384,9 +363,9 @@ if ($user->isLoggedIn()) {
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <?php if ($sumLoctn <= $Notify && $sumLoctn > 0) { ?>
+                                                <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
                                                     <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
-                                                <?php } elseif ($sumLoctn == 0) { ?>
+                                                <?php } elseif ($batchBalance == 0) { ?>
                                                     <a href="#" role="button" class="btn btn-danger">Out of Stock</a>
                                                 <?php } else { ?>
                                                     <a href="#" role="button" class="btn btn-success">Sufficient</a>
@@ -395,7 +374,6 @@ if ($user->isLoggedIn()) {
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                                 <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Update</a>
-                                                <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                 <!-- <a href="#burn<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Burn / Destroy</a> -->
                                             </td>
                                         </tr>
@@ -426,7 +404,7 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Brand Name</label>
-                                                                            <select name="brand_id" id="brands_id" style="width: 100%;" required>
+                                                                            <select name="brand_id" id="brand_id" style="width: 100%;" required>
                                                                                 <option value="">Select brand</option>
                                                                             </select>
                                                                         </div>
@@ -475,17 +453,16 @@ if ($user->isLoggedIn()) {
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
                                                             <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
-                                                            <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
                                                             <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
                                                             <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
+                                                            <input type="hidden" name="maintainance" value="<?= $bDiscription['maintainance'] ?>">
                                                             <input type="hidden" name="category" value="<?= $bDiscription['category'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="hidden" name="batch_no" value="" id="batch_no2">
-                                                            <input type="hidden" name="category" value="" id="category">
-                                                            <input type="hidden" name="maintainance" value="" id="maintainance">
+                                                            <input type="hidden" name="batch_no" value="" id="batch_no">
                                                             <input type="hidden" name="last_check" value="" id="last_check">
                                                             <input type="hidden" name="next_check" value="" id="next_check">
+                                                            <input type="hidden" name="expire_date" value="" id="expire_date">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
@@ -520,7 +497,7 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Brand Name</label>
-                                                                            <select name="brand_id" id="brand_id2" style="width: 100%;" required>
+                                                                            <select name="brand_id2" id="brand_id2" style="width: 100%;" required>
                                                                                 <option value="">Select brand</option>
 
                                                                             </select>
@@ -534,7 +511,7 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Batch No:</label>
-                                                                            <select name="batch_id" id="batch_id2" style="width: 100%;" required>
+                                                                            <select name="batch_id2" id="batch_id2" style="width: 100%;" required>
                                                                                 <option value="">Select Batch</option>
                                                                             </select>
                                                                         </div>
@@ -563,18 +540,9 @@ if ($user->isLoggedIn()) {
                                                                 </div>
 
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-4">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <!-- <div class="form-group">
-                                                                            <label>Check Type:</label>
-                                                                            <input value=" " class="validate[required]" type="text" name="maintainance" id="maintainance" disabled/>
-                                                                        </div> -->
-                                                                    </div>
-                                                                </div>
+                                                            <div class="row">                                                                
 
-                                                                <div class="col-sm-8">
+                                                                <div class="col-sm-12">
                                                                     <div class="row-form clearfix">
                                                                         <!-- select -->
                                                                         <div class="form-group">
@@ -586,23 +554,45 @@ if ($user->isLoggedIn()) {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                             </div>
 
                                                             <div class="dr"><span></span></div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
-                                                            <input type="hidden" name="batch_no" value="" id="batch_no">
-                                                            <input type="hidden" name="quantity" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
-                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
-                                                            <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
-                                                            <input type="hidden" name="category" value="" id="category">
-                                                            <input type="hidden" name="maintainance" value="" id="maintainance">
-                                                            <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
+                                                            <input type="hidden" name="id2" value="<?= $bDiscription['id'] ?>">
+                                                            <input type="hidden" name="study_id2" value="<?= $bDiscription['study_id'] ?>">
+                                                            <input type="hidden" name="batch_no2" value="" id="batch_no2">
+                                                            <input type="hidden" name="quantity2" value="<?= $bDiscription['quantity'] ?>">
+                                                            <input type="hidden" name="notify_quantity2" value="<?= $bDiscription['notify_quantity'] ?>">
+                                                            <input type="hidden" name="use_group2" value="<?= $bDiscription['use_group'] ?>">
+                                                            <input type="hidden" name="use_case2" value="<?= $bDiscription['use_case'] ?>">
+                                                            <input type="hidden" name="category2" value="" id="category2">
+                                                            <input type="hidden" name="maintainance2" value="<?= $bDiscription['maintainance'] ?>">
+                                                            <input type="hidden" name="quantity_db2" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
+                                                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" id="archive<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <form method="post">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                            <h4>Delete Product</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <strong style="font-weight: bold;color: red">
+                                                                <p>Are you sure you want to Archive this Product</p>
+                                                            </strong>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                            <input type="submit" name="archive_batch" value="Archive" class="btn btn-danger">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
                                                     </div>
@@ -692,7 +682,7 @@ if ($user->isLoggedIn()) {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#brands_id').html(data);
+                        $('#brand_id').html(data);
                         $('#fl_wait').hide();
                     }
                 });
@@ -714,6 +704,46 @@ if ($user->isLoggedIn()) {
                 });
 
             });
+
+            $('#batch_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=batch_id_update",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#batch_no').val(data.batch_no);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+
+            $(document).on('click', '.update', function() {
+                var getUid = $(this).attr('gen_id');
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=bat3",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#gen_name').val(data.gen_name);
+                        $('#category').val(data.category);
+                        $('#last_check').val(data.last_check);
+                        $('#next_check').val(data.next_check);
+                        $('#expire_date').val(data.expire_date);
+                        $('#fl_wait').hide();
+                    }
+                });
+            })
 
             $(document).on('click', '.check', function() {
                 var getUid = $(this).attr('check_id');
@@ -749,19 +779,18 @@ if ($user->isLoggedIn()) {
 
             });
 
-            $(document).on('click', '.check', function() {
-                var getUid = $(this).attr('check_id');
+            $('#batch_id2').change(function() {
+                var getUid = $(this).val();
                 $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=gen2",
+                    url: "process.php?content=batch_id_check",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     dataType: "json",
                     success: function(data) {
-                        $('#maintainance').val(data.maintainance);
-                        $('#category').val(data.category);
+                        $('#batch_no2').val(data.batch_no);
                         $('#fl_wait').hide();
                     }
                 });
@@ -772,34 +801,6 @@ if ($user->isLoggedIn()) {
                 var getUid = $(this).attr('check_id');
                 $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=bat2",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        console.log(data);
-                        $('#use_group').val(data.use_group);
-                        $('#use_case').val(data.use_case);
-                        $('#gen_id').val(data.gen_id);
-                        $('#gen_name').val(data.gen_name);
-                        $('#batch_no').val(data.batch_no);
-                        $('#batch_id').val(data.batch_id);
-                        $('#maintainance').val(data.maintainance);
-                        $('#brand_id').val(data.brand_id);
-                        $('#category').val(data.category);
-                        $('#fl_wait').hide();
-                    }
-                });
-            })
-
-            $(document).on('click', '.update', function() {
-                var getUid = $(this).attr('gen_id');
-                console.log(getUid);
-
-                $('#fl_wait').show();
-                $.ajax({
                     url: "process.php?content=bat3",
                     method: "GET",
                     data: {
@@ -807,22 +808,53 @@ if ($user->isLoggedIn()) {
                     },
                     dataType: "json",
                     success: function(data) {
-                        console.log(data);
-                        $('#use_group').val(data.use_group);
-                        $('#use_case').val(data.use_case);
-                        $('#gen_id').val(data.gen_id);
-                        $('#gen_name').val(data.gen_name);
-                        $('#batch_no2').val(data.batch_no);
-                        $('#batch_id').val(data.batch_id);
-                        $('#maintainance').val(data.maintainance);
-                        $('#brand_id').val(data.brand_id);
-                        $('#category').val(data.category);
-                        $('#last_check').val(data.last_check);
-                        $('#next_check').val(data.next_check);
+                        $('#category2').val(data.category);
+                        $('#last_check2').val(data.last_check);
+                        $('#next_check2').val(data.next_check);
+                        $('#expire_date2').val(data.expire_date);
                         $('#fl_wait').hide();
                     }
                 });
             })
+
+            // $('#batch_id').change(function() {
+            //     var getUid = $(this).val();
+            //     $('#fl_wait').show();
+            //     $.ajax({
+            //         url: "process.php?content=batch_id_check",
+            //         method: "GET",
+            //         data: {
+            //             getUid: getUid
+            //         },
+            //         dataType: "json",
+            //         success: function(data) {
+            //             $('#batch_no2').val(data.batch_no);
+            //             $('#fl_wait').hide();
+            //         }
+            //     });
+
+            // });
+
+
+            // $(document).on('click', '.check', function() {
+            //     var getUid = $(this).attr('check_id');
+            //     $('#fl_wait').show();
+            //     $.ajax({
+            //         url: "process.php?content=gen2",
+            //         method: "GET",
+            //         data: {
+            //             getUid: getUid
+            //         },
+            //         dataType: "json",
+            //         success: function(data) {
+            //             $('#maintainance2').val(data.maintainance);
+            //             $('#category2').val(data.category);
+            //             $('#fl_wait').hide();
+            //         }
+            //     });
+
+            // });
+
         });
     </script>
 </body>
