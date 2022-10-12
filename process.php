@@ -48,7 +48,7 @@ elseif ($_GET['content'] == 'a_brand') {
         <option value="<?= $batch['id'] ?>"><?= $batch['batch_no'] ?></option>
     <?php }
     
-} elseif ($_GET['content'] == 'gen') {
+} elseif ($_GET['content'] == 'generic_id3') {
     $batches = $override->get('brand', 'generic_id', $_GET['getUid']) ?>
     <option value="">Select Brand</option>
     <?php foreach ($batches as $batch) { ?>

@@ -241,8 +241,8 @@ if ($user->isLoggedIn()) {
                                         $sumLoctn = $override->getSumD1('generic_guide', 'quantity', 'generic_id', $bDiscription['id'])[0]['SUM(quantity)'];
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
-                                        $batchBalance = $override->getSumD1('batch', 'balance', 'generic_id', $bDiscription['id'])[0]['SUM(balance)'];
-
+                                        $balance = $bDiscription['balance'];
+                                        // $batchBalance = $override->getSumD1('batch', 'balance', 'generic_id', $bDiscription['id'])[0]['SUM(balance)'];
 
                                         $check = 0;
                                         $check1 = 0;
@@ -363,9 +363,9 @@ if ($user->isLoggedIn()) {
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
+                                                <?php if ($balance <= $Notify && $balance > 0) { ?>
                                                     <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
-                                                <?php } elseif ($batchBalance == 0) { ?>
+                                                <?php } elseif ($balance == 0) { ?>
                                                     <a href="#" role="button" class="btn btn-danger">Out of Stock</a>
                                                 <?php } else { ?>
                                                     <a href="#" role="button" class="btn btn-success">Sufficient</a>

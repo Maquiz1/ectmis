@@ -450,9 +450,6 @@ if ($user->isLoggedIn()) {
                     'name' => array(
                         'required' => true,
                     ),
-                    'quantity' => array(
-                        'required' => true,
-                    ),
                     'notify_quantity' => array(
                         'required' => true,
                     ),
@@ -462,18 +459,11 @@ if ($user->isLoggedIn()) {
                     'use_group' => array(
                         'required' => true,
                     ),
-                    'study_id' => array(
-                        'required' => true,
-                    ),
                     'maintainance' => array(
-                        'required' => true,
-                    ),
-                    'category' => array(
                         'required' => true,
                     ),
                 ));
                 if ($validate->passed()) {
-
                     $sii = 0;
                     $q = 0;
                     foreach (Input::get('location') as $sid) {
@@ -481,23 +471,20 @@ if ($user->isLoggedIn()) {
                         $sii++;
                     }
 
-                    if (Input::get('quantity') >= $q) {
-
+                    if (Input::get('notify_quantity') >= 0) {
                         try {
                             $user->createRecord('generic', array(
                                 'name' => Input::get('name'),
                                 'status' => 1,
-                                'quantity' => Input::get('quantity'),
+                                'quantity' => 0,
                                 'notify_quantity' => Input::get('notify_quantity'),
                                 'assigned' => 0,
                                 'added' => 0,
-                                'balance' => Input::get('quantity'),
+                                'balance' => 0,
                                 'create_on' => date('Y-m-d'),
                                 'use_group' => Input::get('use_group'),
                                 'use_case' => Input::get('use_case'),
-                                'study_id' => Input::get('study_id'),
                                 'maintainance' => Input::get('maintainance'),
-                                'category' => Input::get('category'),
                                 'staff_id' => $user->data()->id,
                             ));
 
@@ -510,20 +497,17 @@ if ($user->isLoggedIn()) {
                                 $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
                                 $user->createRecord('generic_guide', array(
                                     'generic_id' => $generic_id,
-                                    'quantity' => $q,
+                                    'quantity' => 0,
                                     'notify_quantity' => Input::get('notify_quantity'),
                                     'assigned' => 0,
                                     'added' => 0,
-                                    'balance' => $q,
+                                    'balance' => 0,
                                     'use_group' => $use_group,
                                     'location_id' => $location['id'],
                                     'create_on' => date('Y-m-d'),
                                     'staff_id' => $user->data()->id,
                                     'status' => 1,
                                     'use_case' => $use_case,
-                                    'study_id' => Input::get('study_id'),
-                                    'category' => Input::get('category'),
-
                                 ));
                                 $si++;
                             }
@@ -532,7 +516,7 @@ if ($user->isLoggedIn()) {
                             die($e->getMessage());
                         }
                     } else {
-                        $successMessage = 'Sum of locations exceeded Received Quantity';
+                        $successMessage = 'Required Quantity Can not be Negative Number or Zero';
                     }
                 } else {
                     $pageError = $validate->errors();
@@ -540,40 +524,26 @@ if ($user->isLoggedIn()) {
             }
         } elseif (Input::get('add_brand')) {
             $validate = $validate->check($_POST, array(
-                'name' => array(
+                'generic_id2' => array(
                     'required' => true,
                 ),
-                'generic' => array(
+                'brand_id2' => array(
                     'required' => true,
-                ),
-                'quantity' => array(
-                    'required' => true,
-                ),
-                'notify_quantity' => array(
-                    'required' => true,
-                ),
-                'category' => array(
-                    'required' => true,
-                ),
-                'study_id' => array(
-                    'required' => true,
-                ),
+                )
             ));
             if ($validate->passed()) {
                 try {
                     $user->createRecord('brand', array(
-                        'name' => Input::get('name'),
-                        'generic_id' => Input::get('generic'),
+                        'generic_id' => Input::get('generic_id2'),
+                        'name' => Input::get('brand_id2'),
                         'status' => 1,
-                        'quantity' => Input::get('quantity'),
-                        'notify_quantity' => Input::get('notify_quantity'),
+                        'quantity' => 0,
+                        'notify_quantity' => 0,
                         'assigned' => 0,
                         'added' => 0,
-                        'balance' => Input::get('quantity'),
+                        'balance' => 0,
                         'create_on' => date('Y-m-d'),
-                        'category' => Input::get('category'),
                         'staff_id' => $user->data()->id,
-                        'study_id' => Input::get('study_id'),
                     ));
                     $successMessage = 'Brand Name Added Successful';
                 } catch (Exception $e) {
@@ -585,19 +555,16 @@ if ($user->isLoggedIn()) {
         } elseif (Input::get('register_batch')) {
             $validate = new validate();
             $validate = $validate->check($_POST, array(
-                'generic_id' => array(
+                'generic_id3' => array(
                     'required' => true,
                 ),
-                'brand_id' => array(
+                'brand_id3' => array(
                     'required' => true,
                 ),
                 'batch_no' => array(
                     'required' => true,
                 ),
                 'quantity' => array(
-                    'required' => true,
-                ),
-                'notify_quantity' => array(
                     'required' => true,
                 ),
                 'manufacturer' => array(
@@ -611,17 +578,23 @@ if ($user->isLoggedIn()) {
                 ),
                 'study_id' => array(
                     'required' => true,
+                ),
+                'category' => array(
+                    'required' => true,
                 )
             ));
             if ($validate->passed()) {
                 try {
                     $user->createRecord('batch', array(
-                        'generic_id' => Input::get('generic_id'),
-                        'brand_id' => Input::get('brand_id'),
+                        'generic_id' => Input::get('generic_id3'),
+                        'brand_id' => Input::get('brand_id3'),
                         'batch_no' => Input::get('batch_no'),
                         'study_id' => Input::get('study_id'),
                         'quantity' => Input::get('quantity'),
-                        'notify_quantity' => Input::get('notify_quantity'),
+                        'notify_quantity' => 0,
+                        'assigned' => 0,
+                        // 'added' => 0,
+                        'balance' => Input::get('quantity'),
                         'manufacturer' => Input::get('manufacturer'),
                         'manufactured_date' => Input::get('manufactured_date'),
                         'expire_date' => Input::get('expire_date'),
@@ -630,16 +603,25 @@ if ($user->isLoggedIn()) {
                         'staff_id' => $user->data()->id,
                         'create_on' => date('Y-m-d'),
                         'category' => Input::get('category'),
-                        'use_group' => Input::get('use_group'),
-                        'use_case' => Input::get('use_case'),
-                        'maintainance' => Input::get('maintainance'),
+                        'last_check' => date('Y-m-d'),
+                        'next_check' => date('Y-m-d'),
                     ));
+
+                    // $checkBatch = $override->selectData('batch', 'status', 1, 'id', Input::get('generic_id3'), 'study_id', Input::get('study_id'))[0];
+                    // $newAssigned = $assignStock['assigned'] + Input::get('quantity');
+                    // $BatchLastRow1 = $override->lastRow('batch', 'id')[0];
+                    $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
+                    $newQty = $genericBalance['quantity'] +  Input::get('quantity');
+                    $user->updateRecord('generic', array(
+                        'quantity' => $newQty,
+                        'balance' => $newQty,
+                    ), Input::get('generic_id3'));
 
                     $BatchLastRow = $override->lastRow('batch', 'id');
 
                     $user->createRecord('batch_records', array(
-                        'generic_id' => Input::get('generic_id'),
-                        'brand_id' => Input::get('brand_id'),
+                        'generic_id' => Input::get('generic_id3'),
+                        'brand_id' => Input::get('brand_id3'),
                         'batch_id' => $BatchLastRow[0]['id'],
                         'batch_no' => Input::get('batch_no'),
                         'quantity' => Input::get('quantity'),
@@ -650,15 +632,14 @@ if ($user->isLoggedIn()) {
                         'staff_id' => $user->data()->id,
                         'status' => 1,
                         'study_id' => Input::get('study_id'),
-                        'last_check' => '',
-                        'next_check' => '',
+                        'last_check' => date('Y-m-d'),
+                        'next_check' => date('Y-m-d'),
                         'category' => Input::get('category'),
-                        'use_group' => Input::get('use_group'),
-                        'use_case' => Input::get('use_case'),
-                        'maintainance' => Input::get('maintainance'),
                         'remarks' => '',
                         'expire_date' => Input::get('expire_date'),
                     ));
+
+
                     $successMessage = 'Batch Added Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -1389,22 +1370,12 @@ if ($user->isLoggedIn()) {
                                     <?php if (!Input::get('location') && !Input::get('location_1')) { ?>
 
                                         <div class="row">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-6">
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Name:</label>
+                                                        <label>Generic Name:</label>
                                                         <input value="" class="validate[required]" type="text" name="name" id="name" />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-3">
-                                                <div class="row-form clearfix">
-                                                    <!-- select -->
-                                                    <div class="form-group">
-                                                        <label>Received Quantity: :</label>
-                                                        <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1422,24 +1393,6 @@ if ($user->isLoggedIn()) {
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Category:</label>
-                                                        <select name="category" style="width: 100%;" required>
-                                                            <option value="">Select category</option>
-                                                            <?php foreach ($override->getData('drug_cat') as $dCat) { ?>
-                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-
-                                            <div class="col-sm-3">
-                                                <div class="row-form clearfix">
-                                                    <!-- select -->
-                                                    <div class="form-group">
                                                         <label>Use Form (Group):</label>
                                                         <select name="use_group" style="width: 100%;" required>
                                                             <option value="">Select Use Group</option>
@@ -1450,6 +1403,8 @@ if ($user->isLoggedIn()) {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row">
 
                                             <div class="col-sm-3">
                                                 <!-- select -->
@@ -1466,6 +1421,7 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
 
+
                                             <div class="col-sm-3">
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
@@ -1481,26 +1437,7 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-3">
-                                                <div class="row-form clearfix">
-                                                    <!-- select -->
-                                                    <div class="form-group">
-                                                        <label>Study :</label>
-                                                        <select name="study_id" style="width: 100%;" required>
-                                                            <option value="">Select Study</option>
-                                                            <?php foreach ($override->getData('study') as $dCat) { ?>
-                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
@@ -1526,17 +1463,19 @@ if ($user->isLoggedIn()) {
                                     ?>
 
                                     <?php if (Input::get('location')) { ?>
-                                        <label> Complete Stock Guide:
-                                        </label>
-                                        <div class="col-md-2"><strong>Current Amount Is<?php echo ' '; ?><?= Input::get('quantity') ?> : </strong>
+                                        <div>
+                                            <label> Complete Stock Guide:</label>
+                                        </div>
 
-                                            <span>Notification Amount Is<?php echo ' '; ?><?= Input::get('notify_quantity') ?> </span>
+                                        <div class="col-md-2">
+
+                                            <span>Required Amount Is<?php echo ' '; ?><?= Input::get('notify_quantity') ?> </span>
 
                                         </div>
                                         <?php
                                         $f = 0;
                                         foreach (Input::get('location') as $lctn) {
-                                            $location = $override->get('location', 'id', $lctn['id'])[0];
+                                            $location = $override->get('location', 'id', $lctn)[0];
                                         ?>
                                             <div class="row-form clearfix">
                                                 <div class="col-md-2"><strong><?= $location['name'] ?> : </strong></div>
@@ -1544,10 +1483,7 @@ if ($user->isLoggedIn()) {
                                                 <input type="hidden" name="name" value="<?= Input::get('name') ?>">
                                                 <input type="hidden" name="use_group" value="<?= Input::get('use_group') ?>">
                                                 <input type="hidden" name="use_case" value="<?= Input::get('use_case') ?>">
-                                                <input type="hidden" name="study_id" value="<?= Input::get('study_id') ?>">
-                                                <input type="hidden" name="quantity" value="<?= Input::get('quantity') ?>">
                                                 <input type="hidden" name="notify_quantity" value="<?= Input::get('notify_quantity') ?>">
-                                                <input type="hidden" name="category" value="<?= Input::get('category') ?>">
                                                 <input type="hidden" name="location_1[<?= $f ?>]" value="<?= $lctn ?>">
                                                 <input type="hidden" name="maintainance" value="<?= Input::get('maintainance') ?>">
                                                 <div class="col-md-3"><input value="" class="validate[required]" type="number" name="amount[]" id="amount" /> <span></span></div>
@@ -1578,7 +1514,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Generic Name</label>
-                                                    <select name="generic" style="width: 100%;" required>
+                                                    <select name="generic_id2" id="generic_id2" style="width: 100%;" required>
                                                         <option value="">Select Generic</option>
                                                         <?php foreach ($override->getData('generic') as $cat) { ?>
                                                             <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
@@ -1592,60 +1528,11 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>BRAND NAME:</label>
-                                                    <input value="" type="text" name="name" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
-                                                    <label>Received</label>
-                                                    <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
-                                                    <label>Required Quantity:</label>
-                                                    <input value="" class="validate[required]" type="number" name="notify_quantity" id="notify_quantity" />
+                                                    <input value="" type="text" name="brand_id2" id="brand_id2" />
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-3">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
-                                                    <label>Category</label>
-                                                    <select name="category" id="category" style="width: 100%;" required>
-                                                        <option value="">Select Category</option>
-                                                        <?php foreach ($override->getData('drug_cat') as $cat) { ?>
-                                                            <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
-                                                        <?php } ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
-                                                    <label>Study:</label>
-                                                    <select name="study_id" style="width: 100%;" required>
-                                                        <option value="">Select Study</option>
-                                                        <?php foreach ($override->getData('study') as $dCat) { ?>
-                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
-                                                        <?php } ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <div class="footer tar">
@@ -1670,7 +1557,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Generic Name::</label>
-                                                    <select name="generic_id" id="generic_id" style="width: 100%;" required>
+                                                    <select name="generic_id3" id="generic_id3" style="width: 100%;" required>
                                                         <option value="">Select Generic Name</option>
                                                         <?php foreach ($override->getData('generic') as $dCat) { ?>
                                                             <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
@@ -1684,7 +1571,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label></label>
-                                                    <select name="brand_id" id="brand_id" style="width: 100%;" required>
+                                                    <select name="brand_id3" id="brand_id3" style="width: 100%;" required>
                                                         <option value="">Select brand</option>
 
                                                     </select>
@@ -1719,16 +1606,6 @@ if ($user->isLoggedIn()) {
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
-                                                    <label>Re-Stock Level:</label>
-                                                    <input value="" class="validate[required]" type="text" name="notify_quantity" id="notify_quantity" required />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-4">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
                                                     <label>Study:</label>
                                                     <select name="study_id" style="width: 100%;" required>
                                                         <option value="">Select Study</option>
@@ -1739,42 +1616,7 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-
-
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
-                                                    <label>Manufacturer:</label>
-                                                    <div class="col-md-9"><input type="text" name="manufacturer" id="manufacturer" /></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="row-form clearfix">
-                                                <!-- select -->
-                                                <div class="form-group">
-                                                    <label>Manufactured Date:</label>
-                                                    <div class="col-md-9"><input type="date" name="manufactured_date" required /> <span>Example: 2012-01-01</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-4">
-                                            <div class="row-form clearfix">
-                                                <div class="form-group">
-                                                    <label>Valid / Check / Expire Date:</label>
-                                                    <div class="col-md-9"><input type="date" name="expire_date" required /> <span>Example: 2012-01-0</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
                                         <div class="col-sm-4">
                                             <div class="row-form clearfix">
                                                 <div class="form-group">
@@ -1788,6 +1630,41 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Manufacturer:</label>
+                                                    <input value="" class="validate[required]" type="text" name="manufacturer" id="manufacturer" required />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Manufactured Date:</label>
+                                                    <div class="col-md-9"><input type="date" name="manufactured_date" required /> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <div class="form-group">
+                                                    <label>Validity / Expire Date:</label>
+                                                    <div class="col-md-9"><input type="date" name="expire_date" required /> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
 
                                         <div class="col-sm-8">
                                             <div class="row-form clearfix">
@@ -1800,9 +1677,6 @@ if ($user->isLoggedIn()) {
                                     </div>
 
                                     <div class="footer tar">
-                                        <input value="" type="hidden" name="maintainance" id="maintainance" />
-                                        <input value="" type="hidden" name="use_case" id="use_case" />
-                                        <input value="" type="hidden" name="use_group" id="use_group" />
                                         <input type="submit" name="register_batch" value="Submit" class="btn btn-default">
                                     </div>
 
@@ -2024,17 +1898,17 @@ if ($user->isLoggedIn()) {
 
             });
 
-            $('#generic_id').change(function() {
+            $('#generic_id3').change(function() {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=gen",
+                    url: "process.php?content=generic_id3",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#brand_id').html(data);
+                        $('#brand_id3').html(data);
                         $('#fl_wait').hide();
                     }
                 });
