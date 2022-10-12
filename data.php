@@ -504,7 +504,7 @@ if ($user->isLoggedIn()) {
                                             $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
                                             $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
                                             $check_generic_id = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
-                                            $check_brand_id = $override->get('brand', 'id', $_GET['gid'])[0]['id'];
+                                            $check_brand_id = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
                                             $check_batch_id = $batchDesc['id'];
                                             $check_batch_no = $batchDesc['batch_no'];
                                         ?>
@@ -1289,11 +1289,12 @@ if ($user->isLoggedIn()) {
 
                                         foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['did'], 'status', 1, $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $brand_id = $override->get('batch', 'brand_id', $batch['brand_id'])[0]['brand_id'];
-                                            $generic_id = $override->get('batch', 'generic_id', $_GET['did'])[0]['generic_id'];
-                                            $batch_no = $batch['batch_no'];
-                                            $brand = $override->get('brand', 'id', $_GET['did'])[0]['name'];
                                             $generic = $override->get('generic', 'id', $_GET['did'])[0]['name'];
+                                            $brand = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
+                                            $generic_id = $override->get('generic', 'id', $_GET['did'])[0]['id'];
+                                            $brand_id = $override->get('brand', 'id', $batch['brand_id'])[0]['id'];
+                                            $batch_id = $batch['id'];
+                                            $batch_no = $batch['batch_no'];
                                         ?>
                                             <tr>
                                                 <td><?= $batch['create_on'] ?></td>

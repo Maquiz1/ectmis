@@ -144,6 +144,8 @@ if ($user->isLoggedIn()) {
                                     <tr>
 
                                         <th width="25%">Generic</th>
+                                        <th width="5%">Required</th>
+                                        <th width="5%">Balance</th>
                                         <th width="3%"> EmKits</th>
                                         <th width="3%"> AmbKits</th>
                                         <th width="3%"> ECRm</th>
@@ -158,7 +160,7 @@ if ($user->isLoggedIn()) {
                                         <th width="3%">Check</th>
                                         <th width="3%">Validity</th>
                                         <th width="3%">Quantity</th>
-                                        <th width="20%">Action</th>
+                                        <th width="8%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -198,7 +200,7 @@ if ($user->isLoggedIn()) {
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
                                         $balance = $bDiscription['balance'];
-                                        // $batchBalance = $override->getSumD1('batch', 'balance', 'generic_id', $bDiscription['id'])[0]['SUM(balance)'];
+                                        $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'],'status', 1)[0]['SUM(balance)'];
 
                                         $check = 0;
                                         $check1 = 0;
@@ -218,6 +220,8 @@ if ($user->isLoggedIn()) {
                                     ?>
                                         <tr>
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
+                                            <td><?= $bDiscription['notify_quantity']; ?></td>
+                                            <td><?= $batchBalance; ?></td>
                                             <td><?php if ($EmKits) {
                                                 ?>
                                                     <a href="#" role="button" class="btn btn-info"><?= $EmKits; ?></a>
@@ -319,17 +323,16 @@ if ($user->isLoggedIn()) {
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <?php if ($balance <= $Notify && $balance > 0) { ?>
-                                                    <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
-                                                <?php } elseif ($balance == 0) { ?>
-                                                    <a href="#" role="button" class="btn btn-danger">Out of Stock</a>
+                                                <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
+                                                <?php } elseif ($batchBalance == 0) { ?>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
                                                 <?php } else { ?>
-                                                    <a href="#" role="button" class="btn btn-success">Sufficient</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
-                                                <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Update</a>
                                             </td>
                                         </tr>
 
@@ -349,8 +352,7 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Generic Name:</label>
-                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="name" name="name" disabled />
-
+                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="update_generic_id" name="update_generic_name" disabled />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -374,7 +376,6 @@ if ($user->isLoggedIn()) {
                                                                             <label>Batch No:</label>
                                                                             <select name="batch_id" id="batch_id" style="width: 100%;" required>
                                                                                 <option value="">Select Batch</option>
-
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -386,7 +387,6 @@ if ($user->isLoggedIn()) {
                                                                         <div class="form-group">
                                                                             <label>Current Quantity::</label>
                                                                             <input value="<?= $bDiscription['quantity'] ?>" class="validate[required]" type="number" name="quantity" id="name" disabled />
-
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -396,11 +396,9 @@ if ($user->isLoggedIn()) {
                                                                         <div class="form-group">
                                                                             <label>Quantity to Add:</label>
                                                                             <input value=" " class="validate[required]" type="number" name="added" id="added" />
-
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                             </div>
 
                                                             <div class="dr"><span></span></div>
