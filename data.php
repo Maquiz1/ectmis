@@ -184,14 +184,14 @@ if ($user->isLoggedIn()) {
             }
         } elseif (Input::get('archive_batch')) {
             $user->updateRecord('batch', array(
-                'status' => 4,
-            ), Input::get('batch_id'));
-
-            $user->updateRecord('batch_records', array(
-                'status' => 4,
+                'status' => 2,
             ), Input::get('id'));
 
-            $successMessage = 'Medicine / Device Archived Successful';
+            $user->updateRecord('batch_records', array(
+                'status' => 2,
+            ), Input::get('id'));
+
+            $successMessage = 'Medicine / Device Quarantine Successful';
         } elseif (Input::get('delete_batch')) {
             $user->updateRecord('batch', array(
                 'status' => 0,
@@ -370,7 +370,7 @@ if ($user->isLoggedIn()) {
         } elseif (Input::get('update_check')) {
             $validate = new validate();
             $validate = $validate->check($_POST, array(
-                'check_date' => array(
+                'last_check' => array(
                     'required' => true,
                 ),
                 'next_check' => array(
@@ -380,19 +380,20 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 try {
                     $user->createRecord('check_records', array(
-                        'product_id' => Input::get('id'),
-                        'last_check' => Input::get('check_date'),
-                        'next_check' => Input::get('next_check'),
+                        'generic_id' => Input::get('check_generic_id'),
+                        'brand_id' => Input::get('check_brand_id'),
+                        'batch_id' => Input::get('check_batch_id'),
+                        'batch_no' => Input::get('check_batch_no'),
                         'create_on' => date('Y-m-d'),
                         'staff_id' => $user->data()->id,
-                        'check_type' => Input::get('maintainance'),
-                        'status' => Input::get('maintainance_status'),
-                        'remark' => Input::get('remark'),
+                        'status' => 1,
+                        'last_check' => Input::get('last_check'),
+                        'next_check' => Input::get('next_check'),
+                        'remarks' => Input::get('remarks'),
                     ));
-
                     $BatchLastRow1 = $override->lastRow('check_records', 'id');
-                    $user->updateRecord('batch_product', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['product_id']);
-                    $user->updateRecord('batch_product', array('last_check' => Input::get('check_date')), $BatchLastRow1[0]['product_id']);
+                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), Input::get('check_batch_id'));
+                    $user->updateRecord('batch', array('last_check' => Input::get('last_check')), Input::get('check_batch_id'));
                     $successMessage = 'Check Status Updated Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -458,7 +459,7 @@ if ($user->isLoggedIn()) {
                         <div class="col-md-12">
                             <div class="head clearfix">
                                 <div class="isw-grid"></div>
-                                <h1>Expired Medicine</h1>
+                                <h1>Expired Medicines/Devices</h1>
                                 <ul class="buttons">
                                     <li><a href="#" class="isw-download"></a></li>
                                     <li><a href="#" class="isw-attachment"></a></li>
@@ -476,22 +477,23 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" name="checkall" /></th>
-                                            <th width="20%">Generic Name</th>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
                                             <th width="10%">Batch No</th>
-                                            <th width="10%">Drug Category</th>
-                                            <th width="10%">Currently Quantity</th>
-                                            <th width="10%">Remained</th>
+                                            <th width="4%">Quantity</th>
+                                            <th width="4%">Used</th>
+                                            <th width="4%">Remained</th>
                                             <th width="10%">Expire Date</th>
-                                            <th width="15%">Status</th>
-                                            <th width="25%">Action</th>
+                                            <th width="10%">Next Check</th>
+                                            <th width="5%">Expiration</th>
+                                            <th width="5%">Checking</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
 
                                         $amnt = 0;
-                                        $pagNum = $override->getCount1('batch', 'expire_date', $today, 'status', 1);
+                                        $pagNum = $override->getCount1('batch', 'generic_id', $_GET['gid'], 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
                                         // print_r($pages);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
@@ -502,33 +504,36 @@ if ($user->isLoggedIn()) {
 
 
                                         $amnt = 0;
-                                        foreach ($override->getWithLimitLessThanDate('batch', 'expire_date', $today, 'status', 1, $page, $numRec) as $batchDesc) {
-                                            $batch_no = $override->get('batch', 'id', $batchDesc['id'])[0];
-                                            $dCat = $override->get('drug_cat', 'id', $batchDesc['id'])[0];
-                                            $amnt = $batchDesc['quantity'] - $batchDesc['assigned'];
-                                            $used = $override->get('batch_description', 'batch_id', $batchDesc['id'])[0];
+                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'], 'status', 1, $page, $numRec) as $batchDesc) {
+                                            $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
+                                            $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
+                                            $check_generic_id = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
+                                            $check_brand_id = $override->get('brand', 'id', $_GET['gid'])[0]['id'];
+                                            $check_batch_id = $batchDesc['id'];
+                                            $check_batch_no = $batchDesc['batch_no'];
                                         ?>
                                             <tr>
-                                                <td><input type="checkbox" name="checkbox" /></td>
-                                                <td><?= $batchDesc['name'] ?></td>
-                                                <td><?= $batchDesc['batch_no'] ?></td>
-                                                <td><?= $dCat['name'] ?></td>
-                                                <td><?= $batchDesc['amount'] ?></td>
-                                                <td><?= $used['assigned'] ?></td>
+                                                <td><?= $generic_name ?></td>
+                                                <td><?= $brand_name ?></td>
+                                                <td><?= $check_batch_no ?></td>
+                                                <td><?= $batchDesc['quantity'] ?></td>
+                                                <td><?= $batchDesc['assigned'] ?></td>
+                                                <td><?= $batchDesc['balance'] ?></td>
                                                 <td><?= $batchDesc['expire_date'] ?></td>
+                                                <td><?= $batchDesc['next_check'] ?></td>
                                                 <td>
                                                     <?php if ($batchDesc['expire_date'] <= $today) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
-                                                    <?php } elseif ($batchDesc['expire_date'] > $today) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Not Expired</a>
+                                                        <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal">Un - Checked</a>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
                                                     <?php } ?>
                                                 </td>
-
                                                 <td>
-                                                    <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Archive</a>
-                                                    <a href="#burn<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Burn / Destroy</a>
+                                                    <?php if ($batchDesc['next_check'] <= date('Y-m-d')) { ?>
+                                                        <a href="#check_stock<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
+                                                    <?php } ?>
                                                 </td>
 
                                             </tr>
@@ -538,16 +543,111 @@ if ($user->isLoggedIn()) {
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                <h4>Delete Product</h4>
+                                                                <h4>Quarantine Product</h4>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <strong style="font-weight: bold;color: red">
-                                                                    <p>Are you sure you want to Archive this Product</p>
+                                                                    <p>Are you sure you want to Quarantine this Product</p>
                                                                 </strong>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
                                                                 <input type="submit" name="archive_batch" value="Archive" class="btn btn-danger">
+                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="check_stock<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                <h4>Update Check Info</h4>
+                                                            </div>
+                                                            <div class="modal-body modal-body-np">
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Generic Name:</label>
+                                                                                <input value="<?= $generic_name ?>" type="text" name="generic_name" disabled />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Brand Name</label>
+                                                                                <input value="<?= $brand_name ?>" type="text" name="brand_name" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Batch No:</label>
+                                                                                <input value="<?= $batchDesc['batch_no'] ?>" type="text" name="batch_no" disabled />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Check Date:</label>
+                                                                                <input value=" " class="validate[required]" type="date" name="last_check" id="last_check" />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Next Check:</label>
+                                                                                <input value=" " class="validate[required]" type="date" name="next_check" id="next_check" />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Remarks:</label>
+                                                                                <div class="col-md-9">
+                                                                                    <textarea class="" name="remarks" id="remarks" rows="4"></textarea>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dr"><span></span></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input value="<?= $check_generic_id ?>" type="hidden" name="check_generic_id" id="check_generic_id" />
+                                                                <input value="<?= $check_brand_id ?>" type="hidden" name="check_brand_id" id="check_brand_id" />
+                                                                <input value="<?= $check_batch_id ?>" type="hidden" name="check_batch_id" id="check_batch_id" />
+                                                                <input value="<?= $check_batch_no ?>" type="hidden" name="check_batch_no" id="check_batch_no" />
+                                                                <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
                                                         </div>
@@ -1157,7 +1257,6 @@ if ($user->isLoggedIn()) {
                                         <ul class="dd-list">
                                             <li><a href="#"><span class="isw-plus"></span> New document</a></li>
                                             <li><a href="#"><span class="isw-edit"></span> Edit</a></li>
-                                            <!-- <li><a href="#"><span class="isw-delete"></span> Delete</a></li> -->
                                         </ul>
                                     </li>
                                 </ul>
@@ -1166,22 +1265,25 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="10%">Date</th>
-                                            <th width="25%">Generic</th>
-                                            <th width="25%">Brand</th>
+                                            <th width="8%">Date</th>
+                                            <th width="20%">Generic</th>
+                                            <th width="20%">Brand</th>
                                             <th width="10%">Batch</th>
                                             <th width="5%">Received</th>
                                             <th width="5%">Added</th>
                                             <th width="5%">Used</th>
                                             <th width="5%">Balance</th>
                                             <th width="5%">Staff</th>
-                                            <th width="5%">Action</th>
+                                            <th width="8%">Expiration</th>
+                                            <th width="8%">Next Check</th>
+                                            <th width="5%">Expiration</th>
+                                            <th width="5%">Checking</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch_records', 'generic_id', $_GET['did']);
+                                        $pagNum = $override->getCount1('batch', 'generic_id', $_GET['did'], 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
@@ -1189,13 +1291,13 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-                                        foreach ($override->getWithLimit('batch_records', 'generic_id', $_GET['did'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['did'], 'status', 1, $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $brand_id = $override->get('batch', 'brand_id', $batch['brand_id'])[0]['brand_id'];
-                                            $generic_id = $override->get('batch', 'generic_id', $batch['generic_id'])[0]['generic_id'];
-                                            $batch_no = $override->get('batch', 'brand_id', $batch['brand_id'])[0]['batch_no'];
-                                            $brand = $override->get('brand', 'id', $brand_id)[0]['name'];
-                                            $generic = $override->get('generic', 'id', $generic_id)[0]['name'];
+                                            $generic_id = $override->get('batch', 'generic_id', $_GET['did'])[0]['generic_id'];
+                                            $batch_no = $batch['batch_no'];
+                                            $brand = $override->get('brand', 'id', $_GET['did'])[0]['name'];
+                                            $generic = $override->get('generic', 'id', $_GET['did'])[0]['name'];
                                         ?>
                                             <tr>
                                                 <td><?= $batch['create_on'] ?></td>
@@ -1213,42 +1315,24 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>
+                                                <td><?= $batch['expire_date'] ?></td>
+                                                <td><?= $batch['next_check'] ?></td>
                                                 <td>
                                                     <?php if ($batch['expire_date'] <= date('Y-m-d')) { ?>
-                                                        <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>                                                   
+                                                        <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal">Not Expired</a>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
                                                     <?php } ?>
                                                 </td>
-                                                </td>
                                                 <td>
+                                                    <?php if ($batch['next_check'] <= date('Y-m-d')) { ?>
+                                                        <a href="#archives<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
+                                                    <?php } ?>
                                                 </td>
-
+                                                <td>                                                
                                             </tr>
-
-                                            <div class="modal fade" id="archive<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <form method="post">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                <h4>Quarantine Batch Product</h4>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <strong style="font-weight: bold;color: red">
-                                                                    <p>Are you sure you want to Quarantine this Batch Product</p>
-                                                                </strong>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <input type="hidden" name="id" value="<?= $batch['id'] ?>">
-                                                                <input type="hidden" name="batch_id" value="<?= $batch['batch_id'] ?>">
-                                                                <input type="submit" name="archive_batch" value="Archive" class="btn btn-danger">
-                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -1324,7 +1408,7 @@ if ($user->isLoggedIn()) {
                         <div class="col-md-12">
                             <div class="head clearfix">
                                 <div class="isw-grid"></div>
-                                <h1>List of Archive Medicines / Devices </h1>
+                                <h1>List of Quarantined Medicines / Devices </h1>
                                 <ul class="buttons">
                                     <li><a href="#" class="isw-download"></a></li>
                                     <li><a href="#" class="isw-attachment"></a></li>
@@ -1342,34 +1426,37 @@ if ($user->isLoggedIn()) {
                                 <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="15%">Generic Name</th>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
+                                            <th width="15%">Batch</th>
                                             <th width="10%">Last check date</th>
-                                            <th width="10%">Date Archived / Expired</th>
+                                            <th width="10%">Date Expired</th>
+                                            <th width="10%">Date Quarantined</th>
                                             <th width="10%">Staff</th>
-                                            <th width="10%">Delete</th>
+                                            <th width="10%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch', 'status', 4);
+                                        $pagNum = $override->getCount('batch', 'status', 2);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
                                         } else {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
-                                        foreach ($override->getWithLimit('batch', 'status', 4, $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('batch', 'status', 2, $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $status = $override->get('maintainance_status', 'id', $batch['status'])[0]['name'];
-                                            $name = $override->get('batch_description', 'id', $_GET['updateId'])[0]['name'];
-                                            $last_check_date = $override->get('batch_description', 'id', $_GET['updateId'])[0]['last_check_date'];
-                                            $next_check_date = $override->get('batch_description', 'batch_id', $batch['id'])[0]['next_check_date'];
-                                            // print_r($last_check_date);
+                                            $generic_name = $override->get('generic', 'id', $batch['generic_id'])[0]['name'];
+                                            $brand_name = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
                                         ?>
                                             <tr>
-                                                <td><?= $batch['name'] ?></td>
-                                                <td><?= $last_check_date ?></td>
+                                                <td><?= $generic_name ?></td>
+                                                <td><?= $brand_name ?></td>
+                                                <td><?= $batch['batch_no'] ?></td>
+                                                <td><?= $batch['expire_date'] ?></td>
+                                                <td><?= $batch['last_check'] ?></td>
                                                 <td><?= $batch['create_on'] ?></td>
                                                 <td><?= $staff ?></td>
                                                 <td>

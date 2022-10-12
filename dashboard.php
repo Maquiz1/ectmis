@@ -66,51 +66,7 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
-        } elseif (Input::get('update_check')) {
-            $validate = new validate();
-            $validate = $validate->check($_POST, array(
-                'last_check' => array(
-                    'required' => true,
-                ),
-                'next_check' => array(
-                    'required' => true,
-                )
-            ));
-            if ($validate->passed()) {
-                try {
-                    $user->createRecord('check_records', array(
-                        'generic_id' => Input::get('id2'),
-                        'brand_id' => Input::get('brand_id2'),
-                        'batch_id' => Input::get('batch_id2'),
-                        'batch_no' => Input::get('batch_no2'),
-                        'quantity' => Input::get('quantity2'),
-                        'added' => 0,
-                        'assigned' => 0,
-                        'balance' => Input::get('quantity_db2'),
-                        'create_on' => date('Y-m-d'),
-                        'staff_id' => $user->data()->id,
-                        'status' => 1,
-                        'study_id' => Input::get('study_id2'),
-                        'last_check' => Input::get('last_check'),
-                        'next_check' => Input::get('next_check'),
-                        'category' => Input::get('category2'),
-                        'use_group' => Input::get('use_group2'),
-                        'maintainance' => Input::get('maintainance2'),
-                        'use_case' => Input::get('use_case2'),
-                        'remarks' => Input::get('remarks2'),
-                        'expire_date' => '',
-                    ));
-                    $BatchLastRow1 = $override->lastRow('check_records', 'id');
-                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), $BatchLastRow1[0]['generic_id']);
-                    $user->updateRecord('batch', array('last_check' => Input::get('last_check')), $BatchLastRow1[0]['generic_id']);
-                    $successMessage = 'Check Status Updated Successful';
-                } catch (Exception $e) {
-                    die($e->getMessage());
-                }
-            } else {
-                $pageError = $validate->errors();
-            }
-        }
+        } 
     }
 } else {
     Redirect::to('index.php');
@@ -219,11 +175,11 @@ if ($user->isLoggedIn()) {
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
                                         $generic_id = $bDiscription['id'];
-                                        $brand_id = $override->getNews('batch_records', 'brand_id', $generic_id, 'status', 1)[0]['brand_id'];
-                                        $batch_id = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
-                                        $batch_no = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
-                                        $category = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['category'];
-                                        $study_id = $override->getNews('batch_records', 'generic_id', $bDiscription['id'], 'status', 1)[0]['study_id'];
+                                        $brand_id = $override->getNews('batch', 'brand_id', $generic_id, 'status', 1)[0]['brand_id'];
+                                        $batch_id = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
+                                        $batch_no = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
+                                        $category = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['category'];
+                                        $study_id = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['study_id'];
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['category_id'])[0]['name'];
@@ -350,14 +306,14 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <?php if ($check) { ?>
-                                                    <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>
+                                                    <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>
                                                 <?php } else { ?>
-                                                    <a href="#check_stock<?= $bDiscription['id'] ?>" role="button" class="btn btn-success btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">OK!</a>
+                                                    <a href="#" role="button" class="btn btn-success btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">OK!</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
                                                 <?php if ($check1) { ?>
-                                                    <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
+                                                    <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
                                                 <?php } else { ?>
                                                     <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
                                                 <?php } ?>
@@ -374,7 +330,6 @@ if ($user->isLoggedIn()) {
                                             <td>
                                                 <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                                 <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" gen_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Update</a>
-                                                <!-- <a href="#burn<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Burn / Destroy</a> -->
                                             </td>
                                         </tr>
 
@@ -469,159 +424,7 @@ if ($user->isLoggedIn()) {
                                                     </div>
                                                 </form>
                                             </div>
-                                        </div>
-
-                                        <div class="modal fade" id="check_stock<?= $bDiscription['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <form method="post">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                            <h4>Update Stock Info</h4>
-                                                        </div>
-                                                        <div class="modal-body modal-body-np">
-                                                            <div class="row">
-
-                                                                <div class="col-sm-6">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Generic Name:</label>
-                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="name" name="name" disabled />
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Brand Name</label>
-                                                                            <select name="brand_id2" id="brand_id2" style="width: 100%;" required>
-                                                                                <option value="">Select brand</option>
-
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-4">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Batch No:</label>
-                                                                            <select name="batch_id2" id="batch_id2" style="width: 100%;" required>
-                                                                                <option value="">Select Batch</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-4">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Check Date:</label>
-                                                                            <input value=" " class="validate[required]" type="date" name="last_check" id="last_check" />
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-4">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Next Check:</label>
-                                                                            <input value=" " class="validate[required]" type="date" name="next_check" id="next_check" />
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                            <div class="row">                                                                
-
-                                                                <div class="col-sm-12">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Remarks:</label>
-                                                                            <div class="col-md-9">
-                                                                                <textarea class="" name="remarks" id="remarks" rows="4"></textarea>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="dr"><span></span></div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="id2" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="study_id2" value="<?= $bDiscription['study_id'] ?>">
-                                                            <input type="hidden" name="batch_no2" value="" id="batch_no2">
-                                                            <input type="hidden" name="quantity2" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="hidden" name="notify_quantity2" value="<?= $bDiscription['notify_quantity'] ?>">
-                                                            <input type="hidden" name="use_group2" value="<?= $bDiscription['use_group'] ?>">
-                                                            <input type="hidden" name="use_case2" value="<?= $bDiscription['use_case'] ?>">
-                                                            <input type="hidden" name="category2" value="" id="category2">
-                                                            <input type="hidden" name="maintainance2" value="<?= $bDiscription['maintainance'] ?>">
-                                                            <input type="hidden" name="quantity_db2" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
-                                                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal fade" id="archive<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <form method="post">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                            <h4>Delete Product</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <strong style="font-weight: bold;color: red">
-                                                                <p>Are you sure you want to Archive this Product</p>
-                                                            </strong>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
-                                                            <input type="submit" name="archive_batch" value="Archive" class="btn btn-danger">
-                                                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal fade" id="delete<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <form method="post">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                            <h4>Delete Product</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <strong style="font-weight: bold;color: red">
-                                                                <p>Are you sure you want to delete this Product</p>
-                                                            </strong>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
-                                                            <input type="submit" name="delete_file" value="Delete" class="btn btn-danger">
-                                                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        </div>                                        
                                     <?php } ?>
                                 </tbody>
                             </table>
