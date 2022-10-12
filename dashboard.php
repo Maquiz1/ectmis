@@ -25,7 +25,6 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                print_r($_POST);
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('added');
@@ -493,21 +492,6 @@ if ($user->isLoggedIn()) {
         }
 
         $(document).ready(function() {
-            // $(document).on('click', '.update', function() {
-            //     var getUid = $(this).attr('update_generic_id1');
-            //     $('#fl_wait').show();
-            //     $.ajax({
-            //         url: "process.php?content=update_generic_id1",
-            //         method: "GET",
-            //         data: {
-            //             getUid: getUid
-            //         },
-            //         success: function(data) {
-            //             $('#update_generic_id').html(data);
-            //             $('#fl_wait').hide();
-            //         }
-            //     });
-            // })
 
             $('#update_generic_id').change(function() {
                 var getUid = $(this).val();
@@ -580,140 +564,6 @@ if ($user->isLoggedIn()) {
                 });
 
             });
-
-            
-
-
-            $(document).on('click', '.update', function() {
-                var getUid = $(this).attr('gen_id');
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=bat3",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $('#gen_name').val(data.gen_name);
-                        $('#category').val(data.category);
-                        $('#last_check').val(data.last_check);
-                        $('#next_check').val(data.next_check);
-                        $('#expire_date').val(data.expire_date);
-                        $('#fl_wait').hide();
-                    }
-                });
-            })
-
-            $(document).on('click', '.check', function() {
-                var getUid = $(this).attr('check_id');
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=gen",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#brand_id2').html(data);
-                        $('#fl_wait').hide();
-                    }
-                });
-
-            });
-
-            $('#brand_id2').change(function() {
-                var getUid = $(this).val();
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=bat",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#batch_id2').html(data);
-                        $('#fl_wait').hide();
-                    }
-                });
-
-            });
-
-            $('#batch_id2').change(function() {
-                var getUid = $(this).val();
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=batch_id_check",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $('#batch_no2').val(data.batch_no);
-                        $('#fl_wait').hide();
-                    }
-                });
-
-            });
-
-            $(document).on('click', '.check', function() {
-                var getUid = $(this).attr('check_id');
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=bat3",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $('#category2').val(data.category);
-                        $('#last_check2').val(data.last_check);
-                        $('#next_check2').val(data.next_check);
-                        $('#expire_date2').val(data.expire_date);
-                        $('#fl_wait').hide();
-                    }
-                });
-            })
-
-            // $('#batch_id').change(function() {
-            //     var getUid = $(this).val();
-            //     $('#fl_wait').show();
-            //     $.ajax({
-            //         url: "process.php?content=batch_id_check",
-            //         method: "GET",
-            //         data: {
-            //             getUid: getUid
-            //         },
-            //         dataType: "json",
-            //         success: function(data) {
-            //             $('#batch_no2').val(data.batch_no);
-            //             $('#fl_wait').hide();
-            //         }
-            //     });
-
-            // });
-
-
-            // $(document).on('click', '.check', function() {
-            //     var getUid = $(this).attr('check_id');
-            //     $('#fl_wait').show();
-            //     $.ajax({
-            //         url: "process.php?content=gen2",
-            //         method: "GET",
-            //         data: {
-            //             getUid: getUid
-            //         },
-            //         dataType: "json",
-            //         success: function(data) {
-            //             $('#maintainance2').val(data.maintainance);
-            //             $('#category2').val(data.category);
-            //             $('#fl_wait').hide();
-            //         }
-            //     });
-
-            // });
 
         });
     </script>

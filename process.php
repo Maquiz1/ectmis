@@ -66,14 +66,6 @@ elseif ($_GET['content'] == 'a_brand') {
         $project_id = $override->get('batch', 'id', $_GET['getUid']);
         foreach ($project_id as $name) {
             $output['batch_no'] = $name['batch_no'];
-        }
-        echo json_encode($output);
-    }
-} elseif ($_GET['content'] == 'update_batch_id') {
-    if ($_GET['getUid']) {
-        $output = array();
-        $project_id = $override->get('batch', 'id', $_GET['getUid']);
-        foreach ($project_id as $name) {
             $output['category'] = $name['category'];
         }
         echo json_encode($output);
