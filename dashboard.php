@@ -25,19 +25,21 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
+                print_r($_POST);
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $total_quantity = Input::get('quantity_db') + Input::get('added');
                     try {
                         $user->updateRecord('generic', array(
                             'quantity' => $total_quantity,
+                            'balance' => $total_quantity,
                         ), Input::get('id'));
 
                         $user->createRecord('batch_records', array(
                             'generic_id' => Input::get('id'),
-                            'brand_id' => Input::get('brand_id'),
-                            'batch_id' => Input::get('batch_id'),
-                            'batch_no' => Input::get('batch_no'),
+                            'brand_id' => Input::get('update_brand_id'),
+                            'batch_id' => Input::get('update_batch_id'),
+                            'batch_no' => Input::get('update_batch_no'),
                             'quantity' => 0,
                             'assigned' => 0,
                             'added' => Input::get('added'),
@@ -48,10 +50,7 @@ if ($user->isLoggedIn()) {
                             'study_id' => Input::get('study_id'),
                             'last_check' => Input::get('last_check'),
                             'next_check' => Input::get('next_check'),
-                            'category' => Input::get('category'),
-                            'use_group' => Input::get('use_group'),
-                            'maintainance' => Input::get('maintainance'),
-                            'use_case' => Input::get('use_case'),
+                            'category' => Input::get('update_category_id'),
                             'remarks' => Input::get('remarks'),
                             'expire_date' => Input::get('expire_date'),
                         ));
@@ -66,7 +65,7 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
-        } 
+        }
     }
 } else {
     Redirect::to('index.php');
@@ -91,7 +90,7 @@ if ($user->isLoggedIn()) {
             <div class="breadLine">
 
                 <ul class="breadcrumb">
-                    <li><a href="#">Dashboard</a> <span class="divider"></span></li>
+                    <li><a href="dashboard.php">Dashboard</a> <span class="divider"></span></li>
                 </ul>
                 <?php include 'pageInfo.php' ?>
             </div>
@@ -200,7 +199,7 @@ if ($user->isLoggedIn()) {
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
                                         $balance = $bDiscription['balance'];
-                                        $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'],'status', 1)[0]['SUM(balance)'];
+                                        $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
 
                                         $check = 0;
                                         $check1 = 0;
@@ -324,11 +323,11 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update" update_generic_id1="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
                                                 <?php } elseif ($batchBalance == 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update" update_generic_id1="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
                                                 <?php } else { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" update_generic_id1="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
@@ -352,7 +351,15 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Generic Name:</label>
-                                                                            <input value="<?= $bDiscription['name'] ?>" type="text" id="update_generic_id" name="update_generic_name" disabled />
+                                                                            <select name="update_generic_id" id="update_generic_id" style="width: 100%;" required>
+                                                                                <option value="">Select Generic</option>
+                                                                                <?php
+                                                                                $batches = $override->get('generic', 'status', 1) ?>
+                                                                                <?php foreach ($batches as $batch) { ?>
+                                                                                    <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                                                <?php }
+                                                                                ?>
+                                                                            </select>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -361,7 +368,7 @@ if ($user->isLoggedIn()) {
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Brand Name</label>
-                                                                            <select name="brand_id" id="brand_id" style="width: 100%;" required>
+                                                                            <select name="update_brand_id" id="update_brand_id" style="width: 100%;" required>
                                                                                 <option value="">Select brand</option>
                                                                             </select>
                                                                         </div>
@@ -369,33 +376,51 @@ if ($user->isLoggedIn()) {
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-sm-4">
+                                                                <div class="col-sm-3">
                                                                     <div class="row-form clearfix">
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Batch No:</label>
-                                                                            <select name="batch_id" id="batch_id" style="width: 100%;" required>
+                                                                            <select name="update_batch_id" id="update_batch_id" style="width: 100%;" required>
                                                                                 <option value="">Select Batch</option>
                                                                             </select>
                                                                         </div>
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="col-sm-4">
+                                                                <div class="col-sm-3">
+                                                                    <div class="row-form clearfix">
+                                                                        <!-- select -->
+                                                                        <div class="form-group">
+                                                                            <label>Study Name:</label>
+                                                                            <select name="study_id" id="study_id" style="width: 100%;" required>
+                                                                                <option value="">Select Study</option>
+                                                                                <?php
+                                                                                $batches = $override->get('study', 'status', 1) ?>
+                                                                                <?php foreach ($batches as $batch) { ?>
+                                                                                    <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                                                <?php }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-3">
                                                                     <div class="row-form clearfix">
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Current Quantity::</label>
-                                                                            <input value="<?= $bDiscription['quantity'] ?>" class="validate[required]" type="number" name="quantity" id="name" disabled />
+                                                                            <input value="<?= $batchBalance ?>" type="number" name="quantity" id="name" style="width: 100%;" disabled />
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-4">
+                                                                <div class="col-sm-3">
                                                                     <div class="row-form clearfix">
                                                                         <!-- select -->
                                                                         <div class="form-group">
                                                                             <label>Quantity to Add:</label>
-                                                                            <input value=" " class="validate[required]" type="number" name="added" id="added" />
+                                                                            <input value=" " class="validate[required]" type="number" name="added" id="added" style="width: 100%;" />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -405,14 +430,9 @@ if ($user->isLoggedIn()) {
                                                         </div>
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="study_id" value="<?= $bDiscription['study_id'] ?>">
-                                                            <input type="hidden" name="notify_quantity" value="<?= $bDiscription['notify_quantity'] ?>">
-                                                            <input type="hidden" name="use_group" value="<?= $bDiscription['use_group'] ?>">
-                                                            <input type="hidden" name="use_case" value="<?= $bDiscription['use_case'] ?>">
-                                                            <input type="hidden" name="maintainance" value="<?= $bDiscription['maintainance'] ?>">
-                                                            <input type="hidden" name="category" value="<?= $bDiscription['category'] ?>">
                                                             <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
-                                                            <input type="hidden" name="batch_no" value="" id="batch_no">
+                                                            <input type="hidden" name="update_batch_no" value="" id="update_batch_no">
+                                                            <input type="hidden" name="update_category_id" value="" id="update_category_id">
                                                             <input type="hidden" name="last_check" value="" id="last_check">
                                                             <input type="hidden" name="next_check" value="" id="next_check">
                                                             <input type="hidden" name="expire_date" value="" id="expire_date">
@@ -422,7 +442,7 @@ if ($user->isLoggedIn()) {
                                                     </div>
                                                 </form>
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     <?php } ?>
                                 </tbody>
                             </table>
@@ -473,56 +493,95 @@ if ($user->isLoggedIn()) {
         }
 
         $(document).ready(function() {
-            $(document).on('click', '.update', function() {
-                var getUid = $(this).attr('gen_id');
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=gen",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#brand_id').html(data);
-                        $('#fl_wait').hide();
-                    }
-                });
-            })
+            // $(document).on('click', '.update', function() {
+            //     var getUid = $(this).attr('update_generic_id1');
+            //     $('#fl_wait').show();
+            //     $.ajax({
+            //         url: "process.php?content=update_generic_id1",
+            //         method: "GET",
+            //         data: {
+            //             getUid: getUid
+            //         },
+            //         success: function(data) {
+            //             $('#update_generic_id').html(data);
+            //             $('#fl_wait').hide();
+            //         }
+            //     });
+            // })
 
-            $('#brand_id').change(function() {
+            $('#update_generic_id').change(function() {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=bat",
+                    url: "process.php?content=update_generic_id",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#batch_id').html(data);
+                        $('#update_brand_id').html(data);
                         $('#fl_wait').hide();
                     }
                 });
 
             });
 
-            $('#batch_id').change(function() {
+
+            $('#update_brand_id').change(function() {
                 var getUid = $(this).val();
                 $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=batch_id_update",
+                    url: "process.php?content=update_brand_id",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#update_batch_id').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $('#update_batch_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=update_batch_id",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     dataType: "json",
                     success: function(data) {
-                        $('#batch_no').val(data.batch_no);
+                        $('#update_batch_no').val(data.batch_no);
                         $('#fl_wait').hide();
                     }
                 });
 
             });
+
+            $('#update_batch_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=update_batch_id",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        alert(data.category);
+                        $('#update_category_id').val(data.category);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            
 
 
             $(document).on('click', '.update', function() {

@@ -48,24 +48,33 @@ elseif ($_GET['content'] == 'a_brand') {
         <option value="<?= $batch['id'] ?>"><?= $batch['batch_no'] ?></option>
     <?php }
     
-} elseif ($_GET['content'] == 'generic_id3') {
-    $batches = $override->get('brand', 'generic_id', $_GET['getUid']) ?>
+} elseif ($_GET['content'] == 'update_generic_id') {
+    $batches = $override->getNews('brand', 'generic_id', $_GET['getUid'],'status',1) ?>
     <option value="">Select Brand</option>
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
     <?php }
-} elseif ($_GET['content'] == 'bat') {
-    $batches = $override->get('batch', 'brand_id', $_GET['getUid']) ?>
+} elseif ($_GET['content'] == 'update_brand_id') {
+    $batches = $override->getNews('batch', 'brand_id', $_GET['getUid'],'status',1) ?>
     <option value="">Select Batch</option>
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['batch_no'] ?></option>
     <?php }
-} elseif ($_GET['content'] == 'batch_id_update') {
+} elseif ($_GET['content'] == 'update_batch_id') {
     if ($_GET['getUid']) {
         $output = array();
         $project_id = $override->get('batch', 'id', $_GET['getUid']);
         foreach ($project_id as $name) {
             $output['batch_no'] = $name['batch_no'];
+        }
+        echo json_encode($output);
+    }
+} elseif ($_GET['content'] == 'update_batch_id') {
+    if ($_GET['getUid']) {
+        $output = array();
+        $project_id = $override->get('batch', 'id', $_GET['getUid']);
+        foreach ($project_id as $name) {
+            $output['category'] = $name['category'];
         }
         echo json_encode($output);
     }

@@ -319,7 +319,7 @@ if ($user->isLoggedIn()) {
 <html lang="en">
 
 <head>
-    <title> Info | Pharmacy </title>
+    <title> Info | e-CTMIS </title>
     <?php include "head.php"; ?>
 </head>
 
