@@ -194,11 +194,7 @@ if ($user->isLoggedIn()) {
             $successMessage = 'Medicine / Device Quarantine Successful';
         } elseif (Input::get('delete_batch')) {
             $user->updateRecord('batch', array(
-                'status' => 0,
-            ), Input::get('id'));
-
-            $user->updateRecord('batch_description', array(
-                'status' => 0,
+                'status' => 3,
             ), Input::get('id'));
             $successMessage = 'Medicine / Device Destroyed / Burned Successful';
         } elseif (Input::get('edit_site')) {
@@ -1494,7 +1490,7 @@ if ($user->isLoggedIn()) {
                         <div class="col-md-12">
                             <div class="head clearfix">
                                 <div class="isw-grid"></div>
-                                <h1>List of Archive Medicines / Devices </h1>
+                                <h1>List of Destroyed/ Burn Medicines / Devices </h1>
                                 <ul class="buttons">
                                     <li><a href="#" class="isw-download"></a></li>
                                     <li><a href="#" class="isw-attachment"></a></li>
@@ -1509,43 +1505,42 @@ if ($user->isLoggedIn()) {
                                 </ul>
                             </div>
                             <div class="block-fluid">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                            <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                     <thead>
                                         <tr>
-                                            <th width="10%">DATE</th>
-                                            <th width="10%">NAME</th>
-                                            <th width="10%">BATCH</th>
-                                            <th width="10%">RECEIVED</th>
-                                            <th width="10%">USED</th>
-                                            <th width="10%">BALANCE</th>
-                                            <th width="10%">EXPIRRE</th>
-                                            <th width="10%">INITIAL</th>
-                                            <th width="10%">REMARKS</th>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
+                                            <th width="15%">Batch</th>
+                                            <th width="10%">Last check date</th>
+                                            <th width="10%">Date Expired</th>
+                                            <th width="10%">Date Quarantined</th>
+                                            <th width="10%">Staff</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php $amnt = 0;
-                                        foreach ($override->get('batch_description_records', 'batch_description_id', $_GET['report_id']) as $batchDesc) {
-                                            $batch_no = $override->get('batch', 'id', $batchDesc['batch_description_id'])[0];
-                                            $name = $override->get('batch', 'id', $batchDesc['batch_description_id'])[0]['name'];
-                                            $expire = $override->get('batch', 'id', $batchDesc['batch_description_id'])[0]['expire_date'];
-                                            $staff = $override->get('user', 'id', $batchDesc['staff_id'])[0]['username'];
-                                            $dCat = $override->get('drug_cat', 'id', $batchDesc['cat_id'])[0];
-                                            $amnt = $batchDesc['quantity'] - $batchDesc['assigned'];
-                                            $balance = $override->get('batch_description', 'batch_id', $batchDesc['batch_description_id'])[0]['quantity'];
+                                        <?php
+                                        $amnt = 0;
+                                        $pagNum = $override->getCount('batch', 'status', 3);
+                                        $pages = ceil($pagNum / $numRec);
+                                        if (!$_GET['page'] || $_GET['page'] == 1) {
+                                            $page = 0;
+                                        } else {
+                                            $page = ($_GET['page'] * $numRec) - $numRec;
+                                        }
+                                        foreach ($override->getWithLimit('batch', 'status', 3, $page, $numRec) as $batch) {
+                                            $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
+                                            $generic_name = $override->get('generic', 'id', $batch['generic_id'])[0]['name'];
+                                            $brand_name = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
                                         ?>
                                             <tr>
-                                                <td> <?= $batchDesc['create_on'] ?></td>
-                                                <td> <?= $name ?></td>
-                                                <td><?= $batch_no['batch_no'] ?></td>
-                                                <td> <?= $batchDesc['quantity'] ?></td>
-                                                <td> <?= $batchDesc['assigned'] ?></td>
-                                                <!-- <td> <?= $balance ?></td>                                                     -->
-                                                <td> <?= number_format($batchDesc['quantity'] - $batchDesc['assigned']) ?></td>
-                                                <td> <?= $expire ?></td>
-                                                <td> <?= $staff ?></td>
-                                                <td> <?= $batchDesc['details'] ?></td>
-                                            </tr>
+                                                <td><?= $generic_name ?></td>
+                                                <td><?= $brand_name ?></td>
+                                                <td><?= $batch['batch_no'] ?></td>
+                                                <td><?= $batch['expire_date'] ?></td>
+                                                <td><?= $batch['last_check'] ?></td>
+                                                <td><?= $batch['create_on'] ?></td>
+                                                <td><?= $staff ?></td>                                                
+                                            </tr>                                            
                                         <?php } ?>
                                     </tbody>
                                 </table>

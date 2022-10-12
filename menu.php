@@ -200,6 +200,9 @@ if ($user->data()->accessLevel == 1) {
                         <a href="data.php?id=9">
                             <span class="text">Quarantined</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 2) ?></span>
                         </a>
+                        <a href="data.php?id=10">
+                            <span class="text">Burn / destroyed </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 3) ?></span>
+                        </a>
                         <a href="data.php?id=2">
                             <!-- <span class="text">30 Days To Expire</span> <span class="badge badge-primary badge-pill"><?= $override->getCount2('batch', 'expire_date', $todayPlus30, 'status', 1) ?></span> -->
                         </a>
