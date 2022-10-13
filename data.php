@@ -219,7 +219,7 @@ if ($user->isLoggedIn()) {
                 'quantity' => 0,
                 'assigned' => $batchQuantity,
                 'added' => 0,
-                'balance' => 0,
+                'balance' => $genericBalance,
                 'create_on' => date('Y-m-d'),
                 'staff_id' => $user->data()->id,
                 'status' => 2,
@@ -1306,7 +1306,6 @@ if ($user->isLoggedIn()) {
                                             <th width="20%">Brand</th>
                                             <th width="10%">Batch</th>
                                             <th width="5%">Received</th>
-                                            <th width="5%">Added</th>
                                             <th width="5%">Used</th>
                                             <th width="5%">Balance</th>
                                             <th width="5%">Staff</th>
@@ -1348,7 +1347,6 @@ if ($user->isLoggedIn()) {
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $batch['quantity'] ?></td>
-                                                <td><?= $batch['added'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>
@@ -1617,7 +1615,6 @@ if ($user->isLoggedIn()) {
                                             <th width="20%">Brand</th>
                                             <th width="10%">Batch</th>
                                             <th width="5%">Received</th>
-                                            <th width="5%">Added</th>
                                             <th width="5%">Used</th>
                                             <th width="5%">Balance</th>
                                             <th width="5%">Staff</th>
@@ -1658,7 +1655,6 @@ if ($user->isLoggedIn()) {
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $batch['quantity'] ?></td>
-                                                <td><?= $batch['added'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>

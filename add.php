@@ -333,19 +333,16 @@ if ($user->isLoggedIn()) {
             }
         } elseif (Input::get('assign_stock')) {
             $validate = $validate->check($_POST, array(
-                'study' => array(
+                'dispense_study_id' => array(
                     'required' => true,
                 ),
-                'generic' => array(
+                'dispense_generic_id' => array(
                     'required' => true,
                 ),
-                'brand' => array(
+                'dispense_brand_id' => array(
                     'required' => true,
                 ),
-                'batch' => array(
-                    'required' => true,
-                ),
-                'batch_no2' => array(
+                'dispense_batch_id' => array(
                     'required' => true,
                 ),
                 'staff' => array(
@@ -359,11 +356,11 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
+                print_r($_POST);
 
                 try {
-                    // $checkData = $override->selectData('assigned_stock', 'staff_id', Input::get('staff'), 'batch_id', Input::get('batch'), 'study_id', Input::get('study'))[0];
-                    $checkBatch = $override->selectData('batch', 'status', 1, 'id', Input::get('batch'), 'study_id', Input::get('study'))[0];
-                    $assignStock = $override->get('batch', 'id', Input::get('batch'))[0];
+                    $checkBatch = $override->selectData('batch', 'status', 1, 'id', Input::get('dispense_batch_id'), 'study_id', Input::get('dispense_study_id'))[0];
+                    $assignStock = $override->get('batch', 'id', Input::get('dispense_batch_id'))[0];
                     $newAssigned = $assignStock['assigned'] + Input::get('quantity');
                     $newQty = $checkBatch['quantity'] +  Input::get('quantity');
                     $newBalance = $checkBatch['quantity'] - Input::get('quantity');
@@ -373,16 +370,16 @@ if ($user->isLoggedIn()) {
                                 'quantity' => $newQty,
                                 'status' => 1,
                             ), $checkBatch['batch_id']);
-                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('batch'));
-                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('batch'));
-                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('batch'));
+                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('dispense_batch_id'));
+                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('dispense_batch_id'));
+                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('dispense_batch_id'));
                         } else {
                             $user->createRecord('assigned_stock', array(
-                                'study_id' => Input::get('study'),
-                                'generic_id' => Input::get('generic'),
-                                'brand_id' => Input::get('brand'),
-                                'batch_id' => Input::get('batch'),
-                                'batch_no' => Input::get('batch_no2'),
+                                'study_id' => Input::get('dispense_study_id'),
+                                'generic_id' => Input::get('dispense_generic_id'),
+                                'brand_id' => Input::get('dispense_brand_id'),
+                                'batch_id' => Input::get('dispense_batch_id'),
+                                'batch_no' => Input::get('dispense_batch_no'),
                                 'staff_id' => Input::get('staff'),
                                 'site_id' => Input::get('site'),
                                 'quantity' => Input::get('quantity'),
@@ -391,17 +388,17 @@ if ($user->isLoggedIn()) {
                                 'admin_id' => $user->data()->id,
                             ));
 
-                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('batch'));
-                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('batch'));
-                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('batch'));
+                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('dispense_batch_id'));
+                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('dispense_batch_id'));
+                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('dispense_batch_id'));
                         }
 
                         $user->createRecord('assigned_stock_rec', array(
-                            'study_id' => Input::get('study'),
-                            'generic_id' => Input::get('generic'),
-                            'brand_id' => Input::get('brand'),
-                            'batch_id' => Input::get('batch'),
-                            'batch_no' => Input::get('batch_no2'),
+                            'study_id' => Input::get('dispense_study_id'),
+                            'generic_id' => Input::get('dispense_generic_id'),
+                            'brand_id' => Input::get('dispense_brand_id'),
+                            'batch_id' => Input::get('dispense_batch_id'),
+                            'batch_no' => Input::get('dispense_batch_no'),
                             'staff_id' => Input::get('staff'),
                             'site_id' => Input::get('site'),
                             'quantity' => Input::get('quantity'),
@@ -410,13 +407,11 @@ if ($user->isLoggedIn()) {
                             'admin_id' => $user->data()->id,
                         ));
 
-                        // print_r($checkBatch['quantity']);
-
                         $user->createRecord('batch_records', array(
-                            'generic_id' => Input::get('generic'),
-                            'brand_id' => Input::get('brand'),
-                            'batch_id' => Input::get('batch'),
-                            'batch_no' => Input::get('batch_no2'),
+                            'generic_id' => Input::get('dispense_generic_id'),
+                            'brand_id' => Input::get('dispense_brand_id'),
+                            'batch_id' => Input::get('dispense_batch_id'),
+                            'batch_no' => Input::get('dispense_batch_no'),
                             'quantity' => $checkBatch['quantity'],
                             'assigned' => Input::get('quantity'),
                             'added' => 0,
@@ -424,15 +419,12 @@ if ($user->isLoggedIn()) {
                             'create_on' => date('Y-m-d'),
                             'staff_id' => $user->data()->id,
                             'status' => 1,
-                            'study_id' => Input::get('study'),
-                            'last_check' => '',
-                            'next_check' => '',
-                            'category' => Input::get('category2'),
-                            'use_group' => Input::get('use_group2'),
-                            'use_case' => Input::get('use_case2'),
-                            'maintainance' => Input::get('maintainance2'),
-                            'remarks' => '',
-                            'expire_date' => '',
+                            'study_id' => Input::get('dispense_study_id'),
+                            'last_check' => Input::get('dispense_last_check'),
+                            'next_check' => Input::get('dispense_next_check'),
+                            'category' => Input::get('dispense_category_id'),
+                            'remarks' => Input::get('notes'),
+                            'expire_date' => Input::get('dispense_expire_date'),
                         ));
                         $successMessage = 'Stock Assigned Successful';
                     } else {
@@ -584,6 +576,7 @@ if ($user->isLoggedIn()) {
                 )
             ));
             if ($validate->passed()) {
+
                 try {
                     $user->createRecord('batch', array(
                         'generic_id' => Input::get('generic_id3'),
@@ -593,7 +586,6 @@ if ($user->isLoggedIn()) {
                         'quantity' => Input::get('quantity'),
                         'notify_quantity' => 0,
                         'assigned' => 0,
-                        // 'added' => 0,
                         'balance' => Input::get('quantity'),
                         'manufacturer' => Input::get('manufacturer'),
                         'manufactured_date' => Input::get('manufactured_date'),
@@ -607,9 +599,6 @@ if ($user->isLoggedIn()) {
                         'next_check' => date('Y-m-d'),
                     ));
 
-                    // $checkBatch = $override->selectData('batch', 'status', 1, 'id', Input::get('generic_id3'), 'study_id', Input::get('study_id'))[0];
-                    // $newAssigned = $assignStock['assigned'] + Input::get('quantity');
-                    // $BatchLastRow1 = $override->lastRow('batch', 'id')[0];
                     $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
                     $newQty = $genericBalance['quantity'] +  Input::get('quantity');
                     $user->updateRecord('generic', array(
@@ -626,8 +615,8 @@ if ($user->isLoggedIn()) {
                         'batch_no' => Input::get('batch_no'),
                         'quantity' => Input::get('quantity'),
                         'assigned' => 0,
-                        'added' => 0,
-                        'balance' => Input::get('quantity'),
+                        'added' => Input::get('quantity'),
+                        'balance' => $newQty,
                         'create_on' => date('Y-m-d'),
                         'staff_id' => $user->data()->id,
                         'status' => 1,
@@ -1283,7 +1272,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Study</label>
-                                                    <select name="study" style="width: 100%;" id="study" required>
+                                                    <select name="dispense_study_id" style="width: 100%;" id="dispense_study_id" required>
                                                         <option value="">Select Study</option>
                                                         <?php foreach ($override->get('study', 'status', 1) as $study) { ?>
                                                             <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
@@ -1297,8 +1286,11 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Generic:</label>
-                                                    <select name="generic" style="width: 100%;" id="generic" required>
+                                                    <select name="dispense_generic_id" style="width: 100%;" id="dispense_generic_id" required>
                                                         <option value="">Select Generic</option>
+                                                        <?php foreach ($override->get('generic', 'status', 1) as $study) { ?>
+                                                            <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
+                                                        <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1309,7 +1301,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Brand:</label>
-                                                    <select name="brand" style="width: 100%;" id="brand" required>
+                                                    <select name="dispense_brand_id" style="width: 100%;" id="dispense_brand_id" required>
                                                         <option value="">Select Brand</option>
                                                     </select>
                                                 </div>
@@ -1322,11 +1314,11 @@ if ($user->isLoggedIn()) {
 
                                         <div class="col-sm-3">
                                             <div class="row-form clearfix">
-                                            <div class="form-group">
-                                                <label>Quantity:</label>
-                                                <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
+                                                <div class="form-group">
+                                                    <label>Quantity:</label>
+                                                    <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
+                                                </div>
                                             </div>
-                                            </div>                                           
 
                                         </div>
 
@@ -1336,7 +1328,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Batch:</label>
-                                                    <select name="batch" style="width: 100%;" id="batch" required>
+                                                    <select name="dispense_batch_id" style="width: 100%;" id="dispense_batch_id" required>
                                                         <option value="">Select batch</option>
                                                     </select>
                                                 </div>
@@ -1376,11 +1368,12 @@ if ($user->isLoggedIn()) {
                                     </div>
 
                                     <div class="footer tar">
-                                        <input value="" type="hidden" name="batch_no2" id="batch_no2" />
-                                        <input value="" type="hidden" name="maintainance2" id="maintainance2" />
-                                        <input value="" type="hidden" name="use_case2" id="use_case2" />
-                                        <input value="" type="hidden" name="use_group2" id="use_group2" />
-                                        <input value="" type="hidden" name="category2" id="category2" />
+                                        <input type="hidden" name="dispense_last_check" value="" id="dispense_last_check">
+                                        <input type="hidden" name="dispense_next_check" value="" id="dispense_next_check">
+                                        <input type="hidden" name="dispense_expire_date" value="" id="dispense_expire_date">
+                                        <input type="hidden" name="dispense_expire_date" value="" id="dispense_expire_date">
+                                        <input type="hidden" name="dispense_category_id" value="" id="dispense_category_id">
+                                        <input type="hidden" name="dispense_batch_no" value="" id="dispense_batch_no">
                                         <input type="submit" name="assign_stock" value="Submit" class="btn btn-default">
                                     </div>
 
@@ -1753,174 +1746,89 @@ if ($user->isLoggedIn()) {
                 });
 
             });
-            $('#study').change(function() {
+
+            $('#dispense_generic_id').change(function() {
                 var getUid = $(this).val();
                 $('#ld_batch').show();
                 $.ajax({
-                    url: "process.php?content=a_study",
+                    url: "process.php?content=dispense_generic_id",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#generic').html(data);
+                        $('#dispense_brand_id').html(data);
                         $('#ld_batch').hide();
                     }
                 });
 
             });
 
-            $('#generic').change(function() {
-                var getUid = $(this).val();
-                $('#ld_batch').show();
-                $.ajax({
-                    url: "process.php?content=a_generic",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#brand').html(data);
-                        $('#ld_batch').hide();
-                    }
-                });
-
-            });
-
-            $('#brand').change(function() {
+            $('#dispense_brand_id').change(function() {
                 var getUid = $(this).val();
                 $('#ld_staff').show();
                 $.ajax({
-                    url: "process.php?content=a_brand",
+                    url: "process.php?content=dispense_brand_id",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
-                        $('#batch').html(data);
+                        $('#dispense_batch_id').html(data);
                         $('#ld_staff').hide();
                     }
                 });
             });
 
-            $('#batch').change(function() {
+            $('#dispense_batch_id').change(function() {
                 var getUid = $(this).val();
                 $('#ld_staff').show();
                 $.ajax({
-                    url: "process.php?content=a_brand2",
+                    url: "process.php?content=dispense_batch_id",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     dataType: "json",
                     success: function(data) {
-                        // console.log(data.batch_no);
-                        $('#batch_no2').val(data.batch_no);
+                        $('#dispense_batch_no').val(data.batch_no);
+                        $('#dispense_last_check').val(data.last_check);
+                        $('#dispense_next_check').val(data.next_check);
+                        $('#dispense_expire_date').val(data.expire_date);
+                        $('#dispense_category_id').val(data.category);
                         $('#fl_wait').hide();
                     }
                 });
             });
 
-            $('#generic').change(function() {
+            $('#dispense_study_id').change(function() {
                 var getUid = $(this).val();
-                $('#ld_staff').show();
+                $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=a_generic2",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $('#generic_id2').val(data.generic_id);
-                        $('#maintainance2').val(data.maintainance);
-                        $('#use_case2').val(data.use_case);
-                        $('#use_group2').val(data.use_group);
-                        $('#category2').val(data.category);
-                        $('#fl_wait').hide();
-                    }
-                });
-            });
-
-            $('#study').change(function() {
-                var getUid = $(this).val();
-                $('#ld_staff').show();
-                $.ajax({
-                    url: "process.php?content=a_batch",
+                    url: "process.php?content=dispense_study_id",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
                         $('#staff').html(data);
-                        $('#ld_staff').hide();
+                        $('#fl_wait').hide();
                     }
                 });
 
             });
 
-            $('#study').change(function() {
+            $('#dispense_study_id').change(function() {
                 var getUid = $(this).val();
-                $('#ld_staff').show();
+                $('#fl_wait').show();
                 $.ajax({
-                    url: "process.php?content=a_batch2",
+                    url: "process.php?content=dispense_study_id2",
                     method: "GET",
                     data: {
                         getUid: getUid
                     },
                     success: function(data) {
                         $('#site').html(data);
-                        $('#ld_staff').hide();
-                    }
-                });
-
-            });
-
-
-            $('#wait_wd').hide();
-            $('#ds_data').change(function() {
-                $('#wait_wd').hide();
-                var getUid = $(this).val();
-                $.ajax({
-                    url: "process.php?content=district",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#wd_data').html(data);
-                        $('#wait_wd').hide();
-                    }
-                });
-            });
-
-            $('#a_cc').change(function() {
-                var getUid = $(this).val();
-                $('#wait').show();
-                $.ajax({
-                    url: "process.php?content=payAc",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#cus_acc').html(data);
-                        $('#wait').hide();
-                    }
-                });
-
-            });
-            $('#study_id').change(function() {
-                var getUid = $(this).val();
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=study",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#s2_2').html(data);
                         $('#fl_wait').hide();
                     }
                 });
