@@ -345,7 +345,7 @@ if ($user->isLoggedIn()) {
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <a href="data.php?id=7&did=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
+                                                <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
                                             </td>
                                         </tr>
 

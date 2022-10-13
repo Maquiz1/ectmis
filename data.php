@@ -1629,7 +1629,7 @@ if ($user->isLoggedIn()) {
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('batch_records', 'generic_id', $_GET['bid']);
+                                        $pagNum = $override->getCount('batch_records', 'generic_id', $_GET['gid']);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
@@ -1637,11 +1637,11 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-                                        foreach ($override->getWithLimit('batch_records', 'generic_id', $_GET['bid'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('batch_records', 'generic_id', $_GET['gid'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $generic = $override->get('generic', 'id', $_GET['bid'])[0]['name'];
+                                            $generic = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
                                             $brand = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
-                                            $generic_id = $override->get('generic', 'id', $_GET['bid'])[0]['id'];
+                                            $generic_id = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
                                             $brand_id = $override->get('brand', 'id', $batch['brand_id'])[0]['id'];
                                             $batch_id = $batch['id'];
                                             $batch_no = $batch['batch_no'];

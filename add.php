@@ -1277,66 +1277,95 @@ if ($user->isLoggedIn()) {
                             </div>
                             <div class="block-fluid">
                                 <form id="validation" method="post">
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Study</div>
-                                        <div class="col-md-9">
-                                            <select name="study" style="width: 100%;" id="study" required>
-                                                <option value="">Select Study</option>
-                                                <?php foreach ($override->get('study', 'status', 1) as $study) { ?>
-                                                    <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
-                                                <?php } ?>
-                                            </select>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Study</label>
+                                                    <select name="study" style="width: 100%;" id="study" required>
+                                                        <option value="">Select Study</option>
+                                                        <?php foreach ($override->get('study', 'status', 1) as $study) { ?>
+                                                            <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Generic</div>
-                                        <div id="ld_batch">
-                                            <span><img src="img/loaders/loader.gif" id="wait_ds1" title="loader.gif" /></span>
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Generic:</label>
+                                                    <select name="generic" style="width: 100%;" id="generic" required>
+                                                        <option value="">Select Generic</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-9">
-                                            <select name="generic" style="width: 100%;" id="generic" required>
-                                                <option value="">Select Generic</option>
-                                            </select>
+
+                                        <div class="col-sm-4">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Brand:</label>
+                                                    <select name="brand" style="width: 100%;" id="brand" required>
+                                                        <option value="">Select Brand</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Brand</div>
-                                        <div class="col-md-9">
-                                            <select name="brand" style="width: 100%;" id="brand" required>
-                                                <option value="">Select Brand</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Batch</div>
-                                        <div class="col-md-9">
-                                            <select name="batch" style="width: 100%;" id="batch" required>
-                                                <option value="">Select batch</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Staff</div>
-                                        <div class="col-md-9">
-                                            <select name="staff" style="width: 100%;" id="staff" required>
-                                                <option value="">Select Staff</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Site</div>
-                                        <div class="col-md-9">
-                                            <select name="site" style="width: 100%;" id="site" required>
-                                                <option value="">Select Site</option>
-                                            </select>
-                                        </div>
+
                                     </div>
 
-                                    <div class="row-form clearfix">
-                                        <div class="col-md-3">Quantity:</div>
-                                        <div class="col-md-9">
-                                            <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
+                                    <div class="row">
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                            <div class="form-group">
+                                                <label>Quantity:</label>
+                                                <input value="" class="validate[required]" type="number" name="quantity" id="quantity" />
+                                            </div>
+                                            </div>                                           
+
                                         </div>
+
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Batch:</label>
+                                                    <select name="batch" style="width: 100%;" id="batch" required>
+                                                        <option value="">Select batch</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Staff:</label>
+                                                    <select name="staff" style="width: 100%;" id="staff" required>
+                                                        <option value="">Select Staff</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Site:</label>
+                                                    <select name="site" style="width: 100%;" id="site" required>
+                                                        <option value="">Select Site</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     <div class="row-form clearfix">
