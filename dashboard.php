@@ -27,12 +27,27 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
-                    $total_quantity = Input::get('quantity_db') + Input::get('added');
+                    $checkGeneric = $override->get('generic','id',Input::get('id'))[0];
+                    $genericQuantity = $checkGeneric['quantity'] + Input::get('added');
+                    $genericBalance = $checkGeneric['balance'] + Input::get('added');
+
+                    $checkBatch = $override->get('batch','id',Input::get('update_batch_id'))[0];
+                    $batchLast = $checkBatch['last_check'];
+                    $batchNext = $checkBatch['next_check'];                    
+                    $batchexpire = $checkBatch['expire_date'];
+
+                    $batchQuantity = $checkBatch['quantity'] + Input::get('added');
+                    $batchBalance = $checkBatch['balance'] + Input::get('added');
                     try {
                         $user->updateRecord('generic', array(
-                            'quantity' => $total_quantity,
-                            'balance' => $total_quantity,
+                            'quantity' => $genericQuantity,
+                            'balance' => $genericBalance,
                         ), Input::get('id'));
+
+                        $user->updateRecord('batch', array(
+                            'quantity' => $batchQuantity,
+                            'balance' => $batchBalance,
+                        ), Input::get('update_batch_id'));
 
                         $user->createRecord('batch_records', array(
                             'generic_id' => Input::get('id'),
@@ -42,16 +57,16 @@ if ($user->isLoggedIn()) {
                             'quantity' => 0,
                             'assigned' => 0,
                             'added' => Input::get('added'),
-                            'balance' => $total_quantity,
+                            'balance' => $batchBalance,
                             'create_on' => date('Y-m-d'),
                             'staff_id' => $user->data()->id,
                             'status' => 1,
                             'study_id' => Input::get('study_id'),
-                            'last_check' => Input::get('last_check'),
-                            'next_check' => Input::get('next_check'),
+                            'last_check' => $batchLast,
+                            'next_check' => $batchNext,
                             'category' => Input::get('update_category_id'),
                             'remarks' => Input::get('remarks'),
-                            'expire_date' => Input::get('expire_date'),
+                            'expire_date' => $batchexpire,
                         ));
 
                         $successMessage = 'Stock guied Successful Updated';
@@ -429,12 +444,8 @@ if ($user->isLoggedIn()) {
                                                         </div>
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="quantity_db" value="<?= $bDiscription['quantity'] ?>">
                                                             <input type="hidden" name="update_batch_no" value="" id="update_batch_no">
-                                                            <input type="hidden" name="update_category_id" value="" id="update_category_id">
-                                                            <input type="hidden" name="last_check" value="" id="last_check">
-                                                            <input type="hidden" name="next_check" value="" id="next_check">
-                                                            <input type="hidden" name="expire_date" value="" id="expire_date">
+                                                            <input type="hidden" name="update_category_id" value="" id="update_category_id">                                                           
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
@@ -557,7 +568,6 @@ if ($user->isLoggedIn()) {
                     },
                     dataType: "json",
                     success: function(data) {
-                        alert(data.category);
                         $('#update_category_id').val(data.category);
                         $('#fl_wait').hide();
                     }

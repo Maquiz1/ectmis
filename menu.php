@@ -52,6 +52,8 @@ if ($user->data()->accessLevel == 1) {
                 <span class="isw-grid"></span><span class="text">Dashboard</span>
             </a>
         </li>
+        <?php if ($user->data()->accessLevel == 1) {
+ ?>
 
             <li class="openable">
                 <a href="#"><span class="isw-user"></span><span class="text">Staff</span></a>
@@ -69,7 +71,10 @@ if ($user->data()->accessLevel == 1) {
                 </ul>
             </li>
 
+<?php 
+} else {
 
+?>
             <li class="openable">
                 <a href="#"><span class="isw-lock"></span><span class="text">Studies</span></a>
                 <ul>
@@ -90,7 +95,12 @@ if ($user->data()->accessLevel == 1) {
             <li class="openable">
                 <a href="#"><span class="isw-archive"></span><span class="text">Manage Receiving</span></a>
                 <ul>
-                    <li>
+                <li class="">
+                        <a href="add.php?id=11">
+                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Name</span>
+                        </a>
+                    </li>
+                    <!-- <li>
                         <a href="add.php?id=4">
                             <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch</span>
                         </a>
@@ -104,7 +114,7 @@ if ($user->data()->accessLevel == 1) {
                         <a href="info.php?id=3&type=2">
                             <span class="glyphicon glyphicon-list"></span><span class="text">Devices</span>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             <li class="openable">
@@ -115,7 +125,7 @@ if ($user->data()->accessLevel == 1) {
                             <span class="glyphicon glyphicon-plus"></span><span class="text">dispense Device/Medicne</span>
                         </a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="info.php?id=6&type=1">
                             <span class="glyphicon glyphicon-list"></span><span class="text">Manage Medicine</span>
                         </a>
@@ -124,7 +134,7 @@ if ($user->data()->accessLevel == 1) {
                         <a href="info.php?id=6&type=2">
                             <span class="glyphicon glyphicon-list"></span><span class="text">Manage Devices</span>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
 
@@ -160,11 +170,6 @@ if ($user->data()->accessLevel == 1) {
                     <li class="">
                         <a href="add.php?id=10">
                             <span class="glyphicon glyphicon-plus"></span><span class="text">Add Brand Name</span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="add.php?id=11">
-                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Name</span>
                         </a>
                     </li>
                     <li class="">
@@ -218,22 +223,22 @@ if ($user->data()->accessLevel == 1) {
                 </ul>
             </li>
 
-            <li class="active">
+            <!-- <li class="active">
                 <a href="zebra.php" target="_blank">
                     <span class="isw-print"></span><span class="text">Zebra Print</span>
                 </a>
-            </li>
+            </li> -->
 
             <?php if ($user->data()->power == 1) { ?>
-                <li class="active">
+                <!-- <li class="active">
                     <a href="zebra.php">
                         <span class="isw-print"></span><span class="text">Zebra Print</span>
                     </a>
-                </li>
+                </li> -->
             <?php } ?>
 
 
-
+<?php }?>
     </ul>
 
     <div class="dr"><span></span></div>

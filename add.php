@@ -1570,7 +1570,7 @@ if ($user->isLoggedIn()) {
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
-                                                    <label></label>
+                                                    <label>Brand Name</label>
                                                     <select name="brand_id3" id="brand_id3" style="width: 100%;" required>
                                                         <option value="">Select brand</option>
 

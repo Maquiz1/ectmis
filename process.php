@@ -25,6 +25,12 @@ if ($_GET['content'] == 'region') {
     <?php foreach ($sts as $st) { ?>
         <option value="<?= $st['id'] ?>"><?= $st['name'] ?></option>
     <?php }
+}elseif ($_GET['content'] == 'generic_id3') {
+    $batches = $override->getNews('brand', 'generic_id', $_GET['getUid'],'status',1) ?>
+    <option value="">Select Brand</option>
+    <?php foreach ($batches as $batch) { ?>
+        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+    <?php }
 } elseif ($_GET['content'] == 'a_study') {
     $batches = $override->get('generic', 'study_id', $_GET['getUid']) ?>
     <option value="">Select Generic</option>
