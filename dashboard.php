@@ -320,7 +320,7 @@ if ($user->isLoggedIn()) {
                                                 <?php if ($check) { ?>
                                                     <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>
                                                 <?php } else { ?>
-                                                    <a href="#" role="button" class="btn btn-success btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">OK!</a>
+                                                    <a href="#" role="button" class="btn btn-success btn-sm check" data-toggle="modal" id="check">OK!</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
@@ -332,11 +332,11 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update1" update_quantity1="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
                                                 <?php } elseif ($batchBalance == 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update2" update_quantity2="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
                                                 <?php } else { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update3" update_quantity3="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
@@ -501,9 +501,28 @@ if ($user->isLoggedIn()) {
         }
 
         $(document).ready(function() {
+
+            $(document).on('click', '.update', function() {
+                var getUid = $(this).attr('update_quantity1');
+                // var btn_action = 'delete';
+                $.ajax({
+                    url: "process.php?content=update_generic_id",
+                    method: "GET",
+                    data: {
+                        getUid: getUid,
+                        // btn_action: btn_action,
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data.gen_id);
+                        $('#update_generic_id').val(data.gen_id);
+                        // productDataTable.ajax.reload();
+                    }
+                })
+            })
+
             $('#update_generic_id').change(function() {
                 var getUid = $(this).val();
-                console.log(getUid);
                 // $('#fl_wait').show();
                 $.ajax({
                     url: "process.php?content=update_generic_id",
