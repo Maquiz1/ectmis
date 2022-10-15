@@ -1632,7 +1632,7 @@ if ($user->isLoggedIn()) {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
 
-                                        foreach ($override->getWithLimit('batch_records', 'generic_id', $_GET['gid'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimitDescendingOrder('batch_records', 'generic_id', $_GET['gid'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $generic = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
                                             $brand = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
