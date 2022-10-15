@@ -195,11 +195,9 @@ if ($user->isLoggedIn()) {
             $category = $checkBatch['category'];
             $remarks = $checkBatch['remarks'];
 
-            $batchQuantity = $checkBatch['quantity'];
             $batchBalance = $checkBatch['balance'];
 
             $checkGeneric = $override->get('generic','id',$generic_id)[0];
-            $genericQuantity = $checkGeneric['quantity'] - $batchQuantity;
             $genericBalance = $checkGeneric['balance'] - $batchBalance;
 
             $user->updateRecord('batch', array(
@@ -207,7 +205,6 @@ if ($user->isLoggedIn()) {
             ), Input::get('id'));
 
             $user->updateRecord('generic', array(
-                'quantity' => $genericQuantity,
                 'balance' => $genericBalance,
             ), $generic_id);
 
@@ -217,8 +214,7 @@ if ($user->isLoggedIn()) {
                 'batch_id' => Input::get('id'),
                 'batch_no' => $batch_no,
                 'quantity' => 0,
-                'assigned' => $batchQuantity,
-                'added' => 0,
+                'assigned' => $batchBalance,
                 'balance' => $genericBalance,
                 'create_on' => date('Y-m-d'),
                 'staff_id' => $user->data()->id,
@@ -516,9 +512,8 @@ if ($user->isLoggedIn()) {
                                             <th width="15%">Generic</th>
                                             <th width="15%">Brand</th>
                                             <th width="10%">Batch No</th>
-                                            <th width="4%">Quantity</th>
                                             <th width="4%">Used</th>
-                                            <th width="4%">Remained</th>
+                                            <th width="4%">Balance</th>
                                             <th width="10%">Expire Date</th>
                                             <th width="10%">Next Check</th>
                                             <th width="5%">Expiration</th>
@@ -551,8 +546,13 @@ if ($user->isLoggedIn()) {
                                             <tr>
                                                 <td><?= $generic_name ?></td>
                                                 <td><?= $brand_name ?></td>
-                                                <td><?= $check_batch_no ?></td>
-                                                <td><?= $batchDesc['quantity'] ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['expire_date'] <= date('Y-m-d')) { ?>
+                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $check_batch_no?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $check_batch_no?></a>
+                                                    <?php } ?>
+                                                </td>
                                                 <td><?= $batchDesc['assigned'] ?></td>
                                                 <td><?= $batchDesc['balance'] ?></td>
                                                 <td><?= $batchDesc['expire_date'] ?></td>
@@ -1305,7 +1305,6 @@ if ($user->isLoggedIn()) {
                                             <th width="20%">Generic</th>
                                             <th width="20%">Brand</th>
                                             <th width="10%">Batch</th>
-                                            <th width="5%">Received</th>
                                             <th width="5%">Used</th>
                                             <th width="5%">Balance</th>
                                             <th width="5%">Staff</th>
@@ -1346,7 +1345,6 @@ if ($user->isLoggedIn()) {
                                                         <a href="data.php?id=11&bid=<?= $batch['id'] ?>" role="button" class="btn btn-success" data-toggle="modal"><?= $batch_no ?></a>
                                                     <?php } ?>
                                                 </td>
-                                                <td><?= $batch['quantity'] ?></td>
                                                 <td><?= $batch['assigned'] ?></td>
                                                 <td><?= $batch['balance'] ?></td>
                                                 <td><?= $staff ?></td>
@@ -1648,7 +1646,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $generic ?></td>
                                                 <td><?= $brand ?></td>
                                                 <td>
-                                                    <?php if ($batch['expire_date'] <= date('Y-m-d')) { ?>
+                                                    <?php if ($batch['status'] == 2) { ?>
                                                         <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $batch_no ?></a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $batch_no ?></a>
@@ -1662,7 +1660,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batch['last_check'] ?></td>
                                                 <td>
                                                     <?php if ($batch['expire_date'] <= date('Y-m-d')) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Quarantined</a>
+                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
                                                     <?php } ?>

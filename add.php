@@ -356,25 +356,30 @@ if ($user->isLoggedIn()) {
                 ),
             ));
             if ($validate->passed()) {
-                print_r($_POST);
-
                 try {
-                    $checkBatch = $override->selectData('batch', 'status', 1, 'id', Input::get('dispense_batch_id'), 'study_id', Input::get('dispense_study_id'))[0];
-                    $assignStock = $override->get('batch', 'id', Input::get('dispense_batch_id'))[0];
-                    $newAssigned = $assignStock['assigned'] + Input::get('quantity');
-                    $newQty = $checkBatch['quantity'] +  Input::get('quantity');
-                    $newBalance = $checkBatch['quantity'] - Input::get('quantity');
-                    if ($newAssigned <= $assignStock['quantity']) {
+                    $checkBatch = $override->selectData1('batch', 'status', 1, 'id', Input::get('dispense_batch_id'))[0];
+                    $batchAssigned = $checkBatch['assigned'] + Input::get('quantity');
+                    $batchBalance = $checkBatch['balance'] -  Input::get('quantity');
+
+                    $checkGeneric = $override->selectData1('generic', 'status', 1, 'id', Input::get('dispense_generic_id'))[0];
+                    $genericAssigned = $checkGeneric['assigned'] + Input::get('quantity');
+                    $genericBalance = $checkGeneric['balance'] - Input::get('quantity');
+                    
+                    if (Input::get('quantity') <= $checkBatch['balance']) {
                         if ($checkBatch) {
-                            $user->updateRecord('assigned_stock', array(
-                                'quantity' => $newQty,
+                            $user->updateRecord('batch', array(
                                 'status' => 1,
-                            ), $checkBatch['batch_id']);
-                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('dispense_batch_id'));
-                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('dispense_batch_id'));
-                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('dispense_batch_id'));
-                        } else {
-                            $user->createRecord('assigned_stock', array(
+                                'assigned' => $batchAssigned,
+                                'balance' => $batchBalance
+                            ), Input::get('dispense_batch_id'));
+
+                            $user->updateRecord('generic', array(
+                                'status' => 1,
+                                'assigned' => $genericAssigned,
+                                'balance' => $genericBalance
+                            ), Input::get('dispense_generic_id'));
+
+                            $user->createRecord('assigned_stock_rec', array(
                                 'study_id' => Input::get('dispense_study_id'),
                                 'generic_id' => Input::get('dispense_generic_id'),
                                 'brand_id' => Input::get('dispense_brand_id'),
@@ -388,47 +393,30 @@ if ($user->isLoggedIn()) {
                                 'admin_id' => $user->data()->id,
                             ));
 
-                            $user->updateRecord('batch', array('assigned' => $newAssigned), Input::get('dispense_batch_id'));
-                            $user->updateRecord('batch', array('quantity' => $newBalance), Input::get('dispense_batch_id'));
-                            $user->updateRecord('batch', array('balance' => $newBalance), Input::get('dispense_batch_id'));
+                            $user->createRecord('batch_records', array(
+                                'generic_id' => Input::get('dispense_generic_id'),
+                                'brand_id' => Input::get('dispense_brand_id'),
+                                'batch_id' => Input::get('dispense_batch_id'),
+                                'batch_no' => Input::get('dispense_batch_no'),
+                                'quantity' => 0,
+                                'assigned' => Input::get('quantity'),
+                                'balance' => $genericBalance,
+                                'create_on' => date('Y-m-d'),
+                                'staff_id' => $user->data()->id,
+                                'status' => 1,
+                                'study_id' => Input::get('dispense_study_id'),
+                                'last_check' => Input::get('dispense_last_check'),
+                                'next_check' => Input::get('dispense_next_check'),
+                                'category' => Input::get('dispense_category_id'),
+                                'remarks' => Input::get('notes'),
+                                'expire_date' => Input::get('dispense_expire_date'),
+                            ));
+                            $successMessage = 'Stock Assigned Successful';
+                        } else {
+                            $errorMessage = 'That  Batch is not Active';
                         }
-
-                        $user->createRecord('assigned_stock_rec', array(
-                            'study_id' => Input::get('dispense_study_id'),
-                            'generic_id' => Input::get('dispense_generic_id'),
-                            'brand_id' => Input::get('dispense_brand_id'),
-                            'batch_id' => Input::get('dispense_batch_id'),
-                            'batch_no' => Input::get('dispense_batch_no'),
-                            'staff_id' => Input::get('staff'),
-                            'site_id' => Input::get('site'),
-                            'quantity' => Input::get('quantity'),
-                            'notes' => Input::get('notes'),
-                            'status' => 1,
-                            'admin_id' => $user->data()->id,
-                        ));
-
-                        $user->createRecord('batch_records', array(
-                            'generic_id' => Input::get('dispense_generic_id'),
-                            'brand_id' => Input::get('dispense_brand_id'),
-                            'batch_id' => Input::get('dispense_batch_id'),
-                            'batch_no' => Input::get('dispense_batch_no'),
-                            'quantity' => $checkBatch['quantity'],
-                            'assigned' => Input::get('quantity'),
-                            'added' => 0,
-                            'balance' => $newBalance,
-                            'create_on' => date('Y-m-d'),
-                            'staff_id' => $user->data()->id,
-                            'status' => 1,
-                            'study_id' => Input::get('dispense_study_id'),
-                            'last_check' => Input::get('dispense_last_check'),
-                            'next_check' => Input::get('dispense_next_check'),
-                            'category' => Input::get('dispense_category_id'),
-                            'remarks' => Input::get('notes'),
-                            'expire_date' => Input::get('dispense_expire_date'),
-                        ));
-                        $successMessage = 'Stock Assigned Successful';
                     } else {
-                        $errorMessage = 'Insufficient Amount on Stock';
+                        $errorMessage = 'Insufficient Amount on Stock Batch';
                     }
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -583,7 +571,6 @@ if ($user->isLoggedIn()) {
                         'brand_id' => Input::get('brand_id3'),
                         'batch_no' => Input::get('batch_no'),
                         'study_id' => Input::get('study_id'),
-                        'quantity' => Input::get('quantity'),
                         'notify_quantity' => 0,
                         'assigned' => 0,
                         'balance' => Input::get('quantity'),
@@ -600,9 +587,8 @@ if ($user->isLoggedIn()) {
                     ));
 
                     $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
-                    $newQty = $genericBalance['quantity'] +  Input::get('quantity');
+                    $newQty = $genericBalance['balance'] +  Input::get('quantity');
                     $user->updateRecord('generic', array(
-                        'quantity' => $newQty,
                         'balance' => $newQty,
                     ), Input::get('generic_id3'));
 
@@ -615,7 +601,6 @@ if ($user->isLoggedIn()) {
                         'batch_no' => Input::get('batch_no'),
                         'quantity' => Input::get('quantity'),
                         'assigned' => 0,
-                        'added' => Input::get('quantity'),
                         'balance' => $newQty,
                         'create_on' => date('Y-m-d'),
                         'staff_id' => $user->data()->id,
@@ -661,7 +646,7 @@ if ($user->isLoggedIn()) {
             <div class="breadLine">
 
                 <ul class="breadcrumb">
-                    <li><a href="#">Simple Admin</a> <span class="divider">></span></li>
+                    <li><a href="#">Simple Admin</a> <span class="divider"></span></li>
                     <li class="active">Add Info</li>
                 </ul>
                 <?php include 'pageInfo.php' ?>
@@ -1370,7 +1355,6 @@ if ($user->isLoggedIn()) {
                                     <div class="footer tar">
                                         <input type="hidden" name="dispense_last_check" value="" id="dispense_last_check">
                                         <input type="hidden" name="dispense_next_check" value="" id="dispense_next_check">
-                                        <input type="hidden" name="dispense_expire_date" value="" id="dispense_expire_date">
                                         <input type="hidden" name="dispense_expire_date" value="" id="dispense_expire_date">
                                         <input type="hidden" name="dispense_category_id" value="" id="dispense_category_id">
                                         <input type="hidden" name="dispense_batch_no" value="" id="dispense_batch_no">

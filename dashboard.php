@@ -27,25 +27,21 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
-                    $checkGeneric = $override->get('generic','id',Input::get('id'))[0];
-                    $genericQuantity = $checkGeneric['quantity'] + Input::get('added');
+                    $checkGeneric = $override->get('generic', 'id', Input::get('id'))[0];
                     $genericBalance = $checkGeneric['balance'] + Input::get('added');
 
-                    $checkBatch = $override->get('batch','id',Input::get('update_batch_id'))[0];
+                    $checkBatch = $override->get('batch', 'id', Input::get('update_batch_id'))[0];
                     $batchLast = $checkBatch['last_check'];
-                    $batchNext = $checkBatch['next_check'];                    
+                    $batchNext = $checkBatch['next_check'];
                     $batchexpire = $checkBatch['expire_date'];
 
-                    $batchQuantity = $checkBatch['quantity'] + Input::get('added');
                     $batchBalance = $checkBatch['balance'] + Input::get('added');
                     try {
                         $user->updateRecord('generic', array(
-                            'quantity' => $genericQuantity,
                             'balance' => $genericBalance,
                         ), Input::get('id'));
 
                         $user->updateRecord('batch', array(
-                            'quantity' => $batchQuantity,
                             'balance' => $batchBalance,
                         ), Input::get('update_batch_id'));
 
@@ -56,7 +52,6 @@ if ($user->isLoggedIn()) {
                             'batch_no' => Input::get('update_batch_no'),
                             'quantity' => Input::get('added'),
                             'assigned' => 0,
-                            'added' => 0,
                             'balance' => $genericBalance,
                             'create_on' => date('Y-m-d'),
                             'staff_id' => $user->data()->id,
@@ -220,7 +215,6 @@ if ($user->isLoggedIn()) {
                                         foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
                                             $nextCheck = $batch2['next_check'];
                                             $expireDate = $batch2['expire_date'];
-                                            // $Quantity = $batch2['balance'];
                                             if ($nextCheck <= date('Y-m-d')) {
                                                 $check = 1;
                                             }
@@ -337,11 +331,11 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update" update_generic_id1="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
                                                 <?php } elseif ($batchBalance == 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update" update_generic_id1="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
                                                 <?php } else { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" update_generic_id1="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
+                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update" update_generic_id="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
@@ -445,7 +439,7 @@ if ($user->isLoggedIn()) {
                                                         <div class="modal-footer">
                                                             <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
                                                             <input type="hidden" name="update_batch_no" value="" id="update_batch_no">
-                                                            <input type="hidden" name="update_category_id" value="" id="update_category_id">                                                           
+                                                            <input type="hidden" name="update_category_id" value="" id="update_category_id">
                                                             <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
                                                             <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                         </div>
@@ -503,10 +497,10 @@ if ($user->isLoggedIn()) {
         }
 
         $(document).ready(function() {
-
             $('#update_generic_id').change(function() {
                 var getUid = $(this).val();
-                $('#fl_wait').show();
+                console.log(getUid);
+                // $('#fl_wait').show();
                 $.ajax({
                     url: "process.php?content=update_generic_id",
                     method: "GET",
@@ -514,8 +508,9 @@ if ($user->isLoggedIn()) {
                         getUid: getUid
                     },
                     success: function(data) {
+                        console.log(data);
                         $('#update_brand_id').html(data);
-                        $('#fl_wait').hide();
+                        // $('#fl_wait').hide();
                     }
                 });
 
@@ -524,7 +519,7 @@ if ($user->isLoggedIn()) {
 
             $('#update_brand_id').change(function() {
                 var getUid = $(this).val();
-                $('#fl_wait').show();
+                // $('#fl_wait').show();
                 $.ajax({
                     url: "process.php?content=update_brand_id",
                     method: "GET",
@@ -533,7 +528,7 @@ if ($user->isLoggedIn()) {
                     },
                     success: function(data) {
                         $('#update_batch_id').html(data);
-                        $('#fl_wait').hide();
+                        // $('#fl_wait').hide();
                     }
                 });
 
