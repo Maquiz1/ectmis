@@ -175,8 +175,8 @@ class OverideData{
         return $result;
     }
 
-    public function getWithLimitDescendingOrder($table,$where,$id,$page,$numRec){
-        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' limit $page,$numRec ORDER BY 'id' DESC");
+    public function getWithLimitDescendingOrder($table,$where,$id,$page,$numRec,$value){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' limit $page,$numRec ORDER BY $value DESC");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }

@@ -168,7 +168,8 @@ if ($user->isLoggedIn()) {
                                         <th width="3%">Check</th>
                                         <th width="3%">Validity</th>
                                         <th width="3%">Quantity</th>
-                                        <th width="8%">Action</th>
+                                        <th width="8%">Entries</th>
+                                        <th width="8%">Checks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -340,6 +341,9 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
+                                            </td>
+                                            <td>
+                                                <a href="data.php?id=8&gid=<?= $bDiscription['id'] ?>" class="btn btn-info">Checks</a>
                                             </td>
                                         </tr>
 

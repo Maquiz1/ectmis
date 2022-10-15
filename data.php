@@ -13,11 +13,8 @@ $errorMessage = null;
 $noE = 0;
 $noC = 0;
 $noD = 0;
-$numRec = 100;
+$numRec = 5;
 $users = $override->getData('user');
-
-// $number = $nextCheck;
-// $nextCheck = date('Y-m-d', strtotime($checkDate . ' + 30 days'));
 
 $today = date('Y-m-d');
 $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
@@ -808,7 +805,6 @@ if ($user->isLoggedIn()) {
                                         $amnt = 0;
                                         $pagNum = $override->getCount('batch', 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
-                                        // print_r($pages);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
                                         } else {
@@ -1375,7 +1371,7 @@ if ($user->isLoggedIn()) {
                         <div class="col-md-12">
                             <div class="head clearfix">
                                 <div class="isw-grid"></div>
-                                <h1>Use Stock Guide Description</h1>
+                                <h1>Use Stock Guide Check Description</h1>
                                 <ul class="buttons">
                                     <li><a href="#" class="isw-download"></a></li>
                                     <li><a href="#" class="isw-attachment"></a></li>
@@ -1396,8 +1392,7 @@ if ($user->isLoggedIn()) {
                                             <th width="15%">Generic Name</th>
                                             <th width="15%">Brand Name</th>
                                             <th width="10%">check date</th>
-                                            <th width="10%">Status</th>
-                                            <th width="10%">Date Changed</th>
+                                            <th width="10%">Next check</th>
                                             <th width="10%">Remarks</th>
                                             <th width="10%">Staff</th>
                                         </tr>
@@ -1405,30 +1400,22 @@ if ($user->isLoggedIn()) {
                                     <tbody>
                                         <?php
                                         $amnt = 0;
-                                        $pagNum = $override->getCount('check_records', 'product_id', $_GET['updateId']);
+                                        $pagNum = $override->getCount('check_records', 'generic_id', $_GET['gid']);
                                         $pages = ceil($pagNum / $numRec);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
                                         } else {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
-                                        foreach ($override->getWithLimit('check_records', 'product_id', $_GET['updateId'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('check_records', 'generic_id', $_GET['gid'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
-                                            $brand_id = $override->get('brand', 'id', $_GET['updateId'])[0]['generic_id'];
-                                            $generic = $override->get('generic', 'id', $brand_id)[0]['name'];
-                                            $brand = $override->get('brand', 'id', $_GET['updateId'])[0]['name'];
-                                            if ($status == 1) {
-                                                $status = 'OK!';
-                                            } else {
-                                                $status = 'NOT OK!';
-                                            } ?>
-
+                                            $brand = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
+                                            $generic = $override->get('generic', 'id', $batch['generic_id'])[0]['name'] ?>
                                             <tr>
                                                 <td><?= $generic ?></td>
                                                 <td><?= $brand ?></td>
                                                 <td><?= $batch['last_check'] ?></td>
-                                                <td><?= $status ?></td>
-                                                <td><?= $batch['create_on'] ?></td>
+                                                <td><?= $batch['next_check'] ?></td>
                                                 <td><?= $batch['remark'] ?></td>
                                                 <td><?= $staff ?></td>
                                             </tr>
@@ -1631,8 +1618,7 @@ if ($user->isLoggedIn()) {
                                         } else {
                                             $page = ($_GET['page'] * $numRec) - $numRec;
                                         }
-
-                                        foreach ($override->getWithLimitDescendingOrder('batch_records', 'generic_id', $_GET['gid'], $page, $numRec) as $batch) {
+                                        foreach ($override->getWithLimit('batch_records', 'generic_id', $_GET['gid'], $page, $numRec) as $batch) {
                                             $staff = $override->get('user', 'id', $batch['staff_id'])[0]['firstname'];
                                             $generic = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
                                             $brand = $override->get('brand', 'id', $batch['brand_id'])[0]['name'];
@@ -1676,7 +1662,7 @@ if ($user->isLoggedIn()) {
                 </div>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <a href="data.php?page=<?php if (($_GET['page'] - 1) > 0) {
+                        <a href="data.php?id=<?= $_GET['id'] ?>&page=<?php if (($_GET['page'] - 1) > 0) {
                                                     echo $_GET['page'] - 1;
                                                 } else {
                                                     echo 1;
@@ -1700,14 +1686,6 @@ if ($user->isLoggedIn()) {
         </div>
     </div>
 </body>
-
-<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> -->
 
 <script>
     <?php if ($user->data()->pswd == 0) { ?>
@@ -1769,138 +1747,6 @@ if ($user->isLoggedIn()) {
                 }
             });
 
-        });
-
-        $('#tableId4').DataTable({
-
-            "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
-            },
-            // columns: columnDefs,
-
-            dom: 'lBfrtip',
-            buttons: [{
-
-                    extend: 'excelHtml5',
-                    title: 'Check_report',
-                    className: 'btn-primary'
-                },
-
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Check_report',
-                    className: 'btn-primary',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
-
-                },
-
-
-                {
-                    extend: 'csvHtml5',
-                    title: 'Check_report',
-                    className: 'btn-primary'
-                },
-                // {
-                //     extend: 'copyHtml5',
-                //     title: 'VISITS',
-                //     className: 'btn-primary'
-                // },
-                //     {
-                //         extend: 'print',
-                //         // name: 'printButton'
-                //         title: 'VISITS'
-                //     }
-            ],
-            // "pageLength": 100
-        });
-
-        $('#tableId8').DataTable({
-
-            "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
-            },
-            // columns: columnDefs,
-
-            dom: 'lBfrtip',
-            buttons: [{
-
-                    extend: 'excelHtml5',
-                    title: 'Check_report',
-                    className: 'btn-primary'
-                },
-
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Check_report',
-                    className: 'btn-primary',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
-
-                },
-
-
-                {
-                    extend: 'csvHtml5',
-                    title: 'Check_report',
-                    className: 'btn-primary'
-                },
-                // {
-                //     extend: 'copyHtml5',
-                //     title: 'VISITS',
-                //     className: 'btn-primary'
-                // },
-                //     {
-                //         extend: 'print',
-                //         // name: 'printButton'
-                //         title: 'VISITS'
-                //     }
-            ],
-            // "pageLength": 100
-        });
-
-        $('#tableId7').DataTable({
-
-            "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Any Pending Issue Today</h1><div><span></span></div></div>"
-            },
-            // columns: columnDefs,
-
-            dom: 'lBfrtip',
-            buttons: [{
-
-                    extend: 'excelHtml5',
-                    title: 'Inventory_status_report',
-                    className: 'btn-primary'
-                },
-
-                {
-                    extend: 'pdfHtml5',
-                    title: 'inventory_report',
-                    className: 'btn-primary',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
-
-                },
-
-
-                {
-                    extend: 'csvHtml5',
-                    title: 'inventory_report',
-                    className: 'btn-primary'
-                },
-                // {
-                //     extend: 'copyHtml5',
-                //     title: 'VISITS',
-                //     className: 'btn-primary'
-                // },
-                //     {
-                //         extend: 'print',
-                //         // name: 'printButton'
-                //         title: 'VISITS'
-                //     }
-            ],
-            // "pageLength": 100
         });
     });
 </script>
