@@ -446,42 +446,40 @@ if ($user->isLoggedIn()) {
                     $batchLast = $checkBatch['last_check'];
                     $batchNext = $checkBatch['next_check'];
                     $batchexpire = $checkBatch['expire_date'];
-                    // $batch_no = $checkBatch['batch_no'];
-                    // $category = $checkBatch['category'];
 
                     $batchBalance = $checkBatch['balance'] + Input::get('added');
-                    try {
-                        $user->updateRecord('generic', array(
-                            'balance' => $genericBalance,
-                        ), Input::get('update_generic_id'));
+                        try {
+                            $user->updateRecord('generic', array(
+                                'balance' => $genericBalance,
+                            ), Input::get('update_generic_id'));
 
-                        $user->updateRecord('batch', array(
-                            'balance' => $batchBalance,
-                        ), Input::get('id'));
+                            $user->updateRecord('batch', array(
+                                'balance' => $batchBalance,
+                            ), Input::get('id'));
 
-                        $user->createRecord('batch_records', array(
-                            'generic_id' => Input::get('update_generic_id'),
-                            'brand_id' => Input::get('update_brand_id'),
-                            'batch_id' => Input::get('id'),
-                            'batch_no' => Input::get('update_batch_no'),
-                            'quantity' => Input::get('added'),
-                            'assigned' => 0,
-                            'balance' => $genericBalance,
-                            'create_on' => date('Y-m-d'),
-                            'staff_id' => $user->data()->id,
-                            'status' => 1,
-                            'study_id' => Input::get('study_id'),
-                            'last_check' => $batchLast,
-                            'next_check' => $batchNext,
-                            'category' => Input::get('update_category_id'),
-                            'remarks' => Input::get('remarks'),
-                            'expire_date' => $batchexpire,
-                        ));
+                            $user->createRecord('batch_records', array(
+                                'generic_id' => Input::get('update_generic_id'),
+                                'brand_id' => Input::get('update_brand_id'),
+                                'batch_id' => Input::get('id'),
+                                'batch_no' => Input::get('update_batch_no'),
+                                'quantity' => Input::get('added'),
+                                'assigned' => 0,
+                                'balance' => $genericBalance,
+                                'create_on' => date('Y-m-d'),
+                                'staff_id' => $user->data()->id,
+                                'status' => 1,
+                                'study_id' => Input::get('study_id'),
+                                'last_check' => $batchLast,
+                                'next_check' => $batchNext,
+                                'category' => Input::get('update_category_id'),
+                                'remarks' => Input::get('remarks'),
+                                'expire_date' => $batchexpire,
+                            ));
 
-                        $successMessage = 'Stock guied Successful Updated';
-                    } catch (Exception $e) {
-                        die($e->getMessage());
-                    }
+                            $successMessage = 'Stock guied Successful Updated';
+                        } catch (Exception $e) {
+                            die($e->getMessage());
+                        }
                 } else {
                     $errorMessage = 'Amount added Must Be Greater Than 0';
                 }
@@ -510,6 +508,7 @@ if ($user->isLoggedIn()) {
                     $checkGuide = $override->get('generic_guide', 'id', Input::get('location_guide_id'))[0];
                     $guideBalance = $checkGuide['balance'] + Input::get('added');
                     if (Input::get('added') <= $checkBatch['balance']) {
+                        // $bufferBalance = $checkGeneric['balance'] - Input::get('added');
                         try {
                             $user->updateRecord('generic_guide', array(
                                 'balance' => $guideBalance,
@@ -573,7 +572,7 @@ if ($user->isLoggedIn()) {
                     $checkGuide = $override->get('generic_guide', 'id', Input::get('location_guide_id'))[0];
                     $guideBalance = $checkGuide['balance'] - Input::get('removed');
 
-                    if (Input::get('removed') <= $checkBatch['balance']) {
+                    if (Input::get('removed') <= $checkGuide['balance']) {
                         try {
 
                             $user->updateRecord('batch', array(
