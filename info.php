@@ -758,10 +758,9 @@ if ($user->isLoggedIn()) {
                                     </ul>
                                 </div>
                                 <div class="block-fluid">
-                                    <h2>Filterable</h2>
                                     <input class="form-control" id="myInput" type="text" placeholder="Search..">
                                     <br>
-                                    <table id='tableId4' cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">Date</th>
@@ -1095,49 +1094,30 @@ if ($user->isLoggedIn()) {
                                     </ul>
                                 </div>
                                 <div class="block-fluid">
-                                    <table  id='tableId4' cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table  cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th width="10%">Date</th>
-                                                <th width="10%">Generic</th>
-                                                <th width="10%">Brand</th>
-                                                <th width="10%">Batch No</th>
-                                                <th width="10%">FORM</th>
-                                                <th width="5%">Received</th>
+                                                <th width="25%">Date</th>
+                                                <th width="25%">Generic</th>
                                                 <th width="5%">Used</th>
                                                 <th width="5%">Balance</th>
-                                                <th width="5%">Status</th>
                                                 <th width="20%">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php $amnt = 0;
-                                            foreach ($override->get('batch_description', 'batch_id', $_GET['bt']) as $batchDesc) {
-                                                $batch_no = $override->get('batch', 'id', $batchDesc['batch_id'])[0];
-                                                $dCat = $override->get('drug_cat', 'id', $batchDesc['cat_id'])[0];
+                                            foreach ($override->get('generic', 'status', 1) as $batchDesc) {
                                                 $amnt = $batchDesc['quantity'] - $batchDesc['assigned'] ?>
                                                 <tr>
                                                     <td> <?= $batchDesc['create_on'] ?></td>
                                                     <td> <?= $batchDesc['name'] ?></td>
-                                                    <td> <?= $batchDesc['name'] ?></td>
-                                                    <td><?= $batch_no['batch_no'] ?></td>
-                                                    <td><?= $dCat['name'] ?></td>
-                                                    <td> <?= $batchDesc['quantity'] ?></td>
                                                     <td> <?= $batchDesc['assigned'] ?></td>
-                                                    <td> <?= number_format($batchDesc['quantity'] - $batchDesc['assigned']) ?></td>
-                                                    <td>
-                                                        <?php if ($amnt <= $batchDesc['notify_amount'] && $amnt > 0) { ?>
-                                                            <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Insufficient</a>
-                                                        <?php } elseif ($amnt == 0) { ?>
-                                                            <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
-                                                        <?php } else { ?>
-                                                            <a href="#" role="button" class="btn btn-success" data-toggle="modal">Sufficient</a>
-                                                        <?php } ?>
-                                                    </td>
+                                                    <td> <?= $batchDesc['balance'] ?></td>
+                                                    <!-- <td> <?= number_format($batchDesc['quantity'] - $batchDesc['assigned']) ?></td> -->                                                   
 
                                                     <td>
-                                                        <a href="#study<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
-                                                        <a href="#delete<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                                        <a href="#study1<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">View</a>
+                                                        <!-- <a href="#delete<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a> -->
                                                     </td>
 
                                                 </tr>

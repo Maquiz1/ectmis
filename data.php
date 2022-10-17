@@ -181,9 +181,9 @@ if ($user->isLoggedIn()) {
             }
         } elseif (Input::get('archive_batch')) {
 
-            $checkBatch = $override->get('batch','id',Input::get('id'))[0];
+            $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
             $batchLast = $checkBatch['last_check'];
-            $batchNext = $checkBatch['next_check'];                    
+            $batchNext = $checkBatch['next_check'];
             $batchexpire = $checkBatch['expire_date'];
             $generic_id = $checkBatch['generic_id'];
             $brand_id = $checkBatch['brand_id'];
@@ -194,7 +194,7 @@ if ($user->isLoggedIn()) {
 
             $batchBalance = $checkBatch['balance'];
 
-            $checkGeneric = $override->get('generic','id',$generic_id)[0];
+            $checkGeneric = $override->get('generic', 'id', $generic_id)[0];
             $genericBalance = $checkGeneric['balance'] - $batchBalance;
 
             $user->updateRecord('batch', array(
@@ -222,7 +222,7 @@ if ($user->isLoggedIn()) {
                 'category' => $category,
                 'remarks' => $remarks,
                 'expire_date' => $batchexpire,
-            ));            
+            ));
 
             $successMessage = 'Medicine / Device Quarantine Successful';
         } elseif (Input::get('delete_batch')) {
@@ -430,6 +430,232 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('update_stock_guide')) {
+            $validate = $validate->check($_POST, array(
+                'added' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $total_quantity = 0;
+                if (Input::get('added') > 0) {
+                    $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $genericBalance = $checkGeneric['balance'] + Input::get('added');
+
+                    $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
+                    $batchLast = $checkBatch['last_check'];
+                    $batchNext = $checkBatch['next_check'];
+                    $batchexpire = $checkBatch['expire_date'];
+                    // $batch_no = $checkBatch['batch_no'];
+                    // $category = $checkBatch['category'];
+
+                    $batchBalance = $checkBatch['balance'] + Input::get('added');
+                    try {
+                        $user->updateRecord('generic', array(
+                            'balance' => $genericBalance,
+                        ), Input::get('update_generic_id'));
+
+                        $user->updateRecord('batch', array(
+                            'balance' => $batchBalance,
+                        ), Input::get('id'));
+
+                        $user->createRecord('batch_records', array(
+                            'generic_id' => Input::get('update_generic_id'),
+                            'brand_id' => Input::get('update_brand_id'),
+                            'batch_id' => Input::get('id'),
+                            'batch_no' => Input::get('update_batch_no'),
+                            'quantity' => Input::get('added'),
+                            'assigned' => 0,
+                            'balance' => $genericBalance,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                            'status' => 1,
+                            'study_id' => Input::get('study_id'),
+                            'last_check' => $batchLast,
+                            'next_check' => $batchNext,
+                            'category' => Input::get('update_category_id'),
+                            'remarks' => Input::get('remarks'),
+                            'expire_date' => $batchexpire,
+                        ));
+
+                        $successMessage = 'Stock guied Successful Updated';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                } else {
+                    $errorMessage = 'Amount added Must Be Greater Than 0';
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('update_stock_guide_records')) {
+            $validate = $validate->check($_POST, array(
+                'added' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $total_quantity = 0;
+                if (Input::get('added') > 0) {
+                    $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $genericBalance = $checkGeneric['balance'] + Input::get('added');
+
+                    $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
+                    $batchLast = $checkBatch['last_check'];
+                    $batchNext = $checkBatch['next_check'];
+                    $batchexpire = $checkBatch['expire_date'];
+                    $use_group = $checkBatch['use_group'];
+                    $use_case = $checkBatch['use_case'];
+
+                    $checkGuide = $override->get('generic_guide', 'id', Input::get('location_guide_id'))[0];
+                    $guideBalance = $checkGuide['balance'] + Input::get('added');
+                    if (Input::get('added') <= $checkBatch['balance']) {
+                        try {
+                            $user->updateRecord('generic_guide', array(
+                                'balance' => $guideBalance,
+                            ), Input::get('location_guide_id'));
+
+                            $user->createRecord('generic_guide_records', array(
+                                'generic_id' => Input::get('update_generic_id'),
+                                'brand_id' => Input::get('update_brand_id'),
+                                'batch_id' => Input::get('id'),
+                                'batch_no' => Input::get('update_batch_no'),
+                                'guide_id' => Input::get('location_guide_id'),
+                                'quantity' => Input::get('added'),
+                                'notify_quantity' => 0,
+                                'assigned' => 0,
+                                'balance' => $guideBalance,
+                                'use_group' => $use_group,
+                                'location_id' => Input::get('location_batch_id'),
+                                'create_on' => date('Y-m-d'),
+                                'staff_id' => $user->data()->id,
+                                'status' => 1,
+                                'use_case' => $use_case,
+                            ));
+
+                            $successMessage = 'Stock guied Successful Updated';
+                        } catch (Exception $e) {
+                            die($e->getMessage());
+                        }
+                    } else {
+                        $errorMessage = 'Amount added Must not Be Greater Than Balance';
+                    }
+                } else {
+                    $errorMessage = 'Amount added Must Be Greater Than 0';
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('dispense_stock')) {
+            $validate = $validate->check($_POST, array(
+                'removed' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $total_quantity = 0;
+                if (Input::get('removed') > 0) {
+                    $checkGeneric = $override->selectData1('generic', 'status', 1, 'id', Input::get('update_generic_id'))[0];
+                    $genericAssigned = $checkGeneric['assigned'] + Input::get('removed');
+                    $genericBalance = $checkGeneric['balance'] - Input::get('removed');
+
+
+
+                    $checkBatch = $override->selectData1('batch', 'status', 1, 'id', Input::get('id'))[0];
+                    $batchAssigned = $checkBatch['assigned'] + Input::get('removed');
+                    $batchBalance = $checkBatch['balance'] - Input::get('removed');
+                    $batchLast = $checkBatch['last_check'];
+                    $batchNext = $checkBatch['next_check'];
+                    $batchexpire = $checkBatch['expire_date'];
+
+
+
+                    $checkGuide = $override->get('generic_guide', 'id', Input::get('location_guide_id'))[0];
+                    $guideBalance = $checkGuide['balance'] - Input::get('removed');
+
+                    if (Input::get('removed') <= $checkBatch['balance']) {
+                        try {
+
+                            $user->updateRecord('batch', array(
+                                'status' => 1,
+                                'assigned' => $batchAssigned,
+                                'balance' => $batchBalance
+                            ), Input::get('id'));
+
+                            $user->updateRecord('generic', array(
+                                'status' => 1,
+                                'assigned' => $genericAssigned,
+                                'balance' => $genericBalance
+                            ), Input::get('update_generic_id'));
+
+                            $user->createRecord('assigned_stock_rec', array(
+                                'study_id' => Input::get('dispense_study_id'),
+                                'generic_id' => Input::get('update_generic_id'),
+                                'brand_id' => Input::get('update_brand_id'),
+                                'batch_id' => Input::get('id'),
+                                'batch_no' => Input::get('update_batch_no'),
+                                'staff_id' => Input::get('staff'),
+                                'site_id' => Input::get('site'),
+                                'quantity' => Input::get('removed'),
+                                'notes' => Input::get('remarks'),
+                                'status' => 1,
+                                'admin_id' => $user->data()->id,
+                            ));
+
+                            $user->createRecord('batch_records', array(
+                                'generic_id' => Input::get('update_generic_id'),
+                                'brand_id' => Input::get('update_brand_id'),
+                                'batch_id' => Input::get('id'),
+                                'batch_no' => Input::get('update_batch_no'),
+                                'quantity' => 0,
+                                'assigned' => Input::get('removed'),
+                                'balance' => $genericBalance,
+                                'create_on' => date('Y-m-d'),
+                                'staff_id' => $user->data()->id,
+                                'status' => 1,
+                                'study_id' => Input::get('dispense_study_id'),
+                                'last_check' => $batchLast,
+                                'next_check' => $batchNext,
+                                'category' => Input::get('update_category_id'),
+                                'remarks' => Input::get('remarks'),
+                                'expire_date' => $batchexpire,
+                            ));
+
+                            $user->updateRecord('generic_guide', array(
+                                'balance' => $guideBalance,
+                            ), Input::get('location_guide_id'));
+
+                            $user->createRecord('generic_guide_records', array(
+                                'generic_id' => Input::get('update_generic_id'),
+                                'brand_id' => Input::get('update_brand_id'),
+                                'batch_id' => Input::get('id'),
+                                'batch_no' => Input::get('update_batch_no'),
+                                'guide_id' => Input::get('location_guide_id'),
+                                'quantity' => 0,
+                                'notify_quantity' => 0,
+                                'assigned' => Input::get('removed'),
+                                'balance' => $guideBalance,
+                                'use_group' => $use_group,
+                                'location_id' => Input::get('location_batch_id'),
+                                'create_on' => date('Y-m-d'),
+                                'staff_id' => $user->data()->id,
+                                'status' => 1,
+                                'use_case' => $use_case,
+                            ));
+
+                            $successMessage = 'Stock guied Successful Updated';
+                        } catch (Exception $e) {
+                            die($e->getMessage());
+                        }
+                    } else {
+                        $errorMessage = 'Amount Dispensed Must not Be Greater Than Balance';
+                    }
+                } else {
+                    $errorMessage = 'Amount added Must Be Greater Than 0';
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
         }
     }
 } else {
@@ -545,9 +771,9 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $brand_name ?></td>
                                                 <td>
                                                     <?php if ($batchDesc['expire_date'] <= date('Y-m-d')) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $check_batch_no?></a>
+                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $check_batch_no ?></a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $check_batch_no?></a>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $check_batch_no ?></a>
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $batchDesc['assigned'] ?></td>
@@ -1650,9 +1876,721 @@ if ($user->isLoggedIn()) {
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
                                                     <?php } ?>
-                                                </td>                                                
+                                                </td>
                                                 <td>
                                             </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <?php } elseif ($_GET['id'] == 12) { ?>
+                        <div class="col-md-12">
+                            <div class="head clearfix">
+                                <div class="isw-grid"></div>
+                                <h1>Medicine / Device History Description</h1>
+                                <ul class="buttons">
+                                    <li><a href="#" class="isw-download"></a></li>
+                                    <li><a href="#" class="isw-attachment"></a></li>
+                                    <li>
+                                        <a href="#" class="isw-settings"></a>
+                                        <ul class="dd-list">
+                                            <li><a href="#"><span class="isw-plus"></span> New document</a></li>
+                                            <li><a href="#"><span class="isw-edit"></span> Edit</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="block-fluid">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
+                                            <th width="10%">Batch No</th>
+                                            <th width="4%">Used</th>
+                                            <th width="4%">Balance</th>
+                                            <th width="10%">Expire Date</th>
+                                            <th width="10%">Next Check</th>
+                                            <th width="5%">Expiration</th>
+                                            <th width="5%">Checking</th>
+                                            <th width="5%">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+
+                                        $amnt = 0;
+                                        $pagNum = $override->getCount1('batch', 'generic_id', $_GET['gid'], 'status', 1);
+                                        $pages = ceil($pagNum / $numRec);
+                                        // print_r($pages);
+                                        if (!$_GET['page'] || $_GET['page'] == 1) {
+                                            $page = 0;
+                                        } else {
+                                            $page = ($_GET['page'] * $numRec) - $numRec;
+                                        }
+
+
+                                        $amnt = 0;
+                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'], 'status', 1, $page, $numRec) as $batchDesc) {
+                                            $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
+                                            $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
+                                            $update_generic_id = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
+                                            $update_brand_id = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
+                                            $update_batch_id = $batchDesc['id'];
+                                            $update_batch_no = $batchDesc['batch_no'];
+                                            $update_category_id = $batchDesc['category'];
+
+                                        ?>
+                                            <tr>
+                                                <td><?= $generic_name ?></td>
+                                                <td><?= $brand_name ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['balance'] <= 0) { ?>
+                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $update_batch_no ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $update_batch_no ?></a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $batchDesc['assigned'] ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['balance'] <= 0) { ?>
+                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $batchDesc['balance'] ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $batchDesc['balance'] ?> </a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $batchDesc['expire_date'] ?></td>
+                                                <td><?= $batchDesc['next_check'] ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['expire_date'] <= $today) { ?>
+                                                        <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($batchDesc['next_check'] <= $today) { ?>
+                                                        <a href="#" role="button" class="btn btn-warning">Not Checked</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-danger">OK!</a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+                                                    <a href="#edit_stock_guide_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add Batch</a>
+                                                </td>
+
+                                            </tr>
+
+                                            <div class="modal fade" id="edit_stock_guide_id<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                <h4>Update Stock Info</h4>
+                                                            </div>
+                                                            <div class="modal-body modal-body-np">
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Generic Name:</label>
+                                                                                <input value="<?= $generic_name ?>" type="text" name="update_generic_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Brand Name</label>
+                                                                                <input value="<?= $brand_name ?>" type="text" name="update_brand_name" style="width: 100%;" disabled />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Batch No:</label>
+                                                                                <input value="<?= $update_batch_no ?>" type="text" name="update_batch_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Study Name:</label>
+                                                                                <select name="study_id" id="study_id" style="width: 100%;" required>
+                                                                                    <option value="">Select Study</option>
+                                                                                    <?php
+                                                                                    $batches = $override->get('study', 'status', 1) ?>
+                                                                                    <?php foreach ($batches as $batch) { ?>
+                                                                                        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                                                    <?php }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Current Quantity::</label>
+                                                                                <input value="<?= $batchDesc['balance'] ?>" type="number" name="quantity" id="quantity" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Quantity to Add:</label>
+                                                                                <input value=" " class="validate[required]" type="number" name="added" id="added" style="width: 100%;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dr"><span></span></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                                <input type="hidden" name="update_generic_id" value="<?= $update_generic_id ?>" id="update_generic_id">
+                                                                <input type="hidden" name="update_brand_id" value="<?= $update_brand_id ?>" id="update_brand_id">
+                                                                <input type="hidden" name="update_batch_no" value="<?= $update_batch_no ?>" id="update_batch_no">
+                                                                <input type="hidden" name="update_category_id" value="<?= $update_category_id ?>" id="update_category_id">
+                                                                <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
+                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    <?php } elseif ($_GET['id'] == 13) { ?>
+                        <div class="col-md-12">
+                            <div class="head clearfix">
+                                <div class="isw-grid"></div>
+                                <h1>Medicine / Device History Description</h1>
+                                <ul class="buttons">
+                                    <li><a href="#" class="isw-download"></a></li>
+                                    <li><a href="#" class="isw-attachment"></a></li>
+                                    <li>
+                                        <a href="#" class="isw-settings"></a>
+                                        <ul class="dd-list">
+                                            <li><a href="#"><span class="isw-plus"></span> New document</a></li>
+                                            <li><a href="#"><span class="isw-edit"></span> Edit</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="block-fluid">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
+                                            <th width="10%">Batch No</th>
+                                            <th width="4%">Used</th>
+                                            <th width="4%">Balance</th>
+                                            <th width="10%">Expire Date</th>
+                                            <th width="10%">Next Check</th>
+                                            <th width="10%">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+
+                                        $amnt = 0;
+                                        $pagNum = $override->getCount1('batch', 'generic_id', $_GET['gid'], 'status', 1);
+                                        $pages = ceil($pagNum / $numRec);
+                                        // print_r($pages);
+                                        if (!$_GET['page'] || $_GET['page'] == 1) {
+                                            $page = 0;
+                                        } else {
+                                            $page = ($_GET['page'] * $numRec) - $numRec;
+                                        }
+
+
+                                        $amnt = 0;
+                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'], 'status', 1, $page, $numRec) as $batchDesc) {
+                                            $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
+                                            $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
+                                            $update_generic_id2 = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
+                                            $update_brand_id2 = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
+                                            $update_batch_id2 = $batchDesc['id'];
+                                            $update_batch_no2 = $batchDesc['batch_no'];
+                                            $update_category_id2 = $batchDesc['category'];
+                                            $location_batch_id = $_GET['lid'];
+                                            $location_guide_id = $_GET['lbid'];
+                                        ?>
+                                            <tr>
+                                                <td><?= $generic_name ?></td>
+                                                <td><?= $brand_name ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['balance'] <= 0) { ?>
+                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $update_batch_no2 ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $update_batch_no2 ?></a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $batchDesc['assigned'] ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['balance'] <= 0) { ?>
+                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $batchDesc['balance'] ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $batchDesc['balance'] ?> </a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $batchDesc['expire_date'] ?></td>
+                                                <td><?= $batchDesc['next_check'] ?></td>
+                                                <td>
+                                                    <a href="#edit_stock_guide_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add</a>
+                                                    <a href="#dispense_batch_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Remove</a>
+                                                </td>
+
+                                            </tr>
+
+                                            <div class="modal fade" id="edit_stock_guide_id<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                <h4>Update Stock Info</h4>
+                                                            </div>
+                                                            <div class="modal-body modal-body-np">
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Generic Name:</label>
+                                                                                <input value="<?= $generic_name ?>" type="text" name="update_generic_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Brand Name</label>
+                                                                                <input value="<?= $brand_name ?>" type="text" name="update_brand_name" style="width: 100%;" disabled />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Batch No:</label>
+                                                                                <input value="<?= $update_batch_no2 ?>" type="text" name="update_batch_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Study Name:</label>
+                                                                                <select name="study_id" id="study_id" style="width: 100%;" required>
+                                                                                    <option value="">Select Study</option>
+                                                                                    <?php
+                                                                                    $batches = $override->get('study', 'status', 1) ?>
+                                                                                    <?php foreach ($batches as $batch) { ?>
+                                                                                        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                                                    <?php }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Current Quantity::</label>
+                                                                                <input value="<?= $batchDesc['balance'] ?>" type="number" name="quantity" id="quantity" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Quantity to Add:</label>
+                                                                                <input value=" " class="validate[required]" type="number" name="added" id="added" style="width: 100%;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dr"><span></span></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                                <input type="hidden" name="update_generic_id" value="<?= $update_generic_id2 ?>" id="update_generic_id">
+                                                                <input type="hidden" name="update_brand_id" value="<?= $update_brand_id2 ?>" id="update_brand_id">
+                                                                <input type="hidden" name="update_batch_no" value="<?= $update_batch_no2 ?>" id="update_batch_no">
+                                                                <input type="hidden" name="update_category_id" value="<?= $update_category_id2 ?>" id="update_category_id">
+                                                                <input type="hidden" name="location_batch_id" value="<?= $location_batch_id ?>" id="location_batch_id">
+                                                                <input type="hidden" name="location_guide_id" value="<?= $location_guide_id ?>" id="location_guide_id">
+                                                                <input type="submit" name="update_stock_guide_records" value="Save updates" class="btn btn-warning">
+                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal fade" id="dispense_batch_id<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                <h4>Update Stock Info</h4>
+                                                            </div>
+                                                            <div class="modal-body modal-body-np">
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Generic Name:</label>
+                                                                                <input value="<?= $generic_name ?>" type="text" name="update_generic_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Brand Name</label>
+                                                                                <input value="<?= $brand_name ?>" type="text" name="update_brand_name" style="width: 100%;" disabled />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Batch No:</label>
+                                                                                <input value="<?= $update_batch_no2 ?>" type="text" name="update_batch_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Current Quantity::</label>
+                                                                                <input value="<?= $batchDesc['balance'] ?>" type="number" name="quantity" id="quantity" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Quantity to Dispense:</label>
+                                                                                <input value=" " class="validate[required]" type="number" name="removed" id="removed" style="width: 100%;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Study Name:</label>
+                                                                                <select name="dispense_study_id" id="dispense_study_id" style="width: 100%;" required>
+                                                                                    <option value="">Select Study</option>
+                                                                                    <?php
+                                                                                    $batches = $override->get('study', 'status', 1) ?>
+                                                                                    <?php foreach ($batches as $batch) { ?>
+                                                                                        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                                                    <?php }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Staff:</label>
+                                                                                <select name="staff" style="width: 100%;" id="staff" required>
+                                                                                    <option value="">Select Staff</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-4">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Site:</label>
+                                                                                <select name="site" style="width: 100%;" id="site" required>
+                                                                                    <option value="">Select Site</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <div class="row-form clearfix">
+                                                                        <div class="col-md-3">Remarks</div>
+                                                                        <div class="col-md-9">
+                                                                            <textarea name="remarks" rows="4"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dr"><span></span></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                                <input type="hidden" name="update_generic_id" value="<?= $update_generic_id2 ?>" id="update_generic_id">
+                                                                <input type="hidden" name="update_brand_id" value="<?= $update_brand_id2 ?>" id="update_brand_id">
+                                                                <input type="hidden" name="update_batch_no" value="<?= $update_batch_no2 ?>" id="update_batch_no">
+                                                                <input type="hidden" name="update_category_id" value="<?= $update_category_id2 ?>" id="update_category_id">
+                                                                <input type="hidden" name="location_batch_id" value="<?= $location_batch_id ?>" id="location_batch_id">
+                                                                <input type="hidden" name="location_guide_id" value="<?= $location_guide_id ?>" id="location_guide_id">
+                                                                <input type="submit" name="dispense_stock" value="Save updates" class="btn btn-warning">
+                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <?php } elseif ($_GET['id'] == 14) { ?>
+                        <div class="col-md-12">
+                            <div class="head clearfix">
+                                <div class="isw-grid"></div>
+                                <h1>Medicine / Device Dispensing Description</h1>
+                                <ul class="buttons">
+                                    <li><a href="#" class="isw-download"></a></li>
+                                    <li><a href="#" class="isw-attachment"></a></li>
+                                    <li>
+                                        <a href="#" class="isw-settings"></a>
+                                        <ul class="dd-list">
+                                            <li><a href="#"><span class="isw-plus"></span> New document</a></li>
+                                            <li><a href="#"><span class="isw-edit"></span> Edit</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="block-fluid">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="15%">Generic</th>
+                                            <th width="15%">Brand</th>
+                                            <th width="10%">Batch No</th>
+                                            <th width="4%">Used</th>
+                                            <th width="4%">Balance</th>
+                                            <th width="10%">Expire Date</th>
+                                            <th width="10%">Next Check</th>
+                                            <th width="10%">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+
+                                        $amnt = 0;
+                                        $pagNum = $override->getCount1('batch', 'generic_id', $_GET['gid'], 'status', 1);
+                                        $pages = ceil($pagNum / $numRec);
+                                        // print_r($pages);
+                                        if (!$_GET['page'] || $_GET['page'] == 1) {
+                                            $page = 0;
+                                        } else {
+                                            $page = ($_GET['page'] * $numRec) - $numRec;
+                                        }
+
+
+                                        $amnt = 0;
+                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'], 'status', 1, $page, $numRec) as $batchDesc) {
+                                            $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
+                                            $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
+                                            $dispense_generic_id = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
+                                            $dispense_brand_id = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
+                                            $dispense_batch_id = $batchDesc['id'];
+                                            $dispense_batch_no = $batchDesc['batch_no'];
+                                            $dispense_category_id = $batchDesc['category'];
+                                            $location_batch_id = $_GET['lid'];
+                                            $location_guide_id = $_GET['lbid'];
+                                            $dispense_last_check = $batchDesc['last_check'];
+                                            $dispense_next_check = $batchDesc['next_check'];
+                                            $dispense_expire_date = $batchDesc['expire_date'];
+
+                                        ?>
+                                            <tr>
+                                                <td><?= $generic_name ?></td>
+                                                <td><?= $brand_name ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['balance'] <= 0) { ?>
+                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal"><?= $dispense_batch_no ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"><?= $dispense_batch_no ?></a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $batchDesc['assigned'] ?></td>
+                                                <td>
+                                                    <?php if ($batchDesc['balance'] <= 0) { ?>
+                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $batchDesc['balance'] ?></a>
+                                                    <?php } else { ?>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $batchDesc['balance'] ?> </a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $batchDesc['expire_date'] ?></td>
+                                                <td><?= $batchDesc['next_check'] ?></td>
+                                                <td>
+                                                    <a href="#edit_stock_guide_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add</a>
+                                                    <a href="#edit_stock_guide_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Remove</a>
+                                                </td>
+
+                                            </tr>
+
+                                            <div class="modal fade" id="edit_stock_guide_id<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                <h4>Update Stock Info</h4>
+                                                            </div>
+                                                            <div class="modal-body modal-body-np">
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Generic Name:</label>
+                                                                                <input value="<?= $generic_name ?>" type="text" name="dispense_generic_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Brand Name</label>
+                                                                                <input value="<?= $brand_name ?>" type="text" name="dispense_brand_name" style="width: 100%;" disabled />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Batch No:</label>
+                                                                                <input value="<?= $dispense_batch_no ?>" type="text" name="dispense_batch_name" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Study Name:</label>
+                                                                                <select name="study_id" id="study_id" style="width: 100%;" required>
+                                                                                    <option value="">Select Study</option>
+                                                                                    <?php
+                                                                                    $batches = $override->get('study', 'status', 1) ?>
+                                                                                    <?php foreach ($batches as $batch) { ?>
+                                                                                        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                                                    <?php }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Current Quantity::</label>
+                                                                                <input value="<?= $batchDesc['balance'] ?>" type="number" name="quantity" id="quantity" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Quantity to Dispense:</label>
+                                                                                <input value=" " class="validate[required]" type="number" name="removed" id="removed" style="width: 100%;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dr"><span></span></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                                <input type="hidden" name="dispense_generic_id" value="<?= $dispense_generic_id ?>" id="dispense_generic_id">
+                                                                <input type="hidden" name="dispense_brand_id" value="<?= $dispense_brand_id ?>" id="dispense_brand_id">
+                                                                <input type="hidden" name="dispense_batch_no" value="<?= $dispense_batch_no ?>" id="dispense_batch_no">
+                                                                <input type="hidden" name="dispense_category_id" value="<?= $dispense_category_id ?>" id="dispense_category_id">
+                                                                <input type="hidden" name="dispense_location_id" value="<?= $dispense_location_id ?>" id="dispense_location_id">
+                                                                <input type="hidden" name="dispense_guide_id" value="<?= $dispense_guide_id ?>" id="dispense_guide_id">
+                                                                <input type="hidden" name="dispense_last_check" value="<?= $dispense_last_check ?>" id="dispense_last_check">
+                                                                <input type="hidden" name="dispense_next_check" value="<?= $dispense_next_check ?>" id="dispense_next_check">
+                                                                <input type="hidden" name="dispense_expire_date" value="<?= $dispense_expire_date ?>" id="dispense_expire_date">
+                                                                <input type="submit" name="update_stock_guide_records" value="Save updates" class="btn btn-warning">
+                                                                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -1663,10 +2601,10 @@ if ($user->isLoggedIn()) {
                 <div class="pull-right">
                     <div class="btn-group">
                         <a href="data.php?id=<?= $_GET['id'] ?>&page=<?php if (($_GET['page'] - 1) > 0) {
-                                                    echo $_GET['page'] - 1;
-                                                } else {
-                                                    echo 1;
-                                                } ?>" class="btn btn-default">
+                                                                            echo $_GET['page'] - 1;
+                                                                        } else {
+                                                                            echo 1;
+                                                                        } ?>" class="btn btn-default">
                             < </a>
                                 <?php for ($i = 1; $i <= $pages; $i++) { ?>
                                     <a href="data.php?id=<?= $_GET['id'] ?>&page=<?= $i ?>" class="btn btn-default <?php if ($i == $_GET['page']) {
@@ -1744,6 +2682,41 @@ if ($user->isLoggedIn()) {
                 },
                 success: function(data) {
 
+                }
+            });
+
+        });
+
+
+        $('#dispense_study_id').change(function() {
+            var getUid = $(this).val();
+            $('#fl_wait').show();
+            $.ajax({
+                url: "process.php?content=dispense_study_id",
+                method: "GET",
+                data: {
+                    getUid: getUid
+                },
+                success: function(data) {
+                    $('#staff').html(data);
+                    $('#fl_wait').hide();
+                }
+            });
+
+        });
+
+        $('#dispense_study_id').change(function() {
+            var getUid = $(this).val();
+            $('#fl_wait').show();
+            $.ajax({
+                url: "process.php?content=dispense_study_id2",
+                method: "GET",
+                data: {
+                    getUid: getUid
+                },
+                success: function(data) {
+                    $('#site').html(data);
+                    $('#fl_wait').hide();
                 }
             });
 

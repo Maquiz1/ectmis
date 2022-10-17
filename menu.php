@@ -173,7 +173,7 @@ if ($user->data()->accessLevel == 1) {
                         </a>
                     </li>
                     <li class="">
-                        <a href="info.php?id=2">
+                        <a href="info.php?id=5">
                             <span class="glyphicon glyphicon-list"></span><span class="text">View</span>
                         </a>
                     </li>

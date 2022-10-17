@@ -17,64 +17,6 @@ $today = date('Y-m-d');
 $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 if ($user->isLoggedIn()) {
     if (Input::exists('post')) {
-        $validate = new validate();
-        if (Input::get('update_stock_guide')) {
-            $validate = $validate->check($_POST, array(
-                'added' => array(
-                    'required' => true,
-                ),
-            ));
-            if ($validate->passed()) {
-                $total_quantity = 0;
-                if (Input::get('added') > 0) {
-                    $checkGeneric = $override->get('generic', 'id', Input::get('id'))[0];
-                    $genericBalance = $checkGeneric['balance'] + Input::get('added');
-
-                    $checkBatch = $override->get('batch', 'id', Input::get('update_batch_id'))[0];
-                    $batchLast = $checkBatch['last_check'];
-                    $batchNext = $checkBatch['next_check'];
-                    $batchexpire = $checkBatch['expire_date'];
-
-                    $batchBalance = $checkBatch['balance'] + Input::get('added');
-                    try {
-                        $user->updateRecord('generic', array(
-                            'balance' => $genericBalance,
-                        ), Input::get('id'));
-
-                        $user->updateRecord('batch', array(
-                            'balance' => $batchBalance,
-                        ), Input::get('update_batch_id'));
-
-                        $user->createRecord('batch_records', array(
-                            'generic_id' => Input::get('id'),
-                            'brand_id' => Input::get('update_brand_id'),
-                            'batch_id' => Input::get('update_batch_id'),
-                            'batch_no' => Input::get('update_batch_no'),
-                            'quantity' => Input::get('added'),
-                            'assigned' => 0,
-                            'balance' => $genericBalance,
-                            'create_on' => date('Y-m-d'),
-                            'staff_id' => $user->data()->id,
-                            'status' => 1,
-                            'study_id' => Input::get('study_id'),
-                            'last_check' => $batchLast,
-                            'next_check' => $batchNext,
-                            'category' => Input::get('update_category_id'),
-                            'remarks' => Input::get('remarks'),
-                            'expire_date' => $batchexpire,
-                        ));
-
-                        $successMessage = 'Stock guied Successful Updated';
-                    } catch (Exception $e) {
-                        die($e->getMessage());
-                    }
-                } else {
-                    $errorMessage = 'Amount added Must Be Greater Than 0';
-                }
-            } else {
-                $pageError = $validate->errors();
-            }
-        }
     }
 } else {
     Redirect::to('index.php');
@@ -194,18 +136,18 @@ if ($user->isLoggedIn()) {
                                         $useCase = $override->get('use_case', 'id', $bDiscription['use_case'])[0]['name'];
                                         $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                         $form = $override->get('drug_cat', 'id', $bDiscription['category_id'])[0]['name'];
-                                        $EmKits = ($override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 1)[0]['quantity']);
-                                        $AmKits = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 2)[0]['quantity'];
-                                        $ECRm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 3)[0]['quantity'];
-                                        $DRm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 4)[0]['quantity'];
-                                        $ScRm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 5)[0]['quantity'];
-                                        $VSrm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 6)[0]['quantity'];
-                                        $ExamRms = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 7)[0]['quantity'];
-                                        $Ward = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 8)[0]['quantity'];
-                                        $CTMr = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 9)[0]['quantity'];
-                                        $Pharmacy = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 10)[0]['quantity'];
-                                        $Other = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 96)[0]['quantity'];
-                                        $sumLoctn = $override->getSumD1('generic_guide', 'quantity', 'generic_id', $bDiscription['id'])[0]['SUM(quantity)'];
+                                        $EmKits = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 1)[0];
+                                        $AmKits = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 2)[0];
+                                        $ECRm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 3)[0];
+                                        $DRm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 4)[0];
+                                        $ScRm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 5)[0];
+                                        $VSrm = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 6)[0];
+                                        $ExamRms = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 7)[0];
+                                        $Ward = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 8)[0];
+                                        $CTMr = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 9)[0];
+                                        $Pharmacy = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 10)[0];
+                                        $Other = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'location_id', 96)[0];
+                                        $sumLoctn = $override->getSumD1('generic_guide', 'balance', 'generic_id', $bDiscription['id'])[0]['SUM(balance)'];
                                         $sumNotify = $override->getSumD1('generic_guide', 'notify_quantity', 'generic_id', $bDiscription['id'])[0]['SUM(notify_quantity)'];
                                         $Notify = $bDiscription['notify_quantity'];
                                         $balance = $bDiscription['balance'];
@@ -224,96 +166,141 @@ if ($user->isLoggedIn()) {
                                                 $check1 = 1;
                                             }
                                         }
-
                                     ?>
                                         <tr>
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
                                             <td><?= $bDiscription['notify_quantity']; ?></td>
-                                            <td><?= $batchBalance; ?></td>
-                                            <td><?php if ($EmKits) {
+                                            <td><?= $balance; ?></td>
+                                            <td><?php if ($EmKits['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $EmKits; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                    <?php if ($EmKits['notify_quantity'] >= $EmKits['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-danger"><?= $EmKits['balance']; ?></a>
+                                                    <?php }elseif($EmKits['notify_quantity'] < $EmKits['balance']) {?>
+                                                        <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-info"><?= $EmKits['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($AmKits) {
+                                            <td><?php if ($AmKits['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
+                                                ?> <?php if ($AmKits['notify_quantity'] >= $AmKits['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-danger"><?= $AmKits['balance']; ?></a>
+                                                    <?php }elseif($AmKits['notify_quantity'] < $AmKits['balance']) {?>
+                                                        <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-info"><?= $AmKits['balance']; ?></a>
+                                                <?php }
+                                                } ?>
+                                            </td>
+                                            <td><?php if ($ECRm['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $AmKits; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                    <?php if ($ECRm['notify_quantity'] >= $ECRm['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-danger"><?= $ECRm['balance']; ?></a>
+                                                    <?php }elseif($ECRm['notify_quantity'] < $ECRm['balance']) {?>
+                                                        <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-info"><?= $ECRm['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($ECRm) {
+                                            <td><?php if ($DRm['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $ECRm; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                    <?php if ($DRm['notify_quantity'] >= $DRm['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-danger"><?= $DRm['balance']; ?></a>
+                                                    <?php }elseif($DRm['notify_quantity'] < $DRm['balance']) {?>
+                                                        <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-info"><?= $DRm['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($DRm) {
+                                            <td><?php if ($ScRm['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $DRm; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                    <?php if ($ScRm['notify_quantity'] >= $ScRm['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-danger"><?= $ScRm['balance']; ?></a>
+                                                    <?php }elseif($ScRm['notify_quantity'] < $ScRm['balance']) {?>
+                                                        <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-info"><?= $ScRm['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($ScRm) {
+                                            <td><?php if ($VSrm['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $ScRm; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                   <?php if ($VSrm['notify_quantity'] >= $VSrm['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-danger"><?= $VSrm['balance']; ?></a>
+                                                    <?php }elseif($VSrm['notify_quantity'] < $VSrm['balance']) {?>
+                                                        <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-info"><?= $VSrm['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($VSrm) {
+                                            <td><?php if ($ExamRms['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $VSrm; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                   <?php if ($ExamRms['notify_quantity'] >= $ExamRms['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRms['balance']; ?></a>
+                                                    <?php }elseif($ExamRms['notify_quantity'] < $ExamRms['balance']) {?>
+                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $ExamRms['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($ExamRms) {
+                                            <td><?php if ($Ward['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $ExamRms; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                   <?php if ($Ward['notify_quantity'] >= $Ward['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $Ward['balance']; ?></a>
+                                                    <?php }elseif($Ward['notify_quantity'] < $Ward['balance']) {?>
+                                                        <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $Ward['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($Ward) {
+                                            <td><?php if ($CTMr['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $Ward; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                   <?php if ($CTMr['notify_quantity'] >= $CTMr['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-danger"><?= $CTMr['balance']; ?></a>
+                                                    <?php }elseif($CTMr['notify_quantity'] < $CTMr['balance']) {?>
+                                                        <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-info"><?= $CTMr['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($CTMr) {
+                                            <td><?php if ($Pharmacy['balance'] == '') {
+                                                    echo 'NA';
+                                                } else {
                                                 ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $CTMr; ?></a>
-                                                <?php
-                                                } else {
-                                                    echo 'NA';
+                                                     <?php if ($Pharmacy['notify_quantity'] >= $Pharmacy['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-danger"><?= $Pharmacy['balance']; ?></a>
+                                                    <?php }elseif($Pharmacy['notify_quantity'] < $Pharmacy['balance']) {?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-info"><?= $Pharmacy['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
-                                            <td><?php if ($Pharmacy) { ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $Pharmacy; ?></a>
-                                                <?php
-                                                } else {
+
+                                            <td><?php if ($Other['balance'] == '') {
                                                     echo 'NA';
-                                                } ?>
-                                            </td>
-                                            <td><?php if ($Other) { ?>
-                                                    <a href="#" role="button" class="btn btn-info"><?= $Other; ?></a>
-                                                <?php
                                                 } else {
-                                                    echo 'NA';
+                                                ?>
+                                                    <?php if ($Other['notify_quantity'] >= $Other['balance']) {
+                                                    ?>
+                                                        <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-danger"><?= $Other['balance']; ?></a>
+                                                    <?php }elseif($Other['notify_quantity'] < $Other['balance']) {?>
+                                                        <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $Other['balance']; ?></a>
+                                                <?php }
                                                 } ?>
                                             </td>
                                             <td>
@@ -332,125 +319,20 @@ if ($user->isLoggedIn()) {
                                             </td>
                                             <td>
                                                 <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning update1" update_quantity1="<?= $bDiscription['id'] ?>" data-toggle="modal">Running Low</a>
+                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning">Running Low</a>
                                                 <?php } elseif ($batchBalance == 0) { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger update2" update_quantity2="<?= $bDiscription['id'] ?>" data-toggle="modal">Out of Stock</a>
+                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger">Out of Stock</a>
                                                 <?php } else { ?>
-                                                    <a href="#edit_stock_guide_id<?= $bDiscription['id'] ?>" role="button" class="btn btn-success update3" update_quantity3="<?= $bDiscription['id'] ?>" data-toggle="modal">Sufficient</a>
+                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success">Sufficient</a>
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-info">View</a>
+                                                <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-default">View</a>
                                             </td>
                                             <td>
-                                                <a href="data.php?id=8&gid=<?= $bDiscription['id'] ?>" class="btn btn-info">Checks</a>
+                                                <a href="data.php?id=8&gid=<?= $bDiscription['id'] ?>" class="btn btn-default">View</a>
                                             </td>
                                         </tr>
-
-                                        <div class="modal fade" id="edit_stock_guide_id<?= $bDiscription['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <form method="post">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                            <h4>Update Stock Info</h4>
-                                                        </div>
-                                                        <div class="modal-body modal-body-np">
-                                                            <div class="row">
-
-                                                                <div class="col-sm-6">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Generic Name:</label>
-                                                                            <select name="update_generic_id" id="update_generic_id" style="width: 100%;" required>
-                                                                                <option value="">Select Generic</option>
-                                                                                <?php
-                                                                                $batches = $override->get('generic', 'status', 1) ?>
-                                                                                <?php foreach ($batches as $batch) { ?>
-                                                                                    <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
-                                                                                <?php }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Brand Name</label>
-                                                                            <select name="update_brand_id" id="update_brand_id" style="width: 100%;" required>
-                                                                                <option value="">Select brand</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-3">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Batch No:</label>
-                                                                            <select name="update_batch_id" id="update_batch_id" style="width: 100%;" required>
-                                                                                <option value="">Select Batch</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Study Name:</label>
-                                                                            <select name="study_id" id="study_id" style="width: 100%;" required>
-                                                                                <option value="">Select Study</option>
-                                                                                <?php
-                                                                                $batches = $override->get('study', 'status', 1) ?>
-                                                                                <?php foreach ($batches as $batch) { ?>
-                                                                                    <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
-                                                                                <?php }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Current Quantity::</label>
-                                                                            <input value="<?= $batchBalance ?>" type="number" name="quantity" id="name" style="width: 100%;" disabled />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="row-form clearfix">
-                                                                        <!-- select -->
-                                                                        <div class="form-group">
-                                                                            <label>Quantity to Add:</label>
-                                                                            <input value=" " class="validate[required]" type="number" name="added" id="added" style="width: 100%;" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="dr"><span></span></div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="id" value="<?= $bDiscription['id'] ?>">
-                                                            <input type="hidden" name="update_batch_no" value="" id="update_batch_no">
-                                                            <input type="hidden" name="update_category_id" value="" id="update_category_id">
-                                                            <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
-                                                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     <?php } ?>
                                 </tbody>
                             </table>
@@ -503,26 +385,23 @@ if ($user->isLoggedIn()) {
         $(document).ready(function() {
 
             $(document).on('click', '.update', function() {
-                var getUid = $(this).attr('update_quantity1');
-                // var btn_action = 'delete';
+                var getUid = $(this).attr('update-data');
                 $.ajax({
-                    url: "process.php?content=update_generic_id",
+                    url: "process.php?content=update_generic_name",
                     method: "GET",
                     data: {
-                        getUid: getUid,
-                        // btn_action: btn_action,
+                        getUid: getUid
                     },
                     dataType: "json",
                     success: function(data) {
-                        console.log(data.gen_id);
-                        $('#update_generic_id').val(data.gen_id);
-                        // productDataTable.ajax.reload();
+                        $('#update_generic_id').val(data.update_generic_id);
+                        // $('#fl_wait').hide();
                     }
-                })
+                });
             })
 
-            $('#update_generic_id').change(function() {
-                var getUid = $(this).val();
+            $('document').on('click', '.update', function() {
+                var getUid = $(this).attr('update-data');
                 // $('#fl_wait').show();
                 $.ajax({
                     url: "process.php?content=update_generic_id",

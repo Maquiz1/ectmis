@@ -364,7 +364,11 @@ if ($user->isLoggedIn()) {
                     $checkGeneric = $override->selectData1('generic', 'status', 1, 'id', Input::get('dispense_generic_id'))[0];
                     $genericAssigned = $checkGeneric['assigned'] + Input::get('quantity');
                     $genericBalance = $checkGeneric['balance'] - Input::get('quantity');
-                    
+
+
+                    $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $genericBalance = $checkGeneric['balance'] + Input::get('added');
+
                     if (Input::get('quantity') <= $checkBatch['balance']) {
                         if ($checkBatch) {
                             $user->updateRecord('batch', array(
@@ -411,6 +415,30 @@ if ($user->isLoggedIn()) {
                                 'remarks' => Input::get('notes'),
                                 'expire_date' => Input::get('dispense_expire_date'),
                             ));
+
+                            $user->updateRecord('generic_guide', array(
+                                'balance' => $guideBalance,
+                            ), Input::get('location_guide_id'));
+
+                            $user->createRecord('generic_guide_records', array(
+                                'generic_id' => Input::get('dispense_generic_id'),
+                                'brand_id' => Input::get('dispense_brand_id'),
+                                'batch_id' => Input::get('dispense_batch_id'),
+                                'batch_no' => Input::get('dispense_batch_no'),
+                                'guide_id' => Input::get('location_guide_id'),
+                                'quantity' => 0,
+                                'notify_quantity' => 0,
+                                'assigned' => Input::get('quantity'),
+                                'balance' => $guideBalance,
+                                'use_group' => $use_group,
+                                'location_id' => Input::get('dispense_location_id'),
+                                'create_on' => date('Y-m-d'),
+                                'staff_id' => $user->data()->id,
+                                'status' => 1,
+                                'use_case' => $use_case,
+                            ));
+
+
                             $successMessage = 'Stock Assigned Successful';
                         } else {
                             $errorMessage = 'That  Batch is not Active';
@@ -456,10 +484,8 @@ if ($user->isLoggedIn()) {
                             $user->createRecord('generic', array(
                                 'name' => Input::get('name'),
                                 'status' => 1,
-                                'quantity' => 0,
                                 'notify_quantity' => Input::get('notify_quantity'),
                                 'assigned' => 0,
-                                'added' => 0,
                                 'balance' => 0,
                                 'create_on' => date('Y-m-d'),
                                 'use_group' => Input::get('use_group'),
@@ -471,16 +497,14 @@ if ($user->isLoggedIn()) {
                             $si = 0;
                             foreach (Input::get('location') as $sid) {
                                 $q = Input::get('amount')[$si];
-                                $location = $override->get('location', 'id', $sid['id'])[0];
+                                $location = $override->get('location', 'id', $sid)[0];
                                 $generic_id = $override->lastRow('generic', 'id')[0]['id'];
                                 $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
                                 $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
                                 $user->createRecord('generic_guide', array(
                                     'generic_id' => $generic_id,
-                                    'quantity' => 0,
-                                    'notify_quantity' => Input::get('notify_quantity'),
+                                    'notify_quantity' => $q,
                                     'assigned' => 0,
-                                    'added' => 0,
                                     'balance' => 0,
                                     'use_group' => $use_group,
                                     'location_id' => $location['id'],
@@ -489,6 +513,7 @@ if ($user->isLoggedIn()) {
                                     'status' => 1,
                                     'use_case' => $use_case,
                                 ));
+
                                 $si++;
                             }
                             $successMessage = 'Generic Name Added Successful';
@@ -525,6 +550,20 @@ if ($user->isLoggedIn()) {
                         'create_on' => date('Y-m-d'),
                         'staff_id' => $user->data()->id,
                     ));
+
+                    $user->createRecord('brand_records', array(
+                        'generic_id' => Input::get('generic_id2'),
+                        'name' => Input::get('brand_id2'),
+                        'status' => 1,
+                        'quantity' => 0,
+                        'notify_quantity' => 0,
+                        'assigned' => 0,
+                        'added' => 0,
+                        'balance' => 0,
+                        'create_on' => date('Y-m-d'),
+                        'staff_id' => $user->data()->id,
+                    ));
+
                     $successMessage = 'Brand Name Added Successful';
                 } catch (Exception $e) {
                     die($e->getMessage());
@@ -651,7 +690,6 @@ if ($user->isLoggedIn()) {
                 </ul>
                 <?php include 'pageInfo.php' ?>
             </div>
-
             <div class="workplace">
                 <?php if ($errorMessage) { ?>
                     <div class="alert alert-danger">
@@ -665,7 +703,7 @@ if ($user->isLoggedIn()) {
                             echo $error . ' , ';
                         } ?>
                     </div>
-                <?php } elseif ($successMessage) { ?>
+                <?php } elseif (!$successMessage) { ?>
                     <div class="alert alert-success">
                         <h4>Success!</h4>
                         <?= $successMessage ?>
@@ -1252,7 +1290,7 @@ if ($user->isLoggedIn()) {
                             <div class="block-fluid">
                                 <form id="validation" method="post">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
@@ -1266,7 +1304,7 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
@@ -1281,7 +1319,7 @@ if ($user->isLoggedIn()) {
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
@@ -1293,10 +1331,6 @@ if ($user->isLoggedIn()) {
                                             </div>
                                         </div>
 
-                                    </div>
-
-                                    <div class="row">
-
                                         <div class="col-sm-3">
                                             <div class="row-form clearfix">
                                                 <div class="form-group">
@@ -1307,6 +1341,9 @@ if ($user->isLoggedIn()) {
 
                                         </div>
 
+                                    </div>
+
+                                    <div class="row">
 
                                         <div class="col-sm-3">
                                             <div class="row-form clearfix">
@@ -1338,6 +1375,21 @@ if ($user->isLoggedIn()) {
                                                     <label>Site:</label>
                                                     <select name="site" style="width: 100%;" id="site" required>
                                                         <option value="">Select Site</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Location:</label>
+                                                    <select name="dispense_location_id" style="width: 100%;" id="dispense_location_id" required>
+                                                        <option value="">Select Location</option>
+                                                        <?php foreach ($override->getData('location') as $study) { ?>
+                                                            <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
+                                                        <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1482,6 +1534,7 @@ if ($user->isLoggedIn()) {
                                         $f = 0;
                                         foreach (Input::get('location') as $lctn) {
                                             $location = $override->get('location', 'id', $lctn)[0];
+                                            print_r($lctn);
                                         ?>
                                             <div class="row-form clearfix">
                                                 <div class="col-md-2"><strong><?= $location['name'] ?> : </strong></div>
@@ -1731,6 +1784,46 @@ if ($user->isLoggedIn()) {
 
             });
 
+            $('#generic_id3').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=generic_id3",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        $('#brand_id3').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $('#generic_id').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=gen2",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#maintainance').val(data.maintainance);
+                        $('#use_group').val(data.use_group);
+                        $('#use_case').val(data.use_case);
+                        $('#gen_id').val(data.gen_id);
+                        $('#gen_name').val(data.gen_name);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+
             $('#dispense_generic_id').change(function() {
                 var getUid = $(this).val();
                 $('#ld_batch').show();
@@ -1813,45 +1906,6 @@ if ($user->isLoggedIn()) {
                     },
                     success: function(data) {
                         $('#site').html(data);
-                        $('#fl_wait').hide();
-                    }
-                });
-
-            });
-
-            $('#generic_id3').change(function() {
-                var getUid = $(this).val();
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=generic_id3",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    success: function(data) {
-                        $('#brand_id3').html(data);
-                        $('#fl_wait').hide();
-                    }
-                });
-
-            });
-
-            $('#generic_id').change(function() {
-                var getUid = $(this).val();
-                $('#fl_wait').show();
-                $.ajax({
-                    url: "process.php?content=gen2",
-                    method: "GET",
-                    data: {
-                        getUid: getUid
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $('#maintainance').val(data.maintainance);
-                        $('#use_group').val(data.use_group);
-                        $('#use_case').val(data.use_case);
-                        $('#gen_id').val(data.gen_id);
-                        $('#gen_name').val(data.gen_name);
                         $('#fl_wait').hide();
                     }
                 });
