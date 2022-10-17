@@ -480,48 +480,52 @@ if ($user->isLoggedIn()) {
                     }
 
                     if (Input::get('notify_quantity') >= 0) {
-                        try {
-                            $user->createRecord('generic', array(
-                                'name' => Input::get('name'),
-                                'status' => 1,
-                                'notify_quantity' => Input::get('notify_quantity'),
-                                'assigned' => 0,
-                                'balance' => 0,
-                                'create_on' => date('Y-m-d'),
-                                'use_group' => Input::get('use_group'),
-                                'use_case' => Input::get('use_case'),
-                                'maintainance' => Input::get('maintainance'),
-                                'staff_id' => $user->data()->id,
-                            ));
-
-                            $si = 0;
-                            foreach (Input::get('location') as $sid) {
-                                $q = Input::get('amount')[$si];
-                                $location = $override->get('location', 'id', $sid)[0];
-                                $generic_id = $override->lastRow('generic', 'id')[0]['id'];
-                                $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
-                                $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
-                                $user->createRecord('generic_guide', array(
-                                    'generic_id' => $generic_id,
-                                    'notify_quantity' => $q,
+                        if (Input::get('notify_quantity') == $q) {
+                            try {
+                                $user->createRecord('generic', array(
+                                    'name' => Input::get('name'),
+                                    'status' => 1,
+                                    'notify_quantity' => Input::get('notify_quantity'),
                                     'assigned' => 0,
                                     'balance' => 0,
-                                    'use_group' => $use_group,
-                                    'location_id' => $location['id'],
                                     'create_on' => date('Y-m-d'),
+                                    'use_group' => Input::get('use_group'),
+                                    'use_case' => Input::get('use_case'),
+                                    'maintainance' => Input::get('maintainance'),
                                     'staff_id' => $user->data()->id,
-                                    'status' => 1,
-                                    'use_case' => $use_case,
                                 ));
 
-                                $si++;
+                                $si = 0;
+                                foreach (Input::get('location') as $sid) {
+                                    $q = Input::get('amount')[$si];
+                                    $location = $override->get('location', 'id', $sid)[0];
+                                    $generic_id = $override->lastRow('generic', 'id')[0]['id'];
+                                    $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
+                                    $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
+                                    $user->createRecord('generic_guide', array(
+                                        'generic_id' => $generic_id,
+                                        'notify_quantity' => $q,
+                                        'assigned' => 0,
+                                        'balance' => 0,
+                                        'use_group' => $use_group,
+                                        'location_id' => $location['id'],
+                                        'create_on' => date('Y-m-d'),
+                                        'staff_id' => $user->data()->id,
+                                        'status' => 1,
+                                        'use_case' => $use_case,
+                                    ));
+
+                                    $si++;
+                                }
+                                $successMessage = 'Generic Name Added Successful';
+                            } catch (Exception $e) {
+                                die($e->getMessage());
                             }
-                            $successMessage = 'Generic Name Added Successful';
-                        } catch (Exception $e) {
-                            die($e->getMessage());
+                        } else {
+                            $successMessage = 'Required Quantity Can not be Negative Number or Zero';
                         }
                     } else {
-                        $successMessage = 'Required Quantity Can not be Negative Number or Zero';
+                        $successMessage = 'Required Quantity Must Be equal to some of all required locations';
                     }
                 } else {
                     $pageError = $validate->errors();
@@ -703,7 +707,7 @@ if ($user->isLoggedIn()) {
                             echo $error . ' , ';
                         } ?>
                     </div>
-                <?php } elseif (!$successMessage) { ?>
+                <?php } elseif ($successMessage) { ?>
                     <div class="alert alert-success">
                         <h4>Success!</h4>
                         <?= $successMessage ?>
