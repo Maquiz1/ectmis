@@ -128,6 +128,7 @@ if ($user->isLoggedIn()) {
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
                                         $generic_id = $bDiscription['id'];
+                                        $batch_guide_id = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'status', 1)[0]['id'];
                                         $brand_id = $override->getNews('batch', 'brand_id', $generic_id, 'status', 1)[0]['brand_id'];
                                         $batch_id = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
                                         $batch_no = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];

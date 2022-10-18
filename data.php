@@ -194,13 +194,29 @@ if ($user->isLoggedIn()) {
             $checkGeneric = $override->get('generic', 'id', $generic_id)[0];
             $genericBalance = $checkGeneric['balance'] - $batchBalance;
 
+            $bufferBalance = $checkGeneric['buffer'] - $batchBalance;
+
             $user->updateRecord('batch', array(
                 'status' => 2,
             ), Input::get('id'));
 
             $user->updateRecord('generic', array(
                 'balance' => $genericBalance,
+                // 'buffer' => $bufferBalance,
             ), $generic_id);
+
+            // $si = 0;
+            // foreach ($override->get('generic_guide', 'generic_id', $generic_id) as $sid) {
+            //     // $q = $sid['balance'] - $batchBalance;
+            //     // $location = $override->get('location', 'id', $sid)[0];
+            //     // $generic_id = $override->lastRow('generic', 'id')[0]['id'];
+            //     // $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
+            //     // $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
+            //     $user->updateRecord('generic_guide', array(
+            //         'balance' => 0,
+            //     ), $generic_id);
+            //     $si++;
+            // }
 
             $user->createRecord('batch_records', array(
                 'generic_id' => $generic_id,
@@ -789,6 +805,8 @@ if ($user->isLoggedIn()) {
                                             $check_brand_id = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
                                             $check_batch_id = $batchDesc['id'];
                                             $check_batch_no = $batchDesc['batch_no'];
+
+                                            // $generic_guide_id = $override->get('generic_guide', 'id', $_GET['gid'])[0];
                                         ?>
                                             <tr>
                                                 <td><?= $generic_name ?></td>
@@ -836,6 +854,7 @@ if ($user->isLoggedIn()) {
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                                <!-- <input type="hidden" name="location[]" value="<?= $batchDesc['id'] ?>"> -->
                                                                 <input type="submit" name="archive_batch" value="Archive" class="btn btn-danger">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
