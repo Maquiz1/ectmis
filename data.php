@@ -194,50 +194,52 @@ if ($user->isLoggedIn()) {
             $checkGeneric = $override->get('generic', 'id', $generic_id)[0];
             $genericBalance = $checkGeneric['balance'] - $batchBalance;
 
-            $bufferBalance = $checkGeneric['buffer'] - $batchBalance;
+            if ($batchBalance <= $checkGeneric['balance']) {
+                $bufferBalance = 0;
+                if ($checkGeneric['buffer'] >= $batchBalance) {
+                    $bufferBalance = $checkGeneric['buffer'] - $batchBalance;
+                }
 
-            $user->updateRecord('batch', array(
-                'status' => 2,
-            ), Input::get('id'));
+                $user->updateRecord('batch', array(
+                    'status' => 2,
+                ), Input::get('id'));
 
-            $user->updateRecord('generic', array(
-                'balance' => $genericBalance,
-                // 'buffer' => $bufferBalance,
-            ), $generic_id);
+                $user->updateRecord('generic', array(
+                    'balance' => $genericBalance,
+                    'buffer' => $bufferBalance,
+                ), $generic_id);
 
-            // $si = 0;
-            // foreach ($override->get('generic_guide', 'generic_id', $generic_id) as $sid) {
-            //     // $q = $sid['balance'] - $batchBalance;
-            //     // $location = $override->get('location', 'id', $sid)[0];
-            //     // $generic_id = $override->lastRow('generic', 'id')[0]['id'];
-            //     // $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
-            //     // $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
-            //     $user->updateRecord('generic_guide', array(
-            //         'balance' => 0,
-            //     ), $generic_id);
-            //     $si++;
-            // }
+                // $si = 0;
+                // foreach ($override->getNews('generic_guide', 'generic_id', $generic_id,'location_id',$_GET['blid']) as $sid) {
+                //     $user->updateRecord('generic_guide', array(
+                //         'balance' => 0,
+                //     ), $sid['id']);
+                //     $si++;
+                // }
 
-            $user->createRecord('batch_records', array(
-                'generic_id' => $generic_id,
-                'brand_id' => $brand_id,
-                'batch_id' => Input::get('id'),
-                'batch_no' => $batch_no,
-                'quantity' => 0,
-                'assigned' => $batchBalance,
-                'balance' => $genericBalance,
-                'create_on' => date('Y-m-d'),
-                'staff_id' => $user->data()->id,
-                'status' => 2,
-                'study_id' => $study_id,
-                'last_check' => $batchLast,
-                'next_check' => $batchNext,
-                'category' => $category,
-                'remarks' => $remarks,
-                'expire_date' => $batchexpire,
-            ));
+                $user->createRecord('batch_records', array(
+                    'generic_id' => $generic_id,
+                    'brand_id' => $brand_id,
+                    'batch_id' => Input::get('id'),
+                    'batch_no' => $batch_no,
+                    'quantity' => 0,
+                    'assigned' => $batchBalance,
+                    'balance' => $genericBalance,
+                    'create_on' => date('Y-m-d'),
+                    'staff_id' => $user->data()->id,
+                    'status' => 2,
+                    'study_id' => $study_id,
+                    'last_check' => $batchLast,
+                    'next_check' => $batchNext,
+                    'category' => $category,
+                    'remarks' => $remarks,
+                    'expire_date' => $batchexpire,
+                ));
 
-            $successMessage = 'Medicine / Device Quarantine Successful';
+                $successMessage = 'Medicine / Device Quarantine Successful';
+            } else {
+                $errorMessage = 'No Amount Available for Quarantine';
+            }
         } elseif (Input::get('delete_batch')) {
             $user->updateRecord('batch', array(
                 'status' => 3,

@@ -108,6 +108,54 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('add_staff_study')) {
+            try {
+                $study_stuffs = 0;
+                foreach ($override->getNews('staff_study', 'study_id', Input::get('study'), 'staff_id', Input::get('id')) as $study_stuff) {
+                    if ($study_stuff) {
+                        $study_stuffs = 1;
+                    }
+                }
+
+                if (!$study_stuffs) {
+                    $user->createRecord('staff_study', array(
+                        'staff_id' => Input::get('id'),
+                        'study_id' => Input::get('study'),
+                        'status' => 1,
+                        'create_on' => date('Y-m-d'),
+                    ));
+
+                    $successMessage = 'Stuff Added Successful to a Study';
+                } else {
+                    $errorMessage = 'Stuff Already Registered to a Study';
+                }
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        }elseif (Input::get('remove_staff_study')) {
+            try {
+                $study_stuffs = 0;
+                foreach ($override->getNews('staff_study', 'study_id', Input::get('study'), 'staff_id', Input::get('id')) as $study_stuff) {
+                    if ($study_stuff) {
+                        $study_stuffs = 1;
+                    }
+                }
+
+                if ($study_stuffs) {
+                    $user->createRecord('staff_study', array(
+                        'staff_id' => Input::get('id'),
+                        'study_id' => Input::get('study'),
+                        'status' => 0,
+                        'create_on' => date('Y-m-d'),
+                    ));
+
+                    $successMessage = 'Stuff Removed Successful to a Study';
+                } else {
+                    $errorMessage = 'Stuff Not Registered to a Study';
+                }
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
         } elseif (Input::get('reset_pass')) {
             $salt = $random->get_rand_alphanumeric(32);
             $password = '12345678';
@@ -387,18 +435,16 @@ if ($user->isLoggedIn()) {
                                     <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th><input type="checkbox" name="checkall" /></th>
-                                                <th width="25%">Name</th>
-                                                <th width="25%">Username</th>
-                                                <th width="25%">Position</th>
-                                                <th width="25%">Branch</th>
+                                                <th width="20%">Name</th>
+                                                <th width="20%">Username</th>
+                                                <th width="10%">Position</th>
+                                                <th width="40%">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($override->get('user', 'status', 1) as $staff) {
                                                 $position = $override->get('position', 'id', $staff['position'])[0] ?>
                                                 <tr>
-                                                    <td><input type="checkbox" name="checkbox" /></td>
                                                     <td> <?= $staff['firstname'] . ' ' . $staff['lastname'] ?></td>
                                                     <td><?= $staff['username'] ?></td>
                                                     <td><?= $position['name'] ?></td>
@@ -406,6 +452,8 @@ if ($user->isLoggedIn()) {
                                                         <a href="#user<?= $staff['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
                                                         <a href="#reset<?= $staff['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Reset</a>
                                                         <a href="#delete<?= $staff['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                                        <a href="#add_user_study<?= $staff['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add User to Study</a>
+                                                        <a href="#remove_user_study<?= $staff['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Remove User to Study</a>
                                                     </td>
 
                                                 </tr>
@@ -534,6 +582,94 @@ if ($user->isLoggedIn()) {
                                                                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                                 </div>
                                                             </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="add_user_study<?= $staff['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit User Study Info </h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+                                                                    <div class="row">
+                                                                        <div class="block-fluid">
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">First name:</div>
+                                                                                <div class="col-md-9"><input type="text" name="firstname" value="<?= $staff['firstname'] ?>" required /></div>
+                                                                            </div>
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Last name:</div>
+                                                                                <div class="col-md-9"><input type="text" name="lastname" value="<?= $staff['lastname'] ?>" required /></div>
+                                                                            </div>
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-5">Select sites:</div>
+                                                                                <div class="col-md-7">
+                                                                                    <select name="study" id="s2_1" style="width: 100%;" required>
+                                                                                        <option value="">choose a Study...</option>
+                                                                                        <?php foreach ($override->getData('study') as $site) {
+                                                                                        ?>
+                                                                                            <option value="<?= $site['id'] ?>"><?= $site['name'] ?></option>
+                                                                                        <?php }
+                                                                                        ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="dr"><span></span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="id" value="<?= $staff['id'] ?>">
+                                                                        <input type="submit" name="add_staff_study" value="Save updates" class="btn btn-warning">
+                                                                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="remove_user_study<?= $staff['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit User Study Info </h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+                                                                    <div class="row">
+                                                                        <div class="block-fluid">
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">First name:</div>
+                                                                                <div class="col-md-9"><input type="text" name="firstname" value="<?= $staff['firstname'] ?>" required /></div>
+                                                                            </div>
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Last name:</div>
+                                                                                <div class="col-md-9"><input type="text" name="lastname" value="<?= $staff['lastname'] ?>" required /></div>
+                                                                            </div>
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-5">Select sites:</div>
+                                                                                <div class="col-md-7">
+                                                                                    <select name="study" id="s2_1" style="width: 100%;" required>
+                                                                                        <option value="">choose a Study...</option>
+                                                                                        <?php foreach ($override->getData('study') as $site) {
+                                                                                        ?>
+                                                                                            <option value="<?= $site['id'] ?>"><?= $site['name'] ?></option>
+                                                                                        <?php }
+                                                                                        ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="dr"><span></span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="id" value="<?= $staff['id'] ?>">
+                                                                        <input type="submit" name="remove_staff_study" value="Save updates" class="btn btn-warning">
+                                                                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                    </div>
+                                                                </div>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -779,7 +915,8 @@ if ($user->isLoggedIn()) {
                                                 $use_case = $override->get('use_case', 'id', $batch['use_case'])[0];
                                                 $batchItems = $override->getSumD1('batch_product', 'assigned', 'batch_id', $batch['id']);
                                                 // print_r($use_case);
-                                                // $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; ?>
+                                                // $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; 
+                                            ?>
                                                 <tr>
                                                     <td><?= $batch['create_on'] ?></td>
                                                     <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
@@ -1094,7 +1231,7 @@ if ($user->isLoggedIn()) {
                                     </ul>
                                 </div>
                                 <div class="block-fluid">
-                                    <table  cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="25%">Date</th>
@@ -1113,7 +1250,7 @@ if ($user->isLoggedIn()) {
                                                     <td> <?= $batchDesc['name'] ?></td>
                                                     <td> <?= $batchDesc['assigned'] ?></td>
                                                     <td> <?= $batchDesc['balance'] ?></td>
-                                                    <!-- <td> <?= number_format($batchDesc['quantity'] - $batchDesc['assigned']) ?></td> -->                                                   
+                                                    <!-- <td> <?= number_format($batchDesc['quantity'] - $batchDesc['assigned']) ?></td> -->
 
                                                     <td>
                                                         <a href="#study1<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">View</a>

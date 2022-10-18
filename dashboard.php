@@ -109,7 +109,6 @@ if ($user->isLoggedIn()) {
                                         <th width="3%"> Other</th>
                                         <th width="3%">Check</th>
                                         <th width="3%">Validity</th>
-                                        <th width="3%">Quantity</th>
                                         <th width="8%">Entries</th>
                                         <th width="8%">Checks</th>
                                     </tr>
@@ -128,7 +127,7 @@ if ($user->isLoggedIn()) {
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
                                         $generic_id = $bDiscription['id'];
-                                        $batch_guide_id = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'status', 1)[0]['id'];
+                                        // $guide_location_id[] = $override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'status', 1)[0]['location_id'];
                                         $brand_id = $override->getNews('batch', 'brand_id', $generic_id, 'status', 1)[0]['brand_id'];
                                         $batch_id = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
                                         $batch_no = $override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1)[0]['name'];
@@ -154,6 +153,14 @@ if ($user->isLoggedIn()) {
                                         $balance = $bDiscription['balance'];
                                         $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
 
+                                        // $location[] = '';
+                                        // foreach ($override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
+                                        //     if ($batch2['location_id'] != '') {
+                                        //         $location[] = $batch2['location_id'];
+                                        //     }
+                                        // }                                      
+
+
                                         $check = 0;
                                         $check1 = 0;
                                         foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
@@ -171,7 +178,15 @@ if ($user->isLoggedIn()) {
                                         <tr>
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
                                             <td><?= $bDiscription['notify_quantity']; ?></td>
-                                            <td><?= $balance; ?></td>
+                                            <td>
+                                                <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
+                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning"><?= $balance; ?></a>
+                                                <?php } elseif ($batchBalance == 0) { ?>
+                                                    <a href="add.php?id=11" role="button" class="btn btn-danger"><?= $balance; ?></a>
+                                                <?php } else { ?>
+                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success"><?= $balance; ?></a>
+                                                <?php } ?>
+                                            </td>
                                             <td><?php if ($EmKits['balance'] == '') {
                                                     echo 'NA';
                                                 } else {
@@ -179,7 +194,7 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($EmKits['notify_quantity'] >= $EmKits['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-danger"><?= $EmKits['balance']; ?></a>
-                                                    <?php }elseif($EmKits['notify_quantity'] < $EmKits['balance']) {?>
+                                                    <?php } elseif ($EmKits['notify_quantity'] < $EmKits['balance']) { ?>
                                                         <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-info"><?= $EmKits['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -190,7 +205,7 @@ if ($user->isLoggedIn()) {
                                                 ?> <?php if ($AmKits['notify_quantity'] >= $AmKits['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-danger"><?= $AmKits['balance']; ?></a>
-                                                    <?php }elseif($AmKits['notify_quantity'] < $AmKits['balance']) {?>
+                                                    <?php } elseif ($AmKits['notify_quantity'] < $AmKits['balance']) { ?>
                                                         <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-info"><?= $AmKits['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -202,7 +217,7 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($ECRm['notify_quantity'] >= $ECRm['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-danger"><?= $ECRm['balance']; ?></a>
-                                                    <?php }elseif($ECRm['notify_quantity'] < $ECRm['balance']) {?>
+                                                    <?php } elseif ($ECRm['notify_quantity'] < $ECRm['balance']) { ?>
                                                         <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-info"><?= $ECRm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -214,7 +229,7 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($DRm['notify_quantity'] >= $DRm['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-danger"><?= $DRm['balance']; ?></a>
-                                                    <?php }elseif($DRm['notify_quantity'] < $DRm['balance']) {?>
+                                                    <?php } elseif ($DRm['notify_quantity'] < $DRm['balance']) { ?>
                                                         <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-info"><?= $DRm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -226,7 +241,7 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($ScRm['notify_quantity'] >= $ScRm['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-danger"><?= $ScRm['balance']; ?></a>
-                                                    <?php }elseif($ScRm['notify_quantity'] < $ScRm['balance']) {?>
+                                                    <?php } elseif ($ScRm['notify_quantity'] < $ScRm['balance']) { ?>
                                                         <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-info"><?= $ScRm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -235,10 +250,10 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                   <?php if ($VSrm['notify_quantity'] >= $VSrm['balance']) {
+                                                    <?php if ($VSrm['notify_quantity'] >= $VSrm['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-danger"><?= $VSrm['balance']; ?></a>
-                                                    <?php }elseif($VSrm['notify_quantity'] < $VSrm['balance']) {?>
+                                                    <?php } elseif ($VSrm['notify_quantity'] < $VSrm['balance']) { ?>
                                                         <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-info"><?= $VSrm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -247,10 +262,10 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                   <?php if ($ExamRms['notify_quantity'] >= $ExamRms['balance']) {
+                                                    <?php if ($ExamRms['notify_quantity'] >= $ExamRms['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRms['balance']; ?></a>
-                                                    <?php }elseif($ExamRms['notify_quantity'] < $ExamRms['balance']) {?>
+                                                    <?php } elseif ($ExamRms['notify_quantity'] < $ExamRms['balance']) { ?>
                                                         <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $ExamRms['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -259,10 +274,10 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                   <?php if ($Ward['notify_quantity'] >= $Ward['balance']) {
+                                                    <?php if ($Ward['notify_quantity'] >= $Ward['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $Ward['balance']; ?></a>
-                                                    <?php }elseif($Ward['notify_quantity'] < $Ward['balance']) {?>
+                                                    <?php } elseif ($Ward['notify_quantity'] < $Ward['balance']) { ?>
                                                         <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $Ward['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -271,10 +286,10 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                   <?php if ($CTMr['notify_quantity'] >= $CTMr['balance']) {
+                                                    <?php if ($CTMr['notify_quantity'] >= $CTMr['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-danger"><?= $CTMr['balance']; ?></a>
-                                                    <?php }elseif($CTMr['notify_quantity'] < $CTMr['balance']) {?>
+                                                    <?php } elseif ($CTMr['notify_quantity'] < $CTMr['balance']) { ?>
                                                         <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-info"><?= $CTMr['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -283,10 +298,10 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                     <?php if ($Pharmacy['notify_quantity'] >= $Pharmacy['balance']) {
+                                                    <?php if ($Pharmacy['notify_quantity'] >= $Pharmacy['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-danger"><?= $Pharmacy['balance']; ?></a>
-                                                    <?php }elseif($Pharmacy['notify_quantity'] < $Pharmacy['balance']) {?>
+                                                    <?php } elseif ($Pharmacy['notify_quantity'] < $Pharmacy['balance']) { ?>
                                                         <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-info"><?= $Pharmacy['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -299,7 +314,7 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($Other['notify_quantity'] >= $Other['balance']) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-danger"><?= $Other['balance']; ?></a>
-                                                    <?php }elseif($Other['notify_quantity'] < $Other['balance']) {?>
+                                                    <?php } elseif ($Other['notify_quantity'] < $Other['balance']) { ?>
                                                         <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $Other['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -317,16 +332,7 @@ if ($user->isLoggedIn()) {
                                                 <?php } else { ?>
                                                     <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
                                                 <?php } ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning">Running Low</a>
-                                                <?php } elseif ($batchBalance == 0) { ?>
-                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger">Out of Stock</a>
-                                                <?php } else { ?>
-                                                    <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success">Sufficient</a>
-                                                <?php } ?>
-                                            </td>
+                                            </td>                                            
                                             <td>
                                                 <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-default">View</a>
                                             </td>

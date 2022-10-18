@@ -81,6 +81,34 @@ if ($user->isLoggedIn()) {
                         $user->createRecord('staff_study', array(
                             'staff_id' => $staff_id['id'],
                             'study_id' => $site,
+                            'status' => 1,
+                            'create_on' => date('Y-m-d'),
+                        ));
+                    }
+
+                    $successMessage = 'Account Created Successful';
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('add_user_study')) {
+            $validate = new validate();
+            $validate = $validate->check($_POST, array(
+                'username' => array(
+                    'required' => true,
+                    'unique' => 'user'
+                ),
+            ));
+            if ($validate->passed()) {
+                try {
+                    foreach (Input::get('study') as $site) {
+                        $user->createRecord('staff_study', array(
+                            'staff_id' => $staff_id['id'],
+                            'study_id' => $site,
+                            'status' => 1,
+                            'create_on' => date('Y-m-d'),
                         ));
                     }
 
@@ -539,7 +567,10 @@ if ($user->isLoggedIn()) {
                 ),
                 'brand_id2' => array(
                     'required' => true,
-                )
+                ),
+                // 'name' => array(
+                //     'unique' => 'brand'
+                // ),
             ));
             if ($validate->passed()) {
                 try {
@@ -1746,6 +1777,87 @@ if ($user->isLoggedIn()) {
 
                                 </form>
                             </div>
+                        </div>
+                    <?php } elseif ($_GET['id'] == 12 && $user->data()->position == 1) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add User to Study</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">First Name:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="text" name="firstname" id="firstname" />
+                                        </div>
+                                    </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Last Name:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="text" name="lastname" id="lastname" />
+                                        </div>
+                                    </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Username:</div>
+                                        <div class="col-md-9">
+                                            <input value="" class="validate[required]" type="text" name="username" id="username" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-5">Select Study:</div>
+                                        <div class="col-md-7">
+                                            <select name="study[]" id="s2_2" style="width: 100%;" multiple="multiple" required>
+                                                <option value="">choose a study...</option>
+                                                <?php foreach ($override->getData('study') as $study) { ?>
+                                                    <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-5">Select sites:</div>
+                                        <div class="col-md-7">
+                                            <select name="sites[]" id="s2_1" style="width: 100%;" multiple="multiple" required>
+                                                <option value="">choose a site...</option>
+                                                <?php foreach ($override->getData('sites') as $site) { ?>
+                                                    <option value="<?= $site['id'] ?>"><?= $site['name'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Position</div>
+                                        <div class="col-md-9">
+                                            <select name="position" style="width: 100%;" required>
+                                                <option value="">Select position</option>
+                                                <?php foreach ($override->getData('position') as $position) { ?>
+                                                    <option value="<?= $position['id'] ?>"><?= $position['name'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">Phone Number:</div>
+                                        <div class="col-md-9"><input value="" class="" type="text" name="phone_number" id="phone" required /> <span>Example: 0700 000 111</span></div>
+                                    </div>
+
+                                    <div class="row-form clearfix">
+                                        <div class="col-md-3">E-mail Address:</div>
+                                        <div class="col-md-9"><input value="" class="validate[required,custom[email]]" type="text" name="email_address" id="email" /> <span>Example: someone@nowhere.com</span></div>
+                                    </div>
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="add_user" value="Submit" class="btn btn-default">
+                                    </div>
+
+                                </form>
+                            </div>
+
                         </div>
                     <?php } ?>
                     <div class="dr"><span></span></div>

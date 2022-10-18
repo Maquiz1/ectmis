@@ -66,35 +66,35 @@ if ($user->data()->accessLevel == 1) {
             </li>
 
         <?php
-        } else {
+        }
 
         ?>
-            <li class="openable">
-                <a href="#"><span class="isw-lock"></span><span class="text">Studies</span></a>
-                <ul>
-                    <li class="">
-                        <a href="add.php?id=3">
-                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Study</span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="info.php?id=4">
-                            <span class="glyphicon glyphicon-list"></span><span class="text">Manage Studies</span>
-                        </a>
-                    </li>
+        <li class="openable">
+            <a href="#"><span class="isw-lock"></span><span class="text">Studies</span></a>
+            <ul>
+                <li class="">
+                    <a href="add.php?id=3">
+                        <span class="glyphicon glyphicon-plus"></span><span class="text">Add Study</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="info.php?id=4">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Manage Studies</span>
+                    </a>
+                </li>
 
-                </ul>
-            </li>
+            </ul>
+        </li>
 
-            <li class="openable">
-                <a href="#"><span class="isw-archive"></span><span class="text">Manage Receiving</span></a>
-                <ul>
-                    <li class="">
-                        <a href="add.php?id=11">
-                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Name</span>
-                        </a>
-                    </li>
-                    <!-- <li>
+        <li class="openable">
+            <a href="#"><span class="isw-archive"></span><span class="text">Manage Receiving</span></a>
+            <ul>
+                <li class="">
+                    <a href="add.php?id=11">
+                        <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Name</span>
+                    </a>
+                </li>
+                <!-- <li>
                         <a href="add.php?id=4">
                             <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch</span>
                         </a>
@@ -109,17 +109,17 @@ if ($user->data()->accessLevel == 1) {
                             <span class="glyphicon glyphicon-list"></span><span class="text">Devices</span>
                         </a>
                     </li> -->
-                </ul>
-            </li>
-            <li class="openable">
-                <a href="#"><span class="isw-folder"></span><span class="text">Manage Dispensing</span></a>
-                <ul>
-                    <li>
-                        <a href="add.php?id=8">
-                            <span class="glyphicon glyphicon-plus"></span><span class="text">dispense Device/Medicne</span>
-                        </a>
-                    </li>
-                    <!-- <li>
+            </ul>
+        </li>
+        <!-- <li class="openable"> -->
+            <!-- <a href="#"><span class="isw-folder"></span><span class="text">Manage Dispensing</span></a>
+            <ul>
+                <li>
+                    <a href="add.php?id=8">
+                        <span class="glyphicon glyphicon-plus"></span><span class="text">dispense Device/Medicne</span>
+                    </a>
+                </li> -->
+                <!-- <li>
                         <a href="info.php?id=6&type=1">
                             <span class="glyphicon glyphicon-list"></span><span class="text">Manage Medicine</span>
                         </a>
@@ -129,110 +129,108 @@ if ($user->data()->accessLevel == 1) {
                             <span class="glyphicon glyphicon-list"></span><span class="text">Manage Devices</span>
                         </a>
                     </li> -->
-                </ul>
-            </li>
+            <!-- </ul>
+        </li> -->
 
-            <li class="openable">
-                <a href="#"><span class="isw-tag"></span><span class="text">Extra</span></a>
-                <ul>
-                    <li>
-                        <a href="add.php?id=2">
-                            <span class="glyphicon glyphicon-user"></span><span class="text">Add Position</span>
-                        </a>
-                        <a href="add.php?id=5">
-                            <span class="glyphicon glyphicon-home"></span><span class="text">Add Site</span>
-                        </a>
-                        <a href="add.php?id=6">
-                            <span class="glyphicon glyphicon-home"></span><span class="text">Add Drug Category</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="info.php?id=2">
-                            <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="openable">
-                <a href="#"><span class="isw-lock"></span><span class="text">Managements</span></a>
-                <ul>
-                    <li class="">
-                        <a href="add.php?id=9">
-                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Generic Name</span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="add.php?id=10">
-                            <span class="glyphicon glyphicon-plus"></span><span class="text">Add Brand Name</span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="info.php?id=5">
-                            <span class="glyphicon glyphicon-list"></span><span class="text">View</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="openable">
-                <a href="#"><span class="isw-documents"></span><span class="text">Reports</span></a>
-                <ul>
-                    <li>
-                        <a href="report.php?id=1">
-                            <span class="glyphicon glyphicon-search"></span><span class="text">Search Reports</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="">
-                <a href="info.php?id=11">
-                    <span class="isw-download"></span><span class="text">Download</span>
-                </a>
-            </li>
+        <li class="openable">
+            <a href="#"><span class="isw-tag"></span><span class="text">Extra</span></a>
+            <ul>
+                <li>
+                    <a href="add.php?id=2">
+                        <span class="glyphicon glyphicon-user"></span><span class="text">Add Position</span>
+                    </a>
+                    <a href="add.php?id=5">
+                        <span class="glyphicon glyphicon-home"></span><span class="text">Add Site</span>
+                    </a>
+                    <a href="add.php?id=6">
+                        <span class="glyphicon glyphicon-home"></span><span class="text">Add Drug Category</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="info.php?id=2">
+                        <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="openable">
+            <a href="#"><span class="isw-lock"></span><span class="text">Managements</span></a>
+            <ul>
+                <li class="">
+                    <a href="add.php?id=9">
+                        <span class="glyphicon glyphicon-plus"></span><span class="text">Add Generic Name</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="add.php?id=10">
+                        <span class="glyphicon glyphicon-plus"></span><span class="text">Add Brand Name</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="info.php?id=5">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">View</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- <li class="openable">
+            <a href="#"><span class="isw-documents"></span><span class="text">Reports</span></a>
+            <ul>
+                <li>
+                    <a href="report.php?id=1">
+                        <span class="glyphicon glyphicon-search"></span><span class="text">Search Reports</span>
+                    </a>
+                </li>
+            </ul>
+        </li> -->
+        <!-- <li class="">
+            <a href="info.php?id=11">
+                <span class="isw-download"></span><span class="text">Download</span>
+            </a>
+        </li> -->
 
-            <li class="openable">
-                <a href="#"><span class="isw-tag"></span><span class="text">Summary</span></a>
-                <ul>
-                    <li>
-                        <a href="data.php?id=1">
-                            <!-- <span class="text">Expired Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount1('batch', 'expire_date', $today, 'status', 1) ?></span> -->
-                        </a>
-                        <a href="data.php?id=9">
-                            <span class="text">Quarantined</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 2) ?></span>
-                        </a>
-                        <a href="data.php?id=10">
-                            <span class="text">Burn / destroyed </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 3) ?></span>
-                        </a>
-                        <a href="data.php?id=2">
-                            <!-- <span class="text">30 Days To Expire</span> <span class="badge badge-primary badge-pill"><?= $override->getCount2('batch', 'expire_date', $todayPlus30, 'status', 1) ?></span> -->
-                        </a>
-                        <a href="data.php?id=9">
-                            <!-- <span class="text"> Unchecked! </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span> -->
-                        </a>
-                    </li>
-                    <li>
-                        <a href="info.php?id=22">
-                            <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+        <li class="openable">
+            <a href="#"><span class="isw-tag"></span><span class="text">Summary</span></a>
+            <ul>
+                <li>
+                    <a href="data.php?id=1">
+                        <!-- <span class="text">Expired Medicine</span> <span class="badge badge-primary badge-pill"><?= $override->getCount1('batch', 'expire_date', $today, 'status', 1) ?></span> -->
+                    </a>
+                    <a href="data.php?id=9">
+                        <span class="text">Quarantined</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 2) ?></span>
+                    </a>
+                    <a href="data.php?id=10">
+                        <span class="text">Burn / destroyed </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 3) ?></span>
+                    </a>
+                    <a href="data.php?id=2">
+                        <!-- <span class="text">30 Days To Expire</span> <span class="badge badge-primary badge-pill"><?= $override->getCount2('batch', 'expire_date', $todayPlus30, 'status', 1) ?></span> -->
+                    </a>
+                    <a href="data.php?id=9">
+                        <!-- <span class="text"> Unchecked! </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 4) ?></span> -->
+                    </a>
+                </li>
+                <li>
+                    <a href="info.php?id=22">
+                        <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
-            <!-- <li class="active">
+        <!-- <li class="active">
                 <a href="zebra.php" target="_blank">
                     <span class="isw-print"></span><span class="text">Zebra Print</span>
                 </a>
             </li> -->
 
-            <?php if ($user->data()->power == 1) { ?>
-                <!-- <li class="active">
+        <?php if ($user->data()->power == 1) { ?>
+            <!-- <li class="active">
                     <a href="zebra.php">
                         <span class="isw-print"></span><span class="text">Zebra Print</span>
                     </a>
                 </li> -->
-            <?php } ?>
-
-
         <?php } ?>
+
     </ul>
 
     <div class="dr"><span></span></div>
