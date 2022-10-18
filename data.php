@@ -4,12 +4,9 @@ $user = new User();
 $override = new OverideData();
 $email = new Email();
 $random = new Random();
-
 $successMessage = null;
 $pageError = null;
 $errorMessage = null;
-
-
 $noE = 0;
 $noC = 0;
 $noD = 0;
@@ -407,25 +404,41 @@ if ($user->isLoggedIn()) {
                 )
             ));
             if ($validate->passed()) {
-                try {
-                    $user->createRecord('check_records', array(
-                        'generic_id' => Input::get('check_generic_id'),
-                        'brand_id' => Input::get('check_brand_id'),
-                        'batch_id' => Input::get('check_batch_id'),
-                        'batch_no' => Input::get('check_batch_no'),
-                        'create_on' => date('Y-m-d'),
-                        'staff_id' => $user->data()->id,
-                        'status' => 1,
-                        'last_check' => Input::get('last_check'),
-                        'next_check' => Input::get('next_check'),
-                        'remarks' => Input::get('remarks'),
-                    ));
-                    $BatchLastRow1 = $override->lastRow('check_records', 'id');
-                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), Input::get('check_batch_id'));
-                    $user->updateRecord('batch', array('last_check' => Input::get('last_check')), Input::get('check_batch_id'));
-                    $successMessage = 'Check Status Updated Successful';
-                } catch (Exception $e) {
-                    die($e->getMessage());
+                if (Input::get('last_check') <= date('Y-m-d')) {
+                    if (Input::get('last_check') >= Input::get('last')) {
+                        if (Input::get('next_check') >= date('Y-m-d')) {
+                            if (Input::get('next_check') >= Input::get('next')) {
+                                try {
+                                    $user->createRecord('check_records', array(
+                                        'generic_id' => Input::get('check_generic_id'),
+                                        'brand_id' => Input::get('check_brand_id'),
+                                        'batch_id' => Input::get('check_batch_id'),
+                                        'batch_no' => Input::get('check_batch_no'),
+                                        'create_on' => date('Y-m-d'),
+                                        'staff_id' => $user->data()->id,
+                                        'status' => 1,
+                                        'last_check' => Input::get('last_check'),
+                                        'next_check' => Input::get('next_check'),
+                                        'remarks' => Input::get('remarks'),
+                                    ));
+                                    $BatchLastRow1 = $override->lastRow('check_records', 'id');
+                                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), Input::get('check_batch_id'));
+                                    $user->updateRecord('batch', array('last_check' => Input::get('last_check')), Input::get('check_batch_id'));
+                                    $successMessage = 'Check Status Updated Successful';
+                                } catch (Exception $e) {
+                                    die($e->getMessage());
+                                }
+                            } else {
+                                $errorMessage = 'Next Check Date already exists Check Again';
+                            }
+                        } else {
+                            $errorMessage = 'Next Check Can not be Past';
+                        }
+                    } else {
+                        $errorMessage = 'Last Check Date already exists Check Again';
+                    }
+                } else {
+                    $errorMessage = 'Last Check Can not be Future';
                 }
             } else {
                 $pageError = $validate->errors();
@@ -448,93 +461,102 @@ if ($user->isLoggedIn()) {
                     $batchexpire = $checkBatch['expire_date'];
 
                     $batchBalance = $checkBatch['balance'] + Input::get('added');
-                        try {
-                            $user->updateRecord('generic', array(
-                                'balance' => $genericBalance,
-                            ), Input::get('update_generic_id'));
+                    try {
+                        $user->updateRecord('generic', array(
+                            'balance' => $genericBalance,
+                        ), Input::get('update_generic_id'));
 
-                            $user->updateRecord('batch', array(
-                                'balance' => $batchBalance,
-                            ), Input::get('id'));
+                        $user->updateRecord('batch', array(
+                            'balance' => $batchBalance,
+                        ), Input::get('id'));
 
-                            $user->createRecord('batch_records', array(
-                                'generic_id' => Input::get('update_generic_id'),
-                                'brand_id' => Input::get('update_brand_id'),
-                                'batch_id' => Input::get('id'),
-                                'batch_no' => Input::get('update_batch_no'),
-                                'quantity' => Input::get('added'),
-                                'assigned' => 0,
-                                'balance' => $genericBalance,
-                                'create_on' => date('Y-m-d'),
-                                'staff_id' => $user->data()->id,
-                                'status' => 1,
-                                'study_id' => Input::get('study_id'),
-                                'last_check' => $batchLast,
-                                'next_check' => $batchNext,
-                                'category' => Input::get('update_category_id'),
-                                'remarks' => Input::get('remarks'),
-                                'expire_date' => $batchexpire,
-                            ));
+                        $user->createRecord('batch_records', array(
+                            'generic_id' => Input::get('update_generic_id'),
+                            'brand_id' => Input::get('update_brand_id'),
+                            'batch_id' => Input::get('id'),
+                            'batch_no' => Input::get('update_batch_no'),
+                            'quantity' => Input::get('added'),
+                            'assigned' => 0,
+                            'balance' => $genericBalance,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                            'status' => 1,
+                            'study_id' => Input::get('study_id'),
+                            'last_check' => $batchLast,
+                            'next_check' => $batchNext,
+                            'category' => Input::get('update_category_id'),
+                            'remarks' => Input::get('remarks'),
+                            'expire_date' => $batchexpire,
+                        ));
 
-                            $successMessage = 'Stock guied Successful Updated';
-                        } catch (Exception $e) {
-                            die($e->getMessage());
-                        }
+                        $successMessage = 'Stock guied Successful Updated';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
                 } else {
                     $errorMessage = 'Amount added Must Be Greater Than 0';
                 }
             } else {
                 $pageError = $validate->errors();
             }
-        } elseif (Input::get('update_stock_guide_records')) {
+        } elseif (Input::get('alocate_batch')) {
             $validate = $validate->check($_POST, array(
-                'added' => array(
+                'allocate_amount' => array(
                     'required' => true,
                 ),
             ));
             if ($validate->passed()) {
                 $total_quantity = 0;
-                if (Input::get('added') > 0) {
+                if (Input::get('allocate_amount') > 0) {
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
-                    $genericBalance = $checkGeneric['balance'] + Input::get('added');
+                    $genericBalance = $checkGeneric['balance'] + Input::get('allocate_amount');
 
                     $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
                     $batchLast = $checkBatch['last_check'];
                     $batchNext = $checkBatch['next_check'];
                     $batchexpire = $checkBatch['expire_date'];
-                    $use_group = $checkBatch['use_group'];
-                    $use_case = $checkBatch['use_case'];
+                    $use_group = $checkGeneric['use_group'];
+                    $use_case = $checkGeneric['use_case'];
 
                     $checkGuide = $override->get('generic_guide', 'id', Input::get('location_guide_id'))[0];
-                    $guideBalance = $checkGuide['balance'] + Input::get('added');
-                    if (Input::get('added') <= $checkBatch['balance']) {
-                        // $bufferBalance = $checkGeneric['balance'] - Input::get('added');
-                        try {
-                            $user->updateRecord('generic_guide', array(
-                                'balance' => $guideBalance,
-                            ), Input::get('location_guide_id'));
+                    $guideBalance = $checkGuide['balance'] + Input::get('allocate_amount');
+                    if (Input::get('allocate_amount') <= $checkBatch['balance']) {
+                        if (Input::get('allocate_amount') <= $checkGeneric['buffer']) {
+                            $bufferBalance = $checkGeneric['buffer'] - Input::get('allocate_amount');
+                            try {
+                                $user->updateRecord('generic_guide', array(
+                                    'balance' => $guideBalance,
+                                ), Input::get('location_guide_id'));
 
-                            $user->createRecord('generic_guide_records', array(
-                                'generic_id' => Input::get('update_generic_id'),
-                                'brand_id' => Input::get('update_brand_id'),
-                                'batch_id' => Input::get('id'),
-                                'batch_no' => Input::get('update_batch_no'),
-                                'guide_id' => Input::get('location_guide_id'),
-                                'quantity' => Input::get('added'),
-                                'notify_quantity' => 0,
-                                'assigned' => 0,
-                                'balance' => $guideBalance,
-                                'use_group' => $use_group,
-                                'location_id' => Input::get('location_batch_id'),
-                                'create_on' => date('Y-m-d'),
-                                'staff_id' => $user->data()->id,
-                                'status' => 1,
-                                'use_case' => $use_case,
-                            ));
+                                $user->updateRecord('generic', array(
+                                    'buffer' => $bufferBalance,
+                                ), Input::get('update_generic_id'));
 
-                            $successMessage = 'Stock guied Successful Updated';
-                        } catch (Exception $e) {
-                            die($e->getMessage());
+                                $user->createRecord('generic_guide_records', array(
+                                    'generic_id' => Input::get('update_generic_id'),
+                                    'brand_id' => Input::get('update_brand_id'),
+                                    'batch_id' => Input::get('id'),
+                                    'batch_no' => Input::get('update_batch_no'),
+                                    'guide_id' => Input::get('location_guide_id'),
+                                    'quantity' => Input::get('allocate_amount'),
+                                    'notify_quantity' => 0,
+                                    'assigned' => 0,
+                                    'balance' => $guideBalance,
+                                    'buffer' => $bufferBalance,
+                                    'use_group' => $use_group,
+                                    'location_id' => Input::get('location_batch_id'),
+                                    'create_on' => date('Y-m-d'),
+                                    'staff_id' => $user->data()->id,
+                                    'status' => 1,
+                                    'use_case' => $use_case,
+                                ));
+
+                                $successMessage = 'Stock guied Successful Allocated';
+                            } catch (Exception $e) {
+                                die($e->getMessage());
+                            }
+                        } else {
+                            $errorMessage = 'Amount to Alocate Must not Be Greater Than Buffer Amount';
                         }
                     } else {
                         $errorMessage = 'Amount added Must not Be Greater Than Balance';
@@ -572,9 +594,10 @@ if ($user->isLoggedIn()) {
                     $checkGuide = $override->get('generic_guide', 'id', Input::get('location_guide_id'))[0];
                     $guideBalance = $checkGuide['balance'] - Input::get('removed');
 
+                    $bufferBalance = $checkGeneric['buffer'];
+
                     if (Input::get('removed') <= $checkGuide['balance']) {
                         try {
-
                             $user->updateRecord('batch', array(
                                 'status' => 1,
                                 'assigned' => $batchAssigned,
@@ -634,6 +657,7 @@ if ($user->isLoggedIn()) {
                                 'notify_quantity' => 0,
                                 'assigned' => Input::get('removed'),
                                 'balance' => $guideBalance,
+                                'buffer' => $bufferBalance,
                                 'use_group' => $use_group,
                                 'location_id' => Input::get('location_batch_id'),
                                 'create_on' => date('Y-m-d'),
@@ -642,7 +666,7 @@ if ($user->isLoggedIn()) {
                                 'use_case' => $use_case,
                             ));
 
-                            $successMessage = 'Stock guied Successful Updated';
+                            $successMessage = 'Stock guied Successful Dispensed / Removed';
                         } catch (Exception $e) {
                             die($e->getMessage());
                         }
@@ -736,8 +760,9 @@ if ($user->isLoggedIn()) {
                                             <th width="10%">Batch No</th>
                                             <th width="4%">Used</th>
                                             <th width="4%">Balance</th>
-                                            <th width="10%">Expire Date</th>
-                                            <th width="10%">Next Check</th>
+                                            <th width="8%">Expire Date</th>
+                                            <th width="8%">Last Check</th>
+                                            <th width="8%">Next Check</th>
                                             <th width="5%">Expiration</th>
                                             <th width="5%">Checking</th>
                                         </tr>
@@ -778,6 +803,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batchDesc['assigned'] ?></td>
                                                 <td><?= $batchDesc['balance'] ?></td>
                                                 <td><?= $batchDesc['expire_date'] ?></td>
+                                                <td><?= $batchDesc['last_check'] ?></td>
                                                 <td><?= $batchDesc['next_check'] ?></td>
                                                 <td>
                                                     <?php if ($batchDesc['expire_date'] <= $today) { ?>
@@ -905,6 +931,8 @@ if ($user->isLoggedIn()) {
                                                                 <input value="<?= $check_brand_id ?>" type="hidden" name="check_brand_id" id="check_brand_id" />
                                                                 <input value="<?= $check_batch_id ?>" type="hidden" name="check_batch_id" id="check_batch_id" />
                                                                 <input value="<?= $check_batch_no ?>" type="hidden" name="check_batch_no" id="check_batch_no" />
+                                                                <input type="hidden" name="next" value="<?= $batchDesc['next_check'] ?>">
+                                                                <input type="hidden" name="last" value="<?= $batchDesc['last_check'] ?>">
                                                                 <input type="submit" name="update_check" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
@@ -2108,9 +2136,10 @@ if ($user->isLoggedIn()) {
                                             <th width="10%">Batch No</th>
                                             <th width="4%">Used</th>
                                             <th width="4%">Balance</th>
-                                            <th width="10%">Expire Date</th>
-                                            <th width="10%">Next Check</th>
-                                            <th width="10%">Actions</th>
+                                            <th width="4%">Buffer</th>
+                                            <th width="8%">Expire Date</th>
+                                            <th width="8%">Next Check</th>
+                                            <th width="12%">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -2130,6 +2159,8 @@ if ($user->isLoggedIn()) {
                                         $amnt = 0;
                                         foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'], 'status', 1, $page, $numRec) as $batchDesc) {
                                             $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
+                                            $generic_buffer = $override->get('generic', 'id', $_GET['gid'])[0]['buffer'];
+                                            $guide_quantinty = $override->get('generic_guide', 'id', $_GET['lbid'])[0]['balance'];
                                             $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
                                             $update_generic_id2 = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
                                             $update_brand_id2 = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
@@ -2157,27 +2188,28 @@ if ($user->isLoggedIn()) {
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $batchDesc['balance'] ?> </a>
                                                     <?php } ?>
                                                 </td>
+                                                <td><?= $generic_buffer ?></td>
                                                 <td><?= $batchDesc['expire_date'] ?></td>
                                                 <td><?= $batchDesc['next_check'] ?></td>
                                                 <td>
-                                                    <a href="#edit_stock_guide_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add</a>
+                                                    <a href="#alocate_batch<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Alocate</a>
                                                     <a href="#dispense_batch_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Remove</a>
                                                 </td>
 
                                             </tr>
 
-                                            <div class="modal fade" id="edit_stock_guide_id<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal fade" id="alocate_batch<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <form method="post">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                <h4>Update Stock Info</h4>
+                                                                <h4>Alocate Stock Info</h4>
                                                             </div>
                                                             <div class="modal-body modal-body-np">
                                                                 <div class="row">
 
-                                                                    <div class="col-sm-6">
+                                                                    <div class="col-sm-4">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -2186,7 +2218,7 @@ if ($user->isLoggedIn()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-sm-6">
+                                                                    <div class="col-sm-4">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -2196,9 +2228,7 @@ if ($user->isLoggedIn()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-sm-3">
+                                                                    <div class="col-sm-4">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -2207,6 +2237,8 @@ if ($user->isLoggedIn()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                                <div class="row">
 
                                                                     <div class="col-sm-3">
                                                                         <div class="row-form clearfix">
@@ -2239,8 +2271,17 @@ if ($user->isLoggedIn()) {
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
-                                                                                <label>Quantity to Add:</label>
-                                                                                <input value=" " class="validate[required]" type="number" name="added" id="added" style="width: 100%;" />
+                                                                                <label>Buffer Amount:</label>
+                                                                                <input value="<?= $generic_buffer ?>" type="text" name="update_generic_buffer" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Quantity to alocate:</label>
+                                                                                <input value=" " class="validate[required]" type="number" name="allocate_amount" id="allocate_amount" style="width: 100%;" />
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -2256,7 +2297,7 @@ if ($user->isLoggedIn()) {
                                                                 <input type="hidden" name="update_category_id" value="<?= $update_category_id2 ?>" id="update_category_id">
                                                                 <input type="hidden" name="location_batch_id" value="<?= $location_batch_id ?>" id="location_batch_id">
                                                                 <input type="hidden" name="location_guide_id" value="<?= $location_guide_id ?>" id="location_guide_id">
-                                                                <input type="submit" name="update_stock_guide_records" value="Save updates" class="btn btn-warning">
+                                                                <input type="submit" name="alocate_batch" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
                                                         </div>
@@ -2296,7 +2337,7 @@ if ($user->isLoggedIn()) {
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-sm-4">
+                                                                    <div class="col-sm-3">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -2306,7 +2347,7 @@ if ($user->isLoggedIn()) {
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="col-sm-4">
+                                                                    <div class="col-sm-3">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">
@@ -2315,7 +2356,16 @@ if ($user->isLoggedIn()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-sm-4">
+                                                                    <div class="col-sm-3">
+                                                                        <div class="row-form clearfix">
+                                                                            <!-- select -->
+                                                                            <div class="form-group">
+                                                                                <label>Location Quantity::</label>
+                                                                                <input value="<?= $guide_quantinty ?>" type="number" name="location_quantity" id="location_quantity" style="width: 100%;" disabled />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
                                                                         <div class="row-form clearfix">
                                                                             <!-- select -->
                                                                             <div class="form-group">

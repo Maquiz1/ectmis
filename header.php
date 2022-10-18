@@ -4,38 +4,16 @@ $user = new User();
 $override = new OverideData();
 $email = new Email();
 $random = new Random();
-
-$successMessage = null;
-$pageError = null;
-$errorMessage = null;
-$noE = 0;
-$noC = 0;
-$noD = 0;
-$numRec = 10;
-$users = $override->getData('user');
-$today = date('Y-m-d');
-$todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
+// $noE = 0;
+// $noC = 0;
+// $noD = 0;
+// $numRec = 10;
+// $users = $override->getData('user');
+// $today = date('Y-m-d');
+// $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 ?>
 
 <div class="workplace">
-    <?php if ($errorMessage) { ?>
-        <div class="alert alert-danger">
-            <h4>Error!</h4>
-            <?= $errorMessage ?>
-        </div>
-    <?php } elseif ($pageError) { ?>
-        <div class="alert alert-danger">
-            <h4>Error!</h4>
-            <?php foreach ($pageError as $error) {
-                echo $error . ' , ';
-            } ?>
-        </div>
-    <?php } elseif ($successMessage) { ?>
-        <div class="alert alert-success">
-            <h4>Success!</h4>
-            <?= $successMessage ?>
-        </div>
-    <?php } ?>
 
     <div class="row">
 

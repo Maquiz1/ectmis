@@ -2,22 +2,16 @@
 require_once 'php/core/init.php';
 $user = new User();
 $override = new OverideData();
-$email = new Email();
-$random = new Random();
+// $email = new Email();
+// $random = new Random();
+// $noE = 0;
+// $noC = 0;
+// $noD = 0;
+// $numRec = 13;
+// $users = $override->getData('user');
 
-$successMessage = null;
-$pageError = null;
-$errorMessage = null;
-
-
-$noE = 0;
-$noC = 0;
-$noD = 0;
-$numRec = 13;
-$users = $override->getData('user');
-
-$today = date('Y-m-d');
-$todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
+// $today = date('Y-m-d');
+// $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 
 if ($user->data()->accessLevel == 1) {
 } else {
@@ -53,7 +47,7 @@ if ($user->data()->accessLevel == 1) {
             </a>
         </li>
         <?php if ($user->data()->accessLevel == 1) {
- ?>
+        ?>
 
             <li class="openable">
                 <a href="#"><span class="isw-user"></span><span class="text">Staff</span></a>
@@ -71,10 +65,10 @@ if ($user->data()->accessLevel == 1) {
                 </ul>
             </li>
 
-<?php 
-} else {
+        <?php
+        } else {
 
-?>
+        ?>
             <li class="openable">
                 <a href="#"><span class="isw-lock"></span><span class="text">Studies</span></a>
                 <ul>
@@ -95,7 +89,7 @@ if ($user->data()->accessLevel == 1) {
             <li class="openable">
                 <a href="#"><span class="isw-archive"></span><span class="text">Manage Receiving</span></a>
                 <ul>
-                <li class="">
+                    <li class="">
                         <a href="add.php?id=11">
                             <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Name</span>
                         </a>
@@ -238,7 +232,7 @@ if ($user->data()->accessLevel == 1) {
             <?php } ?>
 
 
-<?php }?>
+        <?php } ?>
     </ul>
 
     <div class="dr"><span></span></div>

@@ -488,6 +488,7 @@ if ($user->isLoggedIn()) {
                                     'notify_quantity' => Input::get('notify_quantity'),
                                     'assigned' => 0,
                                     'balance' => 0,
+                                    'buffer' => 0,
                                     'create_on' => date('Y-m-d'),
                                     'use_group' => Input::get('use_group'),
                                     'use_case' => Input::get('use_case'),
@@ -522,10 +523,10 @@ if ($user->isLoggedIn()) {
                                 die($e->getMessage());
                             }
                         } else {
-                            $successMessage = 'Required Quantity Can not be Negative Number or Zero';
+                            $errorMessage = 'Required Quantity Must Be equal to some of all required locations';
                         }
                     } else {
-                        $successMessage = 'Required Quantity Must Be equal to some of all required locations';
+                        $errorMessage = 'Required Quantity Must Not Be equal to Negatve Number';
                     }
                 } else {
                     $pageError = $validate->errors();
@@ -633,6 +634,7 @@ if ($user->isLoggedIn()) {
                     $newQty = $genericBalance['balance'] +  Input::get('quantity');
                     $user->updateRecord('generic', array(
                         'balance' => $newQty,
+                        'buffer' => $newQty,
                     ), Input::get('generic_id3'));
 
                     $BatchLastRow = $override->lastRow('batch', 'id');
@@ -1538,7 +1540,6 @@ if ($user->isLoggedIn()) {
                                         $f = 0;
                                         foreach (Input::get('location') as $lctn) {
                                             $location = $override->get('location', 'id', $lctn)[0];
-                                            print_r($lctn);
                                         ?>
                                             <div class="row-form clearfix">
                                                 <div class="col-md-2"><strong><?= $location['name'] ?> : </strong></div>
