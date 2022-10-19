@@ -689,6 +689,31 @@ if ($user->isLoggedIn()) {
                         'expire_date' => Input::get('expire_date'),
                     ));
 
+                    $checkAsigned = $override->selectData1('assigned_stock', 'batch_id', $BatchLastRow[0]['id'],'study_id',Input::get('study_id'))[0];
+                    $checkAsignedBalance = $checkAsigned['balance'] + Input::get('allocate_amount');
+
+                    if($checkAllocate){
+                        $user->updateRecord('assigned_stock', array(
+                            'balance' => $checkAsignedBalance,
+                        ), $checkAsigned['id']);
+                    }else{
+                        $user->createRecord('assigned_stock', array(
+                            'study_id' => Input::get('study_id'),
+                            'generic_id' => Input::get('generic_id3'),
+                            'brand_id' => Input::get('brand_id3'),
+                            'batch_id' => $BatchLastRow[0]['id'],
+                            'batch_no' => Input::get('batch_no'),
+                            'staff_id' => $user->data()->id,
+                            'site_id' => '',
+                            'used' => '',
+                            'balance' => Input::get('quantity'),
+                            'notes' => Input::get('remarks'),
+                            'status' => 1,
+                            'admin_id' => $user->data()->id,
+                            'create_on' => date('Y-m-d'),
+                        ));
+                    }
+
 
                     $successMessage = 'Batch Added Successful';
                 } catch (Exception $e) {

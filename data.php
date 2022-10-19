@@ -461,9 +461,12 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
-        } elseif (Input::get('update_stock_guide')) {
+        } elseif (Input::get('add_stock_guide')) {
             $validate = $validate->check($_POST, array(
                 'added' => array(
+                    'required' => true,
+                ),
+                'study_id' => array(
                     'required' => true,
                 ),
             ));
@@ -472,6 +475,7 @@ if ($user->isLoggedIn()) {
                 if (Input::get('added') > 0) {
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
                     $genericBalance = $checkGeneric['balance'] + Input::get('added');
+                    $bufferBalance = $checkGeneric['buffer'] + Input::get('added');
 
                     $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
                     $batchLast = $checkBatch['last_check'];
@@ -482,6 +486,7 @@ if ($user->isLoggedIn()) {
                     try {
                         $user->updateRecord('generic', array(
                             'balance' => $genericBalance,
+                            'buffer' => $bufferBalance,
                         ), Input::get('update_generic_id'));
 
                         $user->updateRecord('batch', array(
@@ -526,6 +531,10 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 $total_quantity = 0;
                 if (Input::get('allocate_amount') > 0) {
+                    $checkAllocate = $override->selectData1('allocate_guide_records', 'batch_id', Input::get('id'),'location_id',Input::get('location_batch_id'))[0];
+                    $checkAllocateBalance = $checkAllocate['balance'] + Input::get('allocate_amount');
+
+
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
                     $genericBalance = $checkGeneric['balance'] + Input::get('allocate_amount');
 
@@ -542,6 +551,29 @@ if ($user->isLoggedIn()) {
                         if (Input::get('allocate_amount') <= $checkGeneric['buffer']) {
                             $bufferBalance = $checkGeneric['buffer'] - Input::get('allocate_amount');
                             try {
+
+                                if($checkAllocate){
+                                    $user->updateRecord('allocate_guide_records', array(
+                                        'balance' => $checkAllocateBalance,
+                                    ), $checkAllocate['id']);
+                                }else{
+                                    $user->createRecord('allocate_guide_records', array(
+                                        'generic_id' => Input::get('update_generic_id'),
+                                        'brand_id' => Input::get('update_brand_id'),
+                                        'batch_id' => Input::get('id'),
+                                        'batch_no' => Input::get('update_batch_no'),
+                                        'guide_id' => Input::get('location_guide_id'),
+                                        'quantity' => Input::get('allocate_amount'),
+                                        'assigned' => 0,
+                                        'balance' => $guideBalance,
+                                        'buffer' => $bufferBalance,
+                                        'location_id' => Input::get('location_batch_id'),
+                                        'create_on' => date('Y-m-d'),
+                                        'staff_id' => $user->data()->id,
+                                        'status' => 1,
+                                        'study_id' => Input::get('study_id'),
+                                    ));
+                                }
                                 $user->updateRecord('generic_guide', array(
                                     'balance' => $guideBalance,
                                 ), Input::get('location_guide_id'));
@@ -567,6 +599,7 @@ if ($user->isLoggedIn()) {
                                     'staff_id' => $user->data()->id,
                                     'status' => 1,
                                     'use_case' => $use_case,
+                                    'study_id' => Input::get('study_id'),
                                 ));
 
                                 $successMessage = 'Stock guied Successful Allocated';
@@ -682,6 +715,7 @@ if ($user->isLoggedIn()) {
                                 'staff_id' => $user->data()->id,
                                 'status' => 1,
                                 'use_case' => $use_case,
+                                'study_id' => Input::get('dispense_study_id'),
                             ));
 
                             $successMessage = 'Stock guied Successful Dispensed / Removed';
@@ -2025,12 +2059,12 @@ if ($user->isLoggedIn()) {
                                                     <?php } ?>
                                                 </td>
                                                 <td>
-                                                    <a href="#edit_stock_guide_id<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add Batch</a>
+                                                    <a href="#add_stock_guide<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add Batch</a>
                                                 </td>
 
                                             </tr>
 
-                                            <div class="modal fade" id="edit_stock_guide_id<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal fade" id="add_stock_guide<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <form method="post">
                                                         <div class="modal-content">
@@ -2118,7 +2152,7 @@ if ($user->isLoggedIn()) {
                                                                 <input type="hidden" name="update_brand_id" value="<?= $update_brand_id ?>" id="update_brand_id">
                                                                 <input type="hidden" name="update_batch_no" value="<?= $update_batch_no ?>" id="update_batch_no">
                                                                 <input type="hidden" name="update_category_id" value="<?= $update_category_id ?>" id="update_category_id">
-                                                                <input type="submit" name="update_stock_guide" value="Save updates" class="btn btn-warning">
+                                                                <input type="submit" name="add_stock_guide" value="Save updates" class="btn btn-warning">
                                                                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                             </div>
                                                         </div>
