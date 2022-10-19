@@ -65,10 +65,7 @@ if ($user->data()->accessLevel == 1) {
                 </ul>
             </li>
 
-        <?php
-        }
 
-        ?>
         <li class="openable">
             <a href="#"><span class="isw-lock"></span><span class="text">Studies</span></a>
             <ul>
@@ -85,6 +82,10 @@ if ($user->data()->accessLevel == 1) {
 
             </ul>
         </li>
+        <?php
+        }
+
+        ?>
 
         <li class="openable">
             <a href="#"><span class="isw-archive"></span><span class="text">Manage Receiving</span></a>
@@ -135,22 +136,38 @@ if ($user->data()->accessLevel == 1) {
         <li class="openable">
             <a href="#"><span class="isw-tag"></span><span class="text">Extra</span></a>
             <ul>
+
                 <li>
+                <?php if ($user->data()->accessLevel == 1) {
+        ?>
+
                     <a href="add.php?id=2">
                         <span class="glyphicon glyphicon-user"></span><span class="text">Add Position</span>
                     </a>
                     <a href="add.php?id=5">
                         <span class="glyphicon glyphicon-home"></span><span class="text">Add Site</span>
                     </a>
+                    <?php
+        }
+
+        ?>
                     <a href="add.php?id=6">
                         <span class="glyphicon glyphicon-home"></span><span class="text">Add Drug Category</span>
                     </a>
                 </li>
+
+  
+                <?php if ($user->data()->accessLevel == 1) {
+        ?>
                 <li>
                     <a href="info.php?id=2">
                         <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
                     </a>
                 </li>
+                <?php
+        }
+
+        ?>
             </ul>
         </li>
         <li class="openable">

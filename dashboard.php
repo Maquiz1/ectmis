@@ -94,8 +94,7 @@ if ($user->isLoggedIn()) {
                                     <tr>
 
                                         <th width="25%">Generic</th>
-                                        <th width="5%">Required</th>
-                                        <th width="5%">Balance</th>
+                                        <th width="3">Balance</th>
                                         <th width="3%"> EmKits</th>
                                         <th width="3%"> AmbKits</th>
                                         <th width="3%"> ECRm</th>
@@ -153,6 +152,10 @@ if ($user->isLoggedIn()) {
                                         $balance = $bDiscription['balance'];
                                         $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
 
+
+                                        // $generic_batch_id = $override->getNews('generic_guide', 'batch_id', $bDiscription['id'], 'location_id', 1)[0];
+
+
                                         // $location[] = '';
                                         // foreach ($override->getNews('generic_guide', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
                                         //     if ($batch2['location_id'] != '') {
@@ -177,7 +180,6 @@ if ($user->isLoggedIn()) {
                                     ?>
                                         <tr>
                                             <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
-                                            <td><?= $bDiscription['notify_quantity']; ?></td>
                                             <td>
                                                 <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
                                                     <a href="data.php?id=12&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning"><?= $balance; ?></a>
@@ -264,9 +266,9 @@ if ($user->isLoggedIn()) {
                                                 ?>
                                                     <?php if ($ExamRms['notify_quantity'] >= $ExamRms['balance']) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRms['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRms['balance']; ?></a>
                                                     <?php } elseif ($ExamRms['notify_quantity'] < $ExamRms['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $ExamRms['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-info"><?= $ExamRms['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>

@@ -507,54 +507,60 @@ if ($user->isLoggedIn()) {
                         $sii++;
                     }
 
-                    if (Input::get('notify_quantity') >= 0) {
-                        if (Input::get('notify_quantity') == $q) {
-                            try {
-                                $user->createRecord('generic', array(
-                                    'name' => Input::get('name'),
-                                    'status' => 1,
-                                    'notify_quantity' => Input::get('notify_quantity'),
-                                    'assigned' => 0,
-                                    'balance' => 0,
-                                    'buffer' => 0,
-                                    'create_on' => date('Y-m-d'),
-                                    'use_group' => Input::get('use_group'),
-                                    'use_case' => Input::get('use_case'),
-                                    'maintainance' => Input::get('maintainance'),
-                                    'staff_id' => $user->data()->id,
-                                ));
+                    $checkGeneric = $override->selectData1('generic', 'name', Input::get('name'),'status',1)[0];
 
-                                $si = 0;
-                                foreach (Input::get('location') as $sid) {
-                                    $q = Input::get('amount')[$si];
-                                    $location = $override->get('location', 'id', $sid)[0];
-                                    $generic_id = $override->lastRow('generic', 'id')[0]['id'];
-                                    $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
-                                    $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
-                                    $user->createRecord('generic_guide', array(
-                                        'generic_id' => $generic_id,
-                                        'notify_quantity' => $q,
+                    if (!$checkGeneric) {
+                        if (Input::get('notify_quantity') >= 0) {
+                            if (Input::get('notify_quantity') == $q) {
+                                try {
+                                    $user->createRecord('generic', array(
+                                        'name' => Input::get('name'),
+                                        'status' => 1,
+                                        'notify_quantity' => Input::get('notify_quantity'),
                                         'assigned' => 0,
                                         'balance' => 0,
-                                        'use_group' => $use_group,
-                                        'location_id' => $location['id'],
+                                        'buffer' => 0,
                                         'create_on' => date('Y-m-d'),
+                                        'use_group' => Input::get('use_group'),
+                                        'use_case' => Input::get('use_case'),
+                                        'maintainance' => Input::get('maintainance'),
                                         'staff_id' => $user->data()->id,
-                                        'status' => 1,
-                                        'use_case' => $use_case,
                                     ));
 
-                                    $si++;
+                                    $si = 0;
+                                    foreach (Input::get('location') as $sid) {
+                                        $q = Input::get('amount')[$si];
+                                        $location = $override->get('location', 'id', $sid)[0];
+                                        $generic_id = $override->lastRow('generic', 'id')[0]['id'];
+                                        $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
+                                        $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
+                                        $user->createRecord('generic_guide', array(
+                                            'generic_id' => $generic_id,
+                                            'notify_quantity' => $q,
+                                            'assigned' => 0,
+                                            'balance' => 0,
+                                            'use_group' => $use_group,
+                                            'location_id' => $location['id'],
+                                            'create_on' => date('Y-m-d'),
+                                            'staff_id' => $user->data()->id,
+                                            'status' => 1,
+                                            'use_case' => $use_case,
+                                        ));
+
+                                        $si++;
+                                    }
+                                    $successMessage = 'Generic Name Added Successful';
+                                } catch (Exception $e) {
+                                    die($e->getMessage());
                                 }
-                                $successMessage = 'Generic Name Added Successful';
-                            } catch (Exception $e) {
-                                die($e->getMessage());
+                            } else {
+                                $errorMessage = 'Required Quantity Must Be equal to some of all required locations';
                             }
                         } else {
-                            $errorMessage = 'Required Quantity Must Be equal to some of all required locations';
+                            $errorMessage = 'Required Quantity Must Not Be equal to Negatve Number';
                         }
                     } else {
-                        $errorMessage = 'Required Quantity Must Not Be equal to Negatve Number';
+                        $errorMessage = 'Generic Name Already Registered';
                     }
                 } else {
                     $pageError = $validate->errors();
@@ -568,39 +574,42 @@ if ($user->isLoggedIn()) {
                 'brand_id2' => array(
                     'required' => true,
                 ),
-                // 'name' => array(
-                //     'unique' => 'brand'
-                // ),
             ));
             if ($validate->passed()) {
+
                 try {
-                    $user->createRecord('brand', array(
-                        'generic_id' => Input::get('generic_id2'),
-                        'name' => Input::get('brand_id2'),
-                        'status' => 1,
-                        'quantity' => 0,
-                        'notify_quantity' => 0,
-                        'assigned' => 0,
-                        'added' => 0,
-                        'balance' => 0,
-                        'create_on' => date('Y-m-d'),
-                        'staff_id' => $user->data()->id,
-                    ));
+                    $checkBrand = $override->selectData1('brand', 'name', Input::get('brand_id2'), 'status', 1)[0];
+                    if ($checkBrand) {
+                        $errorMessage = 'Brand Name Already Registered';
+                    } else {
+                        $user->createRecord('brand', array(
+                            'generic_id' => Input::get('generic_id2'),
+                            'name' => Input::get('brand_id2'),
+                            'status' => 1,
+                            'quantity' => 0,
+                            'notify_quantity' => 0,
+                            'assigned' => 0,
+                            'added' => 0,
+                            'balance' => 0,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                        ));
 
-                    $user->createRecord('brand_records', array(
-                        'generic_id' => Input::get('generic_id2'),
-                        'name' => Input::get('brand_id2'),
-                        'status' => 1,
-                        'quantity' => 0,
-                        'notify_quantity' => 0,
-                        'assigned' => 0,
-                        'added' => 0,
-                        'balance' => 0,
-                        'create_on' => date('Y-m-d'),
-                        'staff_id' => $user->data()->id,
-                    ));
+                        $user->createRecord('brand_records', array(
+                            'generic_id' => Input::get('generic_id2'),
+                            'name' => Input::get('brand_id2'),
+                            'status' => 1,
+                            'quantity' => 0,
+                            'notify_quantity' => 0,
+                            'assigned' => 0,
+                            'added' => 0,
+                            'balance' => 0,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                        ));
 
-                    $successMessage = 'Brand Name Added Successful';
+                        $successMessage = 'Brand Name Added Successful';
+                    }
                 } catch (Exception $e) {
                     die($e->getMessage());
                 }
@@ -639,85 +648,100 @@ if ($user->isLoggedIn()) {
                 )
             ));
             if ($validate->passed()) {
+                if (Input::get('manufactured_date') < date('Y-m-d')) {
+                    if (Input::get('expire_date') > date('Y-m-d')) {
+                        if (Input::get('quantity') > 0) {
+                            $checkBatch = $override->selectData1('batch', 'batch_no', Input::get('batch_no'), 'status', 1)[0];
+                            if ($checkBatch) {
+                                $errorMessage = 'Batch Number Already Registered';
+                            } else {
+                                try {
+                                    $user->createRecord('batch', array(
+                                        'generic_id' => Input::get('generic_id3'),
+                                        'brand_id' => Input::get('brand_id3'),
+                                        'batch_no' => Input::get('batch_no'),
+                                        'study_id' => Input::get('study_id'),
+                                        'notify_quantity' => 0,
+                                        'assigned' => 0,
+                                        'balance' => Input::get('quantity'),
+                                        'buffer' => Input::get('quantity'),
+                                        'manufacturer' => Input::get('manufacturer'),
+                                        'manufactured_date' => Input::get('manufactured_date'),
+                                        'expire_date' => Input::get('expire_date'),
+                                        'details' => Input::get('details'),
+                                        'status' => 1,
+                                        'staff_id' => $user->data()->id,
+                                        'create_on' => date('Y-m-d'),
+                                        'category' => Input::get('category'),
+                                        'last_check' => date('Y-m-d'),
+                                        'next_check' => date('Y-m-d'),
+                                    ));
 
-                try {
-                    $user->createRecord('batch', array(
-                        'generic_id' => Input::get('generic_id3'),
-                        'brand_id' => Input::get('brand_id3'),
-                        'batch_no' => Input::get('batch_no'),
-                        'study_id' => Input::get('study_id'),
-                        'notify_quantity' => 0,
-                        'assigned' => 0,
-                        'balance' => Input::get('quantity'),
-                        'manufacturer' => Input::get('manufacturer'),
-                        'manufactured_date' => Input::get('manufactured_date'),
-                        'expire_date' => Input::get('expire_date'),
-                        'details' => Input::get('details'),
-                        'status' => 1,
-                        'staff_id' => $user->data()->id,
-                        'create_on' => date('Y-m-d'),
-                        'category' => Input::get('category'),
-                        'last_check' => date('Y-m-d'),
-                        'next_check' => date('Y-m-d'),
-                    ));
+                                    $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
+                                    $newQty = $genericBalance['balance'] +  Input::get('quantity');
+                                    $user->updateRecord('generic', array(
+                                        'balance' => $newQty,
+                                        'buffer' => $newQty,
+                                    ), Input::get('generic_id3'));
 
-                    $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
-                    $newQty = $genericBalance['balance'] +  Input::get('quantity');
-                    $user->updateRecord('generic', array(
-                        'balance' => $newQty,
-                        'buffer' => $newQty,
-                    ), Input::get('generic_id3'));
+                                    $BatchLastRow = $override->lastRow('batch', 'id');
 
-                    $BatchLastRow = $override->lastRow('batch', 'id');
+                                    $user->createRecord('batch_records', array(
+                                        'generic_id' => Input::get('generic_id3'),
+                                        'brand_id' => Input::get('brand_id3'),
+                                        'batch_id' => $BatchLastRow[0]['id'],
+                                        'batch_no' => Input::get('batch_no'),
+                                        'quantity' => Input::get('quantity'),
+                                        'assigned' => 0,
+                                        'balance' => $newQty,
+                                        'create_on' => date('Y-m-d'),
+                                        'staff_id' => $user->data()->id,
+                                        'status' => 1,
+                                        'study_id' => Input::get('study_id'),
+                                        'last_check' => date('Y-m-d'),
+                                        'next_check' => date('Y-m-d'),
+                                        'category' => Input::get('category'),
+                                        'remarks' => '',
+                                        'expire_date' => Input::get('expire_date'),
+                                    ));
 
-                    $user->createRecord('batch_records', array(
-                        'generic_id' => Input::get('generic_id3'),
-                        'brand_id' => Input::get('brand_id3'),
-                        'batch_id' => $BatchLastRow[0]['id'],
-                        'batch_no' => Input::get('batch_no'),
-                        'quantity' => Input::get('quantity'),
-                        'assigned' => 0,
-                        'balance' => $newQty,
-                        'create_on' => date('Y-m-d'),
-                        'staff_id' => $user->data()->id,
-                        'status' => 1,
-                        'study_id' => Input::get('study_id'),
-                        'last_check' => date('Y-m-d'),
-                        'next_check' => date('Y-m-d'),
-                        'category' => Input::get('category'),
-                        'remarks' => '',
-                        'expire_date' => Input::get('expire_date'),
-                    ));
+                                    $checkAsigned = $override->selectData1('assigned_batch', 'batch_id', $BatchLastRow[0]['id'], 'study_id', Input::get('study_id'))[0];
+                                    $checkAsignedBalance = $checkAsigned['balance'] + Input::get('allocate_amount');
 
-                    $checkAsigned = $override->selectData1('assigned_stock', 'batch_id', $BatchLastRow[0]['id'],'study_id',Input::get('study_id'))[0];
-                    $checkAsignedBalance = $checkAsigned['balance'] + Input::get('allocate_amount');
+                                    if ($checkAllocate) {
+                                        $user->updateRecord('assigned_batch', array(
+                                            'balance' => $checkAsignedBalance,
+                                        ), $checkAsigned['id']);
+                                    } else {
+                                        $user->createRecord('assigned_batch', array(
+                                            'study_id' => Input::get('study_id'),
+                                            'generic_id' => Input::get('generic_id3'),
+                                            'brand_id' => Input::get('brand_id3'),
+                                            'batch_id' => $BatchLastRow[0]['id'],
+                                            'batch_no' => Input::get('batch_no'),
+                                            'staff_id' => $user->data()->id,
+                                            'used' => 0,
+                                            'balance' => Input::get('quantity'),
+                                            'notes' => Input::get('details'),
+                                            'status' => 1,
+                                            'admin_id' => $user->data()->id,
+                                            'create_on' => date('Y-m-d'),
+                                        ));
+                                    }
 
-                    if($checkAllocate){
-                        $user->updateRecord('assigned_stock', array(
-                            'balance' => $checkAsignedBalance,
-                        ), $checkAsigned['id']);
-                    }else{
-                        $user->createRecord('assigned_stock', array(
-                            'study_id' => Input::get('study_id'),
-                            'generic_id' => Input::get('generic_id3'),
-                            'brand_id' => Input::get('brand_id3'),
-                            'batch_id' => $BatchLastRow[0]['id'],
-                            'batch_no' => Input::get('batch_no'),
-                            'staff_id' => $user->data()->id,
-                            'site_id' => '',
-                            'used' => '',
-                            'balance' => Input::get('quantity'),
-                            'notes' => Input::get('remarks'),
-                            'status' => 1,
-                            'admin_id' => $user->data()->id,
-                            'create_on' => date('Y-m-d'),
-                        ));
+                                    $successMessage = 'Batch Added Successful';
+                                } catch (Exception $e) {
+                                    die($e->getMessage());
+                                }
+                            }
+                        } else {
+                            $errorMessage = 'Quantity can not be 0';
+                        }
+                    } else {
+                        $errorMessage = 'Expire date date Can not be of Past';
                     }
-
-
-                    $successMessage = 'Batch Added Successful';
-                } catch (Exception $e) {
-                    die($e->getMessage());
+                } else {
+                    $errorMessage = 'Manufactured date Can not be of Future';
                 }
             } else {
                 $pageError = $validate->errors();
