@@ -2247,6 +2247,10 @@ if ($user->isLoggedIn()) {
                                             //     $sumBatchLoc = $loc['quantity'];
                                             // }
 
+                                            $sumBatchLoc = $override->getNews('allocate_guide_records', 'guide_id', $location_guide_id, 'location_id', $location_batch_id)[0]['quantity'];
+
+
+
                                         ?>
                                             <tr>
                                                 <td><?= $generic_name ?></td>
@@ -2261,9 +2265,9 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batchDesc['assigned'] ?></td>
                                                 <td>
                                                     <?php if ($batchDesc['balance'] <= 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $sumBtachLoc ?></a>
+                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $sumBatchLoc ?></a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $sumBtachLoc ?> </a>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $sumBatchLoc ?> </a>
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $batch_buffer ?></td>
