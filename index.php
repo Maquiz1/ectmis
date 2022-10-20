@@ -78,12 +78,19 @@ if(!$user->isLoggedIn()) {
 <html lang="en">
 
 <head>
-    <title> Login - Pharmacy </title>
+    <title> Login - e-CTMIS </title>
     <?php include 'head.php'?>
+
+    <style>
+        h1{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
 <div class="loginBlock" id="login" style="display: block;">
+    <h1>e-CTMIS</h1>
     <h1>Welcome. Please Sign In</h1>
     <div class="dr"><span></span></div>
     <?php if($errorMessage){?>
