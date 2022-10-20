@@ -545,6 +545,7 @@ if ($user->isLoggedIn()) {
                 if (Input::get('allocate_amount') > 0) {
                     $checkAllocate = $override->selectData1('allocate_guide_records', 'batch_id', Input::get('id'), 'location_id', Input::get('location_batch_id'))[0];
                     $checkAllocateBalance = $checkAllocate['balance'] + Input::get('allocate_amount');
+                    $checkAllocateAmount = $checkAllocate['alocate_amount'] + Input::get('allocate_amount');
 
 
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
@@ -568,6 +569,8 @@ if ($user->isLoggedIn()) {
                                 if ($checkAllocate) {
                                     $user->updateRecord('allocate_guide_records', array(
                                         'balance' => $checkAllocateBalance,
+                                        'alocate_amount' => $checkAllocateAmount,
+                                        'buffer' => $batchBufferBalance,
                                     ), $checkAllocate['id']);
                                 } else {
                                     $user->createRecord('allocate_guide_records', array(
@@ -576,7 +579,7 @@ if ($user->isLoggedIn()) {
                                         'batch_id' => Input::get('id'),
                                         'batch_no' => Input::get('update_batch_no'),
                                         'guide_id' => Input::get('location_guide_id'),
-                                        'quantity' => Input::get('allocate_amount'),
+                                        'alocate_amount' => Input::get('allocate_amount'),
                                         'assigned' => 0,
                                         'balance' => $guideBalance,
                                         'buffer' => $batchBufferBalance,
@@ -877,12 +880,12 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batchDesc['last_check'] ?></td>
                                                 <td><?= $batchDesc['next_check'] ?></td>
                                                 <td>
-                                                    <?php if ($batchDesc['expire_date'] <= $today) { ?>
+                                                    <?php  if ($batchDesc['expire_date'] <= $today) { ?>
                                                         <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
                                                     <?php } ?>
-                                                </td>
+                                                </td> 
                                                 <td>
                                                     <?php if ($batchDesc['next_check'] <= date('Y-m-d')) { ?>
                                                         <a href="#check_stock<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked</a>
@@ -2072,7 +2075,7 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($batchDesc['next_check'] <= $today) { ?>
                                                         <a href="#" role="button" class="btn btn-warning">Not Checked</a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-danger">OK!</a>
+                                                        <a href="#" role="button" class="btn btn-success">OK!</a>
                                                     <?php } ?>
                                                 </td>
                                                 <td>
@@ -2228,11 +2231,13 @@ if ($user->isLoggedIn()) {
 
 
                                         $amnt = 0;
-                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'], 'status', 1, $page, $numRec) as $batchDesc) {
+                                        foreach ($override->getWithLimit1('batch', 'generic_id', $_GET['gid'],'status',1, $page, $numRec) as $batchDesc) {
+                                            $location_batch_id = $_GET['lid'];
+                                            $location_guide_id = $_GET['lbid'];
                                             $generic_name = $override->get('generic', 'id', $_GET['gid'])[0]['name'];
                                             $generic_buffer = $override->get('generic', 'id', $_GET['gid'])[0]['buffer'];
                                             $batch_buffer = $batchDesc['buffer'];
-                                            $batch_balance = $batchDesc['balance'];
+                                            $batch_balance = $override->getNews('allocate_guide_records', 'guide_id', $location_guide_id, 'location_id', $location_batch_id)['0']['balance'];
                                             $guide_quantinty = $override->get('generic_guide', 'id', $_GET['lbid'])[0]['balance'];
                                             $brand_name = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['name'];
                                             $update_generic_id2 = $override->get('generic', 'id', $_GET['gid'])[0]['id'];
@@ -2240,17 +2245,11 @@ if ($user->isLoggedIn()) {
                                             $update_batch_id2 = $batchDesc['id'];
                                             $update_batch_no2 = $batchDesc['batch_no'];
                                             $update_category_id2 = $batchDesc['category'];
-                                            $location_batch_id = $_GET['lid'];
-                                            $location_guide_id = $_GET['lbid'];
                                             // $sumBtach = $override->getSumD2('allocate_guide_records', 'balance', 'batch_id', $batchDesc['id'],'location_id',$location_batch_id)[0]['SUM(balance)'];
                                             // foreach ($override->getNews('allocate_guide_records', 'guide_id', $location_guide_id, 'location_id', $location_batch_id) as $loc) {
-                                            //     $sumBatchLoc = $loc['quantity'];
+                                            //     $sumBatchLoc = $loc['balance'];
+                                            //     print_r($sumBatchLoc);
                                             // }
-
-                                            $sumBatchLoc = $override->getNews('allocate_guide_records', 'guide_id', $location_guide_id, 'location_id', $location_batch_id)[0]['quantity'];
-
-
-
                                         ?>
                                             <tr>
                                                 <td><?= $generic_name ?></td>
@@ -2265,9 +2264,9 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batchDesc['assigned'] ?></td>
                                                 <td>
                                                     <?php if ($batchDesc['balance'] <= 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $sumBatchLoc ?></a>
+                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal"><?= $batch_balance ?></a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $sumBatchLoc ?> </a>
+                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal"> <?= $batch_balance ?> </a>
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= $batch_buffer ?></td>

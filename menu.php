@@ -88,11 +88,11 @@ if ($user->data()->accessLevel == 1) {
         ?>
 
         <li class="openable">
-            <a href="#"><span class="isw-archive"></span><span class="text">Manage Receiving</span></a>
+            <a href="#"><span class="isw-archive"></span><span class="text">Receiving</span></a>
             <ul>
                 <li class="">
                     <a href="add.php?id=11">
-                        <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Name</span>
+                        <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Details</span>
                     </a>
                 </li>
                 <!-- <li>

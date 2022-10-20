@@ -193,22 +193,27 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($EmKits['notify_quantity'] >= $EmKits['balance']) {
+                                                   <?php if ($EmKits['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-danger"><?= $EmKits['balance']; ?></a>
-                                                    <?php } elseif ($EmKits['notify_quantity'] < $EmKits['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-info"><?= $EmKits['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-danger"><?= $EmKits['balance']; ?></a>
+                                                    <?php } elseif ($EmKits['notify_quantity'] >= $EmKits['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-warning"><?= $EmKits['balance']; ?></a>
+                                                    <?php  } elseif ($EmKits['notify_quantity'] < $EmKits['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-info"><?= $EmKits['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
                                             <td><?php if ($AmKits['balance'] == '') {
                                                     echo 'NA';
                                                 } else {
-                                                ?> <?php if ($AmKits['notify_quantity'] >= $AmKits['balance']) {
+                                                ?>
+                                                <?php if ($AmKits['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-danger"><?= $AmKits['balance']; ?></a>
-                                                    <?php } elseif ($AmKits['notify_quantity'] < $AmKits['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-info"><?= $AmKits['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-danger"><?= $AmKits['balance']; ?></a>
+                                                    <?php } elseif ($AmKits['notify_quantity'] >= $AmKits['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-warning"><?= $AmKits['balance']; ?></a>
+                                                    <?php  } elseif ($AmKits['notify_quantity'] < $AmKits['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-info"><?= $AmKits['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -216,11 +221,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($ECRm['notify_quantity'] >= $ECRm['balance']) {
+                                                   <?php if ($ECRm['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-danger"><?= $ECRm['balance']; ?></a>
-                                                    <?php } elseif ($ECRm['notify_quantity'] < $ECRm['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-info"><?= $ECRm['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-danger"><?= $ECRm['balance']; ?></a>
+                                                    <?php } elseif ($ECRm['notify_quantity'] >= $ECRm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-warning"><?= $ECRm['balance']; ?></a>
+                                                    <?php  } elseif ($ECRm['notify_quantity'] < $ECRm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-info"><?= $ECRm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -228,11 +235,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($DRm['notify_quantity'] >= $DRm['balance']) {
+                                                   <?php if ($DRm['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-danger"><?= $DRm['balance']; ?></a>
-                                                    <?php } elseif ($DRm['notify_quantity'] < $DRm['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-info"><?= $DRm['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-danger"><?= $DRm['balance']; ?></a>
+                                                    <?php } elseif ($DRm['notify_quantity'] >= $DRm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-warning"><?= $DRm['balance']; ?></a>
+                                                    <?php  } elseif ($DRm['notify_quantity'] < $DRm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-info"><?= $DRm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -240,11 +249,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($ScRm['notify_quantity'] >= $ScRm['balance']) {
+                                                    <?php if ($ScRm['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-danger"><?= $ScRm['balance']; ?></a>
-                                                    <?php } elseif ($ScRm['notify_quantity'] < $ScRm['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-info"><?= $ScRm['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-danger"><?= $ScRm['balance']; ?></a>
+                                                    <?php } elseif ($ScRm['notify_quantity'] >= $ScRm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-warning"><?= $ScRm['balance']; ?></a>
+                                                    <?php  } elseif ($ScRm['notify_quantity'] < $ScRm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-info"><?= $ScRm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -252,11 +263,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($VSrm['notify_quantity'] >= $VSrm['balance']) {
+                                                   <?php if ($VSrm['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-danger"><?= $VSrm['balance']; ?></a>
-                                                    <?php } elseif ($VSrm['notify_quantity'] < $VSrm['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-info"><?= $VSrm['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-danger"><?= $VSrm['balance']; ?></a>
+                                                    <?php } elseif ($VSrm['notify_quantity'] >= $VSrm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-warning"><?= $VSrm['balance']; ?></a>
+                                                    <?php  } elseif ($VSrm['notify_quantity'] < $VSrm['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-info"><?= $VSrm['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -264,11 +277,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($ExamRms['notify_quantity'] >= $ExamRms['balance']) {
+                                                   <?php if ($ExamRms['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRms['balance']; ?></a>
-                                                    <?php } elseif ($ExamRms['notify_quantity'] < $ExamRms['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-info"><?= $ExamRms['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRms['balance']; ?></a>
+                                                    <?php } elseif ($ExamRms['notify_quantity'] >= $ExamRms['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-warning"><?= $ExamRms['balance']; ?></a>
+                                                    <?php  } elseif ($ExamRms['notify_quantity'] < $ExamRms['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-info"><?= $ExamRms['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -276,11 +291,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($Ward['notify_quantity'] >= $Ward['balance']) {
+                                                   <?php if ($Ward['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $Ward['balance']; ?></a>
-                                                    <?php } elseif ($Ward['notify_quantity'] < $Ward['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $Ward['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $Ward['balance']; ?></a>
+                                                    <?php } elseif ($Ward['notify_quantity'] >= $Ward['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-warning"><?= $Ward['balance']; ?></a>
+                                                    <?php  } elseif ($Ward['notify_quantity'] < $Ward['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $Ward['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -288,11 +305,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($CTMr['notify_quantity'] >= $CTMr['balance']) {
+                                                    <?php if ($CTMr['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-danger"><?= $CTMr['balance']; ?></a>
-                                                    <?php } elseif ($CTMr['notify_quantity'] < $CTMr['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-info"><?= $CTMr['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-danger"><?= $CTMr['balance']; ?></a>
+                                                    <?php } elseif ($CTMr['notify_quantity'] >= $CTMr['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-warning"><?= $CTMr['balance']; ?></a>
+                                                    <?php  } elseif ($CTMr['notify_quantity'] < $CTMr['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-info"><?= $CTMr['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -300,10 +319,12 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($Pharmacy['notify_quantity'] >= $Pharmacy['balance']) {
+                                                    <?php if ($Pharmacy['balance'] == 0) {
                                                     ?>
                                                         <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-danger"><?= $Pharmacy['balance']; ?></a>
-                                                    <?php } elseif ($Pharmacy['notify_quantity'] < $Pharmacy['balance']) { ?>
+                                                    <?php } elseif ($Pharmacy['notify_quantity'] >= $Pharmacy['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-warning"><?= $Pharmacy['balance']; ?></a>
+                                                    <?php  } elseif ($Pharmacy['notify_quantity'] < $Pharmacy['balance']) { ?>
                                                         <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-info"><?= $Pharmacy['balance']; ?></a>
                                                 <?php }
                                                 } ?>
@@ -313,11 +334,13 @@ if ($user->isLoggedIn()) {
                                                     echo 'NA';
                                                 } else {
                                                 ?>
-                                                    <?php if ($Other['notify_quantity'] >= $Other['balance']) {
+                                                    <?php if ($Other['balance'] == 0) {
                                                     ?>
-                                                        <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-danger"><?= $Other['balance']; ?></a>
-                                                    <?php } elseif ($Other['notify_quantity'] < $Other['balance']) { ?>
-                                                        <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $Other['balance']; ?></a>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-danger"><?= $Other['balance']; ?></a>
+                                                    <?php } elseif ($Other['notify_quantity'] >= $Other['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-warning"><?= $Other['balance']; ?></a>
+                                                    <?php  } elseif ($Other['notify_quantity'] < $Other['balance']) { ?>
+                                                        <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $Other['balance']; ?></a>
                                                 <?php }
                                                 } ?>
                                             </td>
@@ -334,7 +357,7 @@ if ($user->isLoggedIn()) {
                                                 <?php } else { ?>
                                                     <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
                                                 <?php } ?>
-                                            </td>                                            
+                                            </td>
                                             <td>
                                                 <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-default">View</a>
                                             </td>
