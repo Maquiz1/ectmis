@@ -31,6 +31,24 @@ if ($_GET['content'] == 'region') {
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
     <?php }
+} elseif ($_GET['content'] == 'generic_id4') {
+    $batches = $override->get('generic_location', 'generic_id', $_GET['getUid']);
+    ?>
+    <option value="">Select Locations</option>
+    <?php foreach ($batches as $batch) {
+        $location_id = $override->get('location', 'id', $batch['location_id'])[0];
+    ?>
+        <option value="<?= $location_id['id'] ?>"><?= $location_id['name'] ?></option>
+    <?php }
+} elseif ($_GET['content'] == 'generic_id5') {
+    if ($_GET['getUid']) {
+        $output = array();
+        $project_id = $override->getNews('generic_location', 'generic_id', $_GET['getUid'], 'status', 1);
+        foreach ($project_id as $name) {
+            $output['notify_quantity'] .= $name['notify_quantity'];
+        }
+        echo json_encode($output);
+    }
 } elseif ($_GET['content'] == 'dispense_study_id') {
     $staff_study = $override->get('staff_study', 'study_id', $_GET['getUid'])[0];
     $batches = $override->get('user', 'id', $staff_study['staff_id']);
