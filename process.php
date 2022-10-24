@@ -51,19 +51,21 @@ if ($_GET['content'] == 'region') {
     }
 } elseif ($_GET['content'] == 'dispense_study_id') {
     $staff_study = $override->get('staff_study', 'study_id', $_GET['getUid'])[0];
-    $batches = $override->get('user', 'id', $staff_study['staff_id']);
     ?>
     <option value="">Select Staffs</option>
-    <?php foreach ($batches as $batch) { ?>
-        <option value="<?= $batch['id'] ?>"><?= $batch['username'] ?></option>
+    <?php foreach ($staff_study as $batch) {
+        $batches = $override->get('user', 'id', $batch['staff_id']);
+    ?>
+        <option value="<?= $batches['id'] ?>"><?= $batches['username'] ?></option>
     <?php }
 } elseif ($_GET['content'] == 'dispense_study_id2') {
-    $staff_study = $override->get('study_sites', 'study_id', $_GET['getUid'])[0];
-    $batches = $override->get('sites', 'id', $staff_study['site_id']);
+    $staff_study = $override->get('study_sites', 'study_id', $_GET['getUid']);
     ?>
     <option value="">Select Sites</option>
-    <?php foreach ($batches as $batch) { ?>
-        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+    <?php foreach ($staff_study as $batch) {
+        $batches = $override->get('sites', 'id', $batch['site_id'])[0];
+    ?>
+        <option value="<?= $batches['id'] ?>"><?= $batches['name'] ?></option>
     <?php }
 } elseif ($_GET['content'] == 'dispense_generic_id') {
     $batches = $override->getNews('brand', 'generic_id', $_GET['getUid'], 'status', 1) ?>

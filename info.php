@@ -132,7 +132,7 @@ if ($user->isLoggedIn()) {
             } catch (Exception $e) {
                 die($e->getMessage());
             }
-        }elseif (Input::get('remove_staff_study')) {
+        } elseif (Input::get('remove_staff_study')) {
             try {
                 $study_stuffs = 0;
                 foreach ($override->getNews('staff_study', 'study_id', Input::get('study'), 'staff_id', Input::get('id')) as $study_stuff) {
@@ -237,6 +237,30 @@ if ($user->isLoggedIn()) {
                 }
             } else {
                 $pageError = $validate->errors();
+            }
+        } elseif (Input::get('add_site')) {
+            try {
+                $study_stuffs = 0;
+                foreach ($override->getNews('study_sites', 'study_id', Input::get('id'), 'site_id', Input::get('site')) as $study_stuff) {
+                    if ($study_stuff) {
+                        $study_stuffs = 1;
+                    }
+                }
+
+                if (!$study_stuffs) {
+                    $user->createRecord('study_sites', array(
+                        'site_id' => Input::get('site'),
+                        'study_id' => Input::get('id'),
+                        'status' => 1,
+                        'create_on' => date('Y-m-d'),
+                    ));
+
+                    $successMessage = 'Site Added Successful to a Study';
+                } else {
+                    $errorMessage = 'Site Already Registered to a Study';
+                }
+            } catch (Exception $e) {
+                die($e->getMessage());
             }
         } elseif (Input::get('edit_study')) {
             $validate = $validate->check($_POST, array(
@@ -605,9 +629,9 @@ if ($user->isLoggedIn()) {
                                                                                 <div class="col-md-9"><input type="text" name="lastname" value="<?= $staff['lastname'] ?>" required /></div>
                                                                             </div>
                                                                             <div class="row-form clearfix">
-                                                                                <div class="col-md-5">Select sites:</div>
+                                                                                <div class="col-md-5">Select Study:</div>
                                                                                 <div class="col-md-7">
-                                                                                    <select name="study" id="s2_1" style="width: 100%;" required>
+                                                                                    <select name="study" id="study_id" style="width: 100%;" required>
                                                                                         <option value="">choose a Study...</option>
                                                                                         <?php foreach ($override->getData('study') as $site) {
                                                                                         ?>
@@ -1114,6 +1138,7 @@ if ($user->isLoggedIn()) {
                                                     <td>
                                                         <a href="#study<?= $study['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
                                                         <a href="#delete<?= $study['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                                        <a href="#add_site<?= $study['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Add Site To A study</a>
                                                     </td>
 
                                                 </tr>
@@ -1179,6 +1204,48 @@ if ($user->isLoggedIn()) {
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="id" value="<?= $study['id'] ?>">
                                                                     <input type="submit" name="edit_file" value="Save updates" class="btn btn-warning">
+                                                                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="add_site<?= $study['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit Site Info</h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+                                                                    <div class="row">
+                                                                        <div class="block-fluid">
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Name: </div>
+                                                                                <div class="col-md-9">
+                                                                                    <input value="<?= $study['name'] ?>" class="validate[required]" type="text" name="name" id="name" required />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">PI</div>
+                                                                                <div class="col-md-9">
+                                                                                    <select name="site" style="width: 100%;" required>
+                                                                                        <option value=" ">Select Site</option>
+                                                                                        <?php foreach ($override->getData('sites') as $staff) { ?>
+                                                                                            <option value="<?= $staff['id'] ?>"><?= $staff['name'] ?></option>
+                                                                                        <?php } ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="dr"><span></span></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="id" value="<?= $study['id'] ?>">
+                                                                    <input type="submit" name="add_site" value="Save updates" class="btn btn-warning">
                                                                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                                 </div>
                                                             </div>

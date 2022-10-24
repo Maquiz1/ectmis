@@ -1826,7 +1826,7 @@ if ($user->isLoggedIn()) {
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Item Location:</label>
+                                                        <label>Item Location(Please Select All locations):</label>
                                                         <select name="location[]" id="s2_2" style="width: 100%;" multiple="multiple" required>
                                                             <option value="">Select Use Case Location...</option>
                                                         </select>
@@ -2256,6 +2256,7 @@ if ($user->isLoggedIn()) {
                         getUid: getUid
                     },
                     success: function(data) {
+                        console.log(data);
                         $('#add_site_id').html(data);
                         $('#fl_wait').hide();
                     }
