@@ -164,6 +164,11 @@ if ($user->isLoggedIn()) {
                 'salt' => $salt,
             ), Input::get('id'));
             $successMessage = 'Password Reset Successful';
+        } elseif (Input::get('reactivate_user')) {
+            $user->updateRecord('user', array(
+                'count' => 0,
+            ), Input::get('id'));
+            $successMessage = 'User Re-activated Successful';
         } elseif (Input::get('delete_staff')) {
             $user->updateRecord('user', array(
                 'status' => 0,
@@ -475,9 +480,10 @@ if ($user->isLoggedIn()) {
                                                     <td>
                                                         <a href="#user<?= $staff['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
                                                         <a href="#reset<?= $staff['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Reset</a>
+                                                        <a href="#reactivate_user<?= $staff['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Reactivate</a>
                                                         <a href="#delete<?= $staff['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
-                                                        <a href="#add_user_study<?= $staff['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add User to Study</a>
-                                                        <a href="#remove_user_study<?= $staff['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Remove User to Study</a>
+                                                        <a href="#add_user_study<?= $staff['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Add User Study</a>
+                                                        <a href="#remove_user_study<?= $staff['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Remove User Study</a>
                                                     </td>
 
                                                 </tr>
@@ -581,6 +587,26 @@ if ($user->isLoggedIn()) {
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="id" value="<?= $staff['id'] ?>">
                                                                     <input type="submit" name="reset_pass" value="Reset" class="btn btn-warning">
+                                                                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="reactivate_user<?= $staff['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Re-activate User Acount</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p>Are you sure you want to re-activate This User Acount</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="id" value="<?= $staff['id'] ?>">
+                                                                    <input type="submit" name="reactivate_user" value="Reactivate User" class="btn btn-warning">
                                                                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                                 </div>
                                                             </div>

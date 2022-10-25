@@ -125,6 +125,11 @@ if ($user->isLoggedIn()) {
                 'salt' => $salt,
             ), Input::get('id'));
             $successMessage = 'Password Reset Successful';
+        }elseif (Input::get('reactivate_user')) {
+            $user->updateRecord('user', array(
+                'counnt' => 0,
+            ), Input::get('id'));
+            $successMessage = 'User Re-activated Successful';
         } elseif (Input::get('delete_staff')) {
             $user->updateRecord('user', array(
                 'status' => 0,
@@ -178,7 +183,7 @@ if ($user->isLoggedIn()) {
             }
         } elseif (Input::get('archive_batch')) {
 
-            $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
+            $checkBatch = $override->selectData1('batch', 'id', Input::get('id'), 'status', 1)[0];
             $batchLast = $checkBatch['last_check'];
             $batchNext = $checkBatch['next_check'];
             $batchexpire = $checkBatch['expire_date'];
@@ -195,27 +200,18 @@ if ($user->isLoggedIn()) {
             $genericBalance = $checkGeneric['balance'] - $batchBalance;
 
             if ($batchBalance <= $checkGeneric['balance']) {
-                $bufferBalance = 0;
-                if ($checkGeneric['buffer'] >= $batchBalance) {
-                    $bufferBalance = $checkGeneric['buffer'] - $batchBalance;
-                }
 
                 $user->updateRecord('batch', array(
                     'status' => 2,
                 ), Input::get('id'));
 
+                // $user->updateRecord('assigned_batch', array(
+                //     'status' => 2,
+                // ), Input::get('id'));
+
                 $user->updateRecord('generic', array(
                     'balance' => $genericBalance,
-                    'buffer' => $bufferBalance,
                 ), $generic_id);
-
-                // $si = 0;
-                // foreach ($override->getNews('generic_guide', 'generic_id', $generic_id,'location_id',$_GET['blid']) as $sid) {
-                //     $user->updateRecord('generic_guide', array(
-                //         'balance' => 0,
-                //     ), $sid['id']);
-                //     $si++;
-                // }
 
                 $user->createRecord('batch_records', array(
                     'generic_id' => $generic_id,
@@ -848,8 +844,6 @@ if ($user->isLoggedIn()) {
                                             $check_brand_id = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
                                             $check_batch_id = $batchDesc['id'];
                                             $check_batch_no = $batchDesc['batch_no'];
-
-                                            // $generic_guide_id = $override->get('generic_guide', 'id', $_GET['gid'])[0];
                                         ?>
                                             <tr>
                                                 <td><?= $generic_name ?></td>
@@ -888,7 +882,7 @@ if ($user->isLoggedIn()) {
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                <h4>Quarantine Product</h4>
+                                                                <h4>Quarantine Batch</h4>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <strong style="font-weight: bold;color: red">
