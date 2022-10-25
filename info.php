@@ -442,7 +442,7 @@ if ($user->isLoggedIn()) {
                     <?php } ?>
 
                     <div class="row">
-                        <?php if ($_GET['id'] == 1 && $user->data()->accessLevel == 1) { ?>
+                        <?php if ($_GET['id'] == 1) { ?>
                             <div class="col-md-12">
                                 <div class="head clearfix">
                                     <div class="isw-grid"></div>
@@ -728,7 +728,7 @@ if ($user->isLoggedIn()) {
                                     </table>
                                 </div>
                             </div>
-                        <?php } elseif ($_GET['id'] == 2 && $user->data()->accessLevel == 1) { ?>
+                        <?php } elseif ($_GET['id'] == 2) { ?>
                             <div class="col-md-6">
                                 <div class="head clearfix">
                                     <div class="isw-grid"></div>
