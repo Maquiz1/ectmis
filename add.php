@@ -1587,7 +1587,7 @@ if ($user->isLoggedIn()) {
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Required Quantity: :</label>
+                                                        <label>Required Quantity:</label>
                                                         <input value="" class="validate[required]" type="number" name="notify_quantity" id="notify_quantity" />
                                                     </div>
                                                 </div>
