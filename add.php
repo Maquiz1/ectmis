@@ -856,7 +856,7 @@ if ($user->isLoggedIn()) {
                     </div>
                 <?php } ?>
                 <div class="row">
-                    <?php if ($_GET['id'] == 1) { ?>
+                    <?php if ($_GET['id'] == 1 && $user->data()->accessLevel == 1) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -937,7 +937,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 2) { ?>
+                    <?php } elseif ($_GET['id'] == 2 && $user->data()->accessLevel == 1) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -960,7 +960,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 3) { ?>
+                    <?php } elseif ($_GET['id'] == 3 && $user->data()->accessLevel == 1) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1032,7 +1032,7 @@ if ($user->isLoggedIn()) {
                                 </form>
                             </div>
                         </div>
-                    <?php } elseif ($_GET['id'] == 4) { ?>
+                    <?php } elseif ($_GET['id'] == 4 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1296,7 +1296,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 5) { ?>
+                    <?php } elseif ($_GET['id'] == 5 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1319,7 +1319,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 6) { ?>
+                    <?php } elseif ($_GET['id'] == 6 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1342,7 +1342,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 7) { ?>
+                    <?php } elseif ($_GET['id'] == 7 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1427,7 +1427,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 8) { ?>
+                    <?php } elseif ($_GET['id'] == 8 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1563,7 +1563,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 9) { ?>
+                    <?php } elseif ($_GET['id'] == 9 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1704,7 +1704,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         </div>
-                    <?php } elseif ($_GET['id'] == 10) { ?>
+                    <?php } elseif ($_GET['id'] == 10 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1746,7 +1746,7 @@ if ($user->isLoggedIn()) {
                                 </form>
                             </div>
                         </div>
-                    <?php } elseif ($_GET['id'] == 11) { ?>
+                    <?php } elseif ($_GET['id'] == 11 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
@@ -1958,7 +1958,7 @@ if ($user->isLoggedIn()) {
                                 </form>
                             </div>
                         </div>
-                    <?php } elseif ($_GET['id'] == 12) { ?>
+                    <?php } elseif ($_GET['id'] == 12 && $user->data()->accessLevel == 1 || $user->data()->accessLevel == 2) { ?>
                         <div class="col-md-offset-1 col-md-8">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
