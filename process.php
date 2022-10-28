@@ -50,11 +50,11 @@ if ($_GET['content'] == 'region') {
         echo json_encode($output);
     }
 } elseif ($_GET['content'] == 'dispense_study_id') {
-    $staff_study = $override->get('staff_study', 'study_id', $_GET['getUid'])[0];
+    $staff_study = $override->get('staff_study', 'study_id', $_GET['getUid']);
     ?>
     <option value="">Select Staffs</option>
     <?php foreach ($staff_study as $batch) {
-        $batches = $override->get('user', 'id', $batch['staff_id']);
+        $batches = $override->get('user', 'id', $batch['staff_id'])[0];
     ?>
         <option value="<?= $batches['id'] ?>"><?= $batches['username'] ?></option>
     <?php }
