@@ -103,7 +103,7 @@ if ($_GET['content'] == 'region') {
     <option value="">Select Batch</option>
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['batch_no'] ?></option>
-<?php }
+    <?php }
 } elseif ($_GET['content'] == 'update_batch_id') {
     if ($_GET['getUid']) {
         $output = array();
@@ -142,7 +142,7 @@ if ($_GET['content'] == 'region') {
         }
         echo json_encode($output);
     }
-} elseif ($_GET['content'] == 'generic_check_details') {
+} elseif ($_GGET['content'] == 'generic_check_details') {
     if ($_GET['getUid']) {
         $output = array();
         $project_id = $override->getNews('batch', 'generic_id', $_GET['getUid'], 'status', 1);
@@ -169,5 +169,54 @@ if ($_GET['content'] == 'region') {
         }
         echo json_encode($output);
     }
-}
-?>
+} elseif ($_GET['content'] == 'dispense_study_id3') {
+    $batches = $override->get('generic_location', 'generic_id', $_GET['getUid']);
+    $location = $override->get('location', 'id', $a_batch['location_id']);
+    ?>
+    <span>
+        <table cellpadding="0" cellspacing="0" width="100%" class="table">
+            <thead>
+                <tr>
+                    <th width="15%">Location</th>
+                    <th width="15%">Required</th>
+                    <th width="10%">Received</th>
+                    <!-- <th width="4%">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $f = 0;
+                foreach ($batches as $batch) {
+                    $location_id = $override->get('location', 'id', $batch['location_id'])[0];
+                ?>
+
+                    <tr>
+                        <td><?= $location_id['name'] ?></td>
+                        <td>
+                            <div class="form-group">
+                                <input value="<?= $batch['notify_quantity'] ?>" type="text" disabled />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="hidden" name="location[<?= $f ?>]" value="<?= $location_id['id'] ?>">
+                                <input value="" type="number" min="0" class="validate[required]" name="amount[]" />
+                            </div>
+                        </td>
+                        <!-- <td>
+                            <?php if ($count == '') { ?>
+                                <button type="button" name="add_more" id="add_more" class="btn btn-success btn-xs">+</button>
+                            <?php } else { ?>
+                                <button type="button" name="remove" id="' + count + '" class="btn btn-danger btn-xs remove">-</button>
+                            <?php } ?>
+                        </td> -->
+                    <tr>
+                    <?php
+                    $f++;
+                }
+                    ?>
+            </tbody>
+        </table>
+    </span>
+
+<?php } ?>

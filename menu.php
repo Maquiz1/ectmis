@@ -91,7 +91,7 @@ if ($user->data()->accessLevel == 1) {
             <a href="#"><span class="isw-archive"></span><span class="text">Receiving</span></a>
             <ul>
                 <li class="">
-                    <a href="add.php?id=11">
+                    <a href="add.php?id=13">
                         <span class="glyphicon glyphicon-plus"></span><span class="text">Add Batch Details</span>
                     </a>
                 </li>

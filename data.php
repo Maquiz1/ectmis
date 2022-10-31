@@ -125,7 +125,7 @@ if ($user->isLoggedIn()) {
                 'salt' => $salt,
             ), Input::get('id'));
             $successMessage = 'Password Reset Successful';
-        }elseif (Input::get('reactivate_user')) {
+        } elseif (Input::get('reactivate_user')) {
             $user->updateRecord('user', array(
                 'counnt' => 0,
             ), Input::get('id'));
@@ -2242,6 +2242,7 @@ if ($user->isLoggedIn()) {
                                                 <td>
                                                     <a href="#update_batch<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Receive</a>
                                                     <a href="#dispense_batch<?= $batchDesc['id'] ?>" role="button" class="btn btn-default" data-toggle="modal">Dispense</a>
+                                                    <!-- <a href="#dispense_batch2<?= $batchDesc['id'] ?>" role="button" data-dispense="<?= $_GET['gid'] ?>" class="btn btn-default dispense2" data-toggle="modal">Dispense2</a> -->
                                                 </td>
                                             </tr>
 
@@ -2364,7 +2365,7 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
 
-                                            <div class="modal fade" id="dispense_batch<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal fade dispense" id="dispense_batch<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <form method="post">
                                                         <div class="modal-content">
@@ -2496,6 +2497,67 @@ if ($user->isLoggedIn()) {
                                                     </form>
                                                 </div>
                                             </div>
+
+                                            <!-- <div id="dispense_batch2<?= $batchDesc['id'] ?>" class="form-feed modal fade" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post" id="order_form">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+
+                                                                <h4 class="modal-title"><i class="fa fa-plus"></i>Create Dispense Order</h4>
+
+                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                                            </div>
+                                                            <hr>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Enter Participant Name</label>
+                                                                            <input type="text" name="inventory_order_name" id="inventory_order_name" class="form-control" required />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Enter Dispance Date</label>
+                                                                            <input type="text" name="inventory_order_date" id="inventory_order_date" class="form-control" required />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Enter Participant Address</label>
+                                                                    <textarea name="inventory_order_address" id="inventory_order_address" class="form-control" required></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Enter Details </label>
+                                                                    <hr />
+                                                                    <span id="span_product_details">
+                                                                    </span>
+                                                                    <hr />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Select Study </label>
+                                                                    <select name="payment_status" id="payment_status" class="form-control">
+                                                                        <option value="VAC080">VAC080</option>
+                                                                        <option value="VAC082">VAC082</option>
+                                                                        <option value="MAL_HERBAL">MAL - HERBAL</option>
+                                                                        <option value="VAC083">VAC083</option>
+                                                                        <option value="RAB002">RAB002</option>
+                                                                        <option value="EBL08">EBL08</option>
+                                                                        <option value="HELP">HELP</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="inventory_order_id" id="inventory_order_id" />
+                                                                <input type="hidden" name="btn_action" id="btn_action" />
+                                                                <input type="submit" name="action" id="action" class="btn btn-info" value="Add" />
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div> -->
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -2851,6 +2913,76 @@ if ($user->isLoggedIn()) {
             });
 
         });
+
+        $('.dispense2').click(function() {
+            var getUid = $(this).attr('data-dispense');
+            $('#fl_wait').show();
+            $.ajax({
+                url: "process.php?content=dispense_study_id3",
+                method: "GET",
+                data: {
+                    getUid: getUid
+                },
+                success: function(data) {
+                    console.log(data);
+                    $('#span_product_details').html(data);
+                    $('#fl_wait').hide();
+                }
+            });
+            // $('#orderModal').modal('show');
+            // $('#order_form')[0].reset();
+            // $('.modal-title').html("<i class='fa fa-plus'></i> Create Order");
+            // $('#action').val('Add');
+            // $('#btn_action').val('Add');
+            // $('#span_product_details').html('');
+            // add_product_row();
+        });
+
+        function add_product_row(count = '') {
+            // var html = ' ';
+
+            // html += '<span id="row' + count + '">';
+            // html += '<div class="row">';
+            // html += '<div class="col-md-7">Name';
+            // html += '<select name="product_id[]" id="product_id' + count + '" class="form-control selectpicker" data-live-search="true" required>';
+            // html += '<option value="">Select Product</option>';
+            // html += '<?= $batchDesc['id'] ?>';
+            // html += '<input type="hidden" name="hidden_product_id[]" id="hidden_product_id' + count + '" /></select>';
+            // html += '</div>';
+            // html += '<div class="col-md-3">quantity';
+            // html += '<input type="text" name="quantity[]" class="form-control" required />';
+            // html += '</div>';
+            // html += '<div class="col-md-2">add';
+            // if (count == '') {
+            //     html += '<button type="button" name="add_more" id="add_more" class="btn btn-success btn-xs">+</button>';
+            // } else {
+            //     html += '<button type="button" name="remove" id="' + count + '" class="btn btn-danger btn-xs remove">-</button>'
+            // }
+            // html += '</div>';
+            // html += '</div>';
+            // html += '</div><br/>';
+            // html += '</span>';
+
+            // $('#span_product_details').append(html);
+
+
+            // $('.selectpicker').selectpicker();
+        }
+
+        var count = 0;
+
+        //ADD ROW
+        $(document).on('click', '#add_more', function() {
+            count = count + 1;
+            add_product_row(count);
+        })
+
+        //REMOVE ROW
+        $(document).on('click', '.remove', function() {
+            var row_no = $(this).attr("id");
+            $('#row' + row_no).remove()
+        })
+
     });
 </script>
 
