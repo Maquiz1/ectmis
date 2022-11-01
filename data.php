@@ -371,6 +371,56 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('add_use_case')) {
+            $validate = $validate->check($_POST, array(
+                'name' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $check_use_case = $override->get('use_case', 'name', Input::get('name'));
+                if ($check_use_case) {
+                    $errorMessage = 'Use Case Name ALready Exists';
+                } else {
+                    try {
+                        $user->createRecord('use_case', array(
+                            'name' => Input::get('name'),
+                        ));
+                        $successMessage = 'Use Case Successful Added';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
+        } elseif (Input::get('add_use_case_location')) {
+            $validate = $validate->check($_POST, array(
+                'use_case_id' => array(
+                    'required' => true,
+                ),
+                'location_id' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $check_use_case_location = $override->selectData1('use_case_location', 'use_case_id', Input::get('use_case_id'),'location_id', Input::get('location_id'));
+                if ($check_use_case_location) {
+                    $errorMessage = 'Use Case Location ALready Exists';
+                } else {
+                    try {
+                        $user->createRecord('use_case_location', array(
+                            'use_case_id' => Input::get('use_case_id'),
+                            'location_id' => Input::get('location_id'),
+                        ));
+                        $successMessage = 'Use Case Location Successful Added';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
         } elseif (Input::get('edit_use_case')) {
             $validate = $validate->check($_POST, array(
                 'name' => array(

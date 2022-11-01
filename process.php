@@ -219,4 +219,47 @@ if ($_GET['content'] == 'region') {
         </table>
     </span>
 
+<?php } elseif ($_GET['content'] == 'use_case_id') {
+    $batches = $override->get('use_case_location', 'use_case_id', $_GET['getUid']);
+?>
+    <span>
+        <table cellpadding="0" cellspacing="0" width="100%" class="table">
+            <thead>
+                <tr>
+                    <th width="15%">Location</th>
+                    <th width="15%">Required</th>
+                    <!-- <th width="4%">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $f = 0;
+                foreach ($batches as $batch) {
+                    $location_id = $override->get('location', 'id', $batch['location_id'])[0];
+                ?>
+
+                    <tr>
+                        <td><?= $location_id['name'] ?></td>
+                        <td>
+                            <div class="form-group">
+                                <input type="hidden" name="location[<?= $f ?>]" value="<?= $location_id['id'] ?>">
+                                <input value="" type="number" min="0" class="validate[required]" name="location_quantity[]" required />
+                            </div>
+                        </td>
+                        <!-- <td>
+                            <?php if ($count == '') { ?>
+                                <button type="button" name="add_more" id="add_more" class="btn btn-success btn-xs">+</button>
+                            <?php } else { ?>
+                                <button type="button" name="remove" id="' + count + '" class="btn btn-danger btn-xs remove">-</button>
+                            <?php } ?>
+                        </td> -->
+                    <tr>
+                    <?php
+                    $f++;
+                }
+                    ?>
+            </tbody>
+        </table>
+    </span>
+
 <?php } ?>

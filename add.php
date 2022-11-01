@@ -359,6 +359,41 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('add_use_case_location')) {
+            $validate = $validate->check($_POST, array(
+                'use_case_id' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $check_use_case_location = 0;
+                // foreach (Input::get('location_id') as $sid) {
+                // in_array("100", $marks);
+                //     $check_use_case_location = $override->selectData1('use_case_location', 'use_case_id', Input::get('use_case_id'), 'location_id', $sid);
+
+                // }
+                if ($check_use_case_location) {
+                    $errorMessage = 'Use Case Location ALready Exists';
+                } else {
+                    try {
+                        $si = 0;
+                        foreach (Input::get('location_id') as $sid) {
+                            $user->createRecord('use_case_location', array(
+                                'use_case_id' => Input::get('use_case_id'),
+                                'location_id' => $sid,
+                                'status' => 1,
+                                'create_on' => date('Y-m-d'),
+                            ));
+                            $si++;
+                        }
+                        $successMessage = 'Use Case Location Successful Added';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
         } elseif (Input::get('assign_stock')) {
             $validate = $validate->check($_POST, array(
                 'dispense_study_id' => array(
@@ -573,6 +608,98 @@ if ($user->isLoggedIn()) {
                 } else {
                     $pageError = $validate->errors();
                 }
+            }
+        } elseif (Input::get('add_generic2')) {
+            $validate = $validate->check($_POST, array(
+                'name' => array(
+                    'required' => true,
+                ),
+                'notify_quantity' => array(
+                    'required' => true,
+                ),
+                'use_case' => array(
+                    'required' => true,
+                ),
+                'use_group' => array(
+                    'required' => true,
+                ),
+                'maintainance' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                $sii = 0;
+                $q = 0;
+                foreach (Input::get('location') as $sid) {
+                    $q = $q + Input::get('location_quantity')[$sii];
+                    $sii++;
+                }
+
+                $checkGeneric = $override->selectData1('generic', 'name', Input::get('name'), 'status', 1)[0];
+
+                if (!$checkGeneric) {
+                    if (Input::get('notify_quantity') >= 0) {
+                        if (Input::get('notify_quantity') == $q) {
+                            try {
+
+                                $user->createRecord('generic', array(
+                                    'name' => Input::get('name'),
+                                    'status' => 1,
+                                    'notify_quantity' => Input::get('notify_quantity'),
+                                    'assigned' => 0,
+                                    'balance' => 0,
+                                    'create_on' => date('Y-m-d'),
+                                    'use_group' => Input::get('use_group'),
+                                    'use_case' => Input::get('use_case'),
+                                    'maintainance' => Input::get('maintainance'),
+                                    'staff_id' => $user->data()->id,
+                                ));
+
+                                $si = 0;
+                                foreach (Input::get('location') as $sid) {
+                                    $q = Input::get('location_quantity')[$si];
+                                    $location = $override->get('location', 'id', $sid)[0];
+                                    $generic_id = $override->lastRow('generic', 'id')[0]['id'];
+                                    $use_group = $override->lastRow('generic', 'id')[0]['use_group'];
+                                    $use_case = $override->lastRow('generic', 'id')[0]['use_case'];
+                                    $user->createRecord('generic_location', array(
+                                        'generic_id' => $generic_id,
+                                        'notify_quantity' => $q,
+                                        'location_id' => $location['id'],
+                                        'create_on' => date('Y-m-d'),
+                                        'staff_id' => $user->data()->id,
+                                        'status' => 1,
+                                    ));
+
+                                    $user->createRecord('generic_records', array(
+                                        'generic_id' => $generic_id,
+                                        'notify_quantity' => $q,
+                                        'location_id' => $location['id'],
+                                        'create_on' => date('Y-m-d'),
+                                        'staff_id' => $user->data()->id,
+                                        'status' => 1,
+                                        'use_case' => $use_case,
+                                        'use_group' => $use_group,
+                                        'maintainance' => Input::get('maintainance'),
+                                    ));
+
+                                    $si++;
+                                }
+                                $successMessage = 'Generic Name Added Successful';
+                            } catch (Exception $e) {
+                                die($e->getMessage());
+                            }
+                        } else {
+                            $errorMessage = 'Required Quantity Must Be equal to some of all required locations';
+                        }
+                    } else {
+                        $errorMessage = 'Required Quantity Must Not Be equal to Negatve Number';
+                    }
+                } else {
+                    $errorMessage = 'Generic Name Already Registered';
+                }
+            } else {
+                $pageError = $validate->errors();
             }
         } elseif (Input::get('add_brand')) {
             $validate = $validate->check($_POST, array(
@@ -1836,15 +1963,6 @@ if ($user->isLoggedIn()) {
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label>Enter Details </label>
-                                            <hr />
-                                            <span id="span_product_details">
-                                            </span>
-                                            <hr />
-                                        </div>
-
-
                                         <div class="footer tar">
                                             <input type="submit" name="add_generic" value="Submit" class="btn btn-default">
                                         </div>
@@ -2333,7 +2451,7 @@ if ($user->isLoggedIn()) {
                                         <hr />
                                     </div>
 
-                                    <div class="row">                                        
+                                    <div class="row">
 
                                         <div class="col-sm-4">
                                             <div class="row-form clearfix">
@@ -2380,6 +2498,183 @@ if ($user->isLoggedIn()) {
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                    <?php } elseif ($_GET['id'] == 14) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add Generic Name</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Generic Name:</label>
+                                                    <input value="" class="validate[required]" type="text" name="name" id="name" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Required Quantity:</label>
+                                                    <input value="" class="validate[required]" type="number" name="notify_quantity" id="notify_quantity" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Use Form (Group):</label>
+                                                    <select name="use_group" style="width: 100%;" required>
+                                                        <option value="">Select Use Group</option>
+                                                        <?php foreach ($override->getData('use_group') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <!-- select -->
+                                            <div class="row-form clearfix">
+                                                <div class="form-group">
+                                                    <label>Use Case:</label>
+                                                    <select name="use_case" id="use_case_id2" style="width: 100%;" required>
+                                                        <option value="">Select Use Case</option>
+                                                        <?php foreach ($override->getData('use_case') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>maintainance Type:</label>
+                                                    <select name="maintainance" style="width: 100%;" required>
+                                                        <option value="">Select Maintainance</option>
+                                                        <?php foreach ($override->getData('maintainance_type') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Item Location(Select Only Required Locations Fot This Generic Name According to the Guide):</label>
+                                        <span id="span_product_details2">
+                                        </span>
+                                        <hr />
+                                    </div>
+
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="add_generic2" value="Submit" class="btn btn-default">
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    <?php } elseif ($_GET['id'] == 15) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add Use Case</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <!-- select -->
+                                            <div class="row-form clearfix">
+                                                <div class="form-group">
+                                                    <label>Use Case:</label>
+                                                    <select name="use_case_id" id="use_case_id" style="width: 100%;" required>
+                                                        <option value="">Select Use Case</option>
+                                                        <?php foreach ($override->getData('use_case') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Item Location(Select Only Required Locations Fot This Generic Name According to the Guide):</label>
+                                            <span id="span_product_details2">
+                                            </span>
+                                            <hr />
+                                        </div>
+                                    </div>
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="add_use_case_location" value="Submit" class="btn btn-default">
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    <?php } elseif ($_GET['id'] == 16) { ?>
+                        <div class="col-md-offset-1 col-md-8">
+                            <div class="head clearfix">
+                                <div class="isw-ok"></div>
+                                <h1>Add Use Case Location</h1>
+                            </div>
+                            <div class="block-fluid">
+                                <form id="validation" method="post">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <!-- select -->
+                                            <div class="row-form clearfix">
+                                                <div class="form-group">
+                                                    <label>Use Case:</label>
+                                                    <select name="use_case_id" id="use_case_id" style="width: 100%;" required>
+                                                        <option value="">Select Use Case</option>
+                                                        <?php foreach ($override->getData('use_case') as $dCat) { ?>
+                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row-form clearfix">
+                                                <!-- select -->
+                                                <div class="form-group">
+                                                    <label>Item Location(Select Only Required Locations According to the Guide):</label>
+                                                    <select name="location_id[]" id="s2_2" style="width: 100%;" multiple="multiple" required>
+                                                        <option value="">Select Use Case Location...</option>
+                                                        <?php foreach ($override->getData('location') as $drinks) {
+                                                        ?>
+                                                            <option value="<?= $drinks['id'] ?>"><?= $drinks['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="footer tar">
+                                        <input type="submit" name="add_use_case_location" value="Submit" class="btn btn-default">
+                                    </div>
+                                </form>
+                            </div>
+
                         </div>
                     <?php } ?>
                     <div class="dr"><span></span></div>
@@ -2647,13 +2942,23 @@ if ($user->isLoggedIn()) {
                         $('#fl_wait').hide();
                     }
                 });
-                // $('#orderModal').modal('show');
-                // $('#order_form')[0].reset();
-                // $('.modal-title').html("<i class='fa fa-plus'></i> Create Order");
-                // $('#action').val('Add');
-                // $('#btn_action').val('Add');
-                // $('#span_product_details').html('');
-                // add_product_row();
+            });
+
+            $('#use_case_id2').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=use_case_id",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $('#span_product_details2').html(data);
+                        $('#fl_wait').hide();
+                    }
+                });
             });
         });
     </script>
