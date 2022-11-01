@@ -2637,7 +2637,7 @@ if ($user->isLoggedIn()) {
                             <div class="block-fluid">
                                 <form id="validation" method="post">
                                     <div class="row">
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-4">
                                             <!-- select -->
                                             <div class="row-form clearfix">
                                                 <div class="form-group">
@@ -2652,7 +2652,7 @@ if ($user->isLoggedIn()) {
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-8">
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
