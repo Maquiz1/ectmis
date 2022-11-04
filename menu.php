@@ -159,18 +159,11 @@ if ($user->data()->accessLevel == 1) {
                     </a> -->
                 </li>
 
-  
-                <?php if ($user->data()->accessLevel == 1) {
-        ?>
                 <li>
                     <a href="info.php?id=2">
                         <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>
                     </a>
                 </li>
-                <?php
-        }
-
-        ?>
             </ul>
         </li>
         <li class="openable">

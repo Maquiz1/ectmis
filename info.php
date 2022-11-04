@@ -862,7 +862,7 @@ if ($user->isLoggedIn()) {
                             <div class="col-md-6">
                                 <div class="head clearfix">
                                     <div class="isw-grid"></div>
-                                    <h1>List of Sites</h1>
+                                    <h1>List of Categories</h1>
                                     <ul class="buttons">
                                         <li><a href="#" class="isw-download"></a></li>
                                         <li><a href="#" class="isw-attachment"></a></li>
@@ -897,7 +897,7 @@ if ($user->isLoggedIn()) {
                                                             <form method="post">
                                                                 <div class="modal-header">
                                                                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                    <h4>Edit Site Info</h4>
+                                                                    <h4>Edit Category Info</h4>
                                                                 </div>
                                                                 <div class="modal-body modal-body-np">
                                                                     <div class="row">
