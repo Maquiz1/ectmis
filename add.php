@@ -795,7 +795,7 @@ if ($user->isLoggedIn()) {
                     }
 
                     if (Input::get('quantity') == $q) {
-                        if (Input::get('manufactured_date') < date('Y-m-d') || Input::get('manufactured_date') == '' || Input::get('manufacturer') == '') {
+                        if (Input::get('manufactured_date') < date('Y-m-d') || Input::get('manufactured_date') == '') {
                             if(Input::get('manufactured_date') == ''){
                                 $manufactureDate = '9999-99-99';
                             }    
