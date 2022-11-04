@@ -2180,7 +2180,7 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Manufacturer:</label>
-                                                        <input value="" class="validate[required]" type="text" name="manufacturer" id="manufacturer" />
+                                                        <input value="" type="text" name="manufacturer" id="manufacturer" />
                                                     </div>
                                                 </div>
                                             </div>
