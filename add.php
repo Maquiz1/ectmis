@@ -795,7 +795,7 @@ if ($user->isLoggedIn()) {
                     }
 
                     if (Input::get('quantity') == $q) {
-                        if (Input::get('manufactured_date') < date('Y-m-d')) {
+                        if (Input::get('manufactured_date') < date('Y-m-d') || Input::get('manufactured_date') == '') {
                             if (Input::get('expire_date') > date('Y-m-d')) {
                                 if (Input::get('quantity') > 0) {
                                     $checkBatch = $override->selectData1('batch', 'batch_no', Input::get('batch_no'), 'status', 1)[0];
