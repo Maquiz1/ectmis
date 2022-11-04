@@ -152,11 +152,11 @@ if ($user->data()->accessLevel == 1) {
 
         ?>
                     <a href="add.php?id=6">
-                        <span class="glyphicon glyphicon-home"></span><span class="text">Add Drug Category</span>
+                        <span class="glyphicon glyphicon-home"></span><span class="text">Add Category</span>
                     </a>
-                    <a href="add.php?id=16">
+                    <!-- <a href="add.php?id=16">
                         <span class="glyphicon glyphicon-home"></span><span class="text">Add Use Case Location</span>
-                    </a>
+                    </a> -->
                 </li>
 
   

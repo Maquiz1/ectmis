@@ -770,9 +770,9 @@ if ($user->isLoggedIn()) {
                     'manufacturer' => array(
                         'required' => true,
                     ),
-                    'manufactured_date' => array(
-                        'required' => true,
-                    ),
+                    // 'manufactured_date' => array(
+                    //     'required' => true,
+                    // ),
                     'expire_date' => array(
                         'required' => true,
                     ),
@@ -2174,7 +2174,7 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Manufacturer:</label>
-                                                        <input value="" class="validate[required]" type="text" name="manufacturer" id="manufacturer" required />
+                                                        <input value="" class="validate[required]" type="text" name="manufacturer" id="manufacturer" />
                                                     </div>
                                                 </div>
                                             </div>
