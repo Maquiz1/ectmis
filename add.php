@@ -767,9 +767,9 @@ if ($user->isLoggedIn()) {
                     'quantity' => array(
                         'required' => true,
                     ),
-                    'manufacturer' => array(
-                        'required' => true,
-                    ),
+                    // 'manufacturer' => array(
+                    //     'required' => true,
+                    // ),
                     // 'manufactured_date' => array(
                     //     'required' => true,
                     // ),
@@ -795,7 +795,13 @@ if ($user->isLoggedIn()) {
                     }
 
                     if (Input::get('quantity') == $q) {
-                        if (Input::get('manufactured_date') < date('Y-m-d') || Input::get('manufactured_date') == '') {
+                        if (Input::get('manufactured_date') < date('Y-m-d') || Input::get('manufactured_date') == '' || Input::get('manufacturer') == '') {
+                            if(Input::get('manufactured_date') == ''){
+                                $manufactureDate = '9999-99-99';
+                            }    
+                            if(Input::get('manufacturer') == ''){
+                                $manufacturer = 'IHI';
+                            }                         
                             if (Input::get('expire_date') > date('Y-m-d')) {
                                 if (Input::get('quantity') > 0) {
                                     $checkBatch = $override->selectData1('batch', 'batch_no', Input::get('batch_no'), 'status', 1)[0];
@@ -810,8 +816,8 @@ if ($user->isLoggedIn()) {
                                                 'study_id' => Input::get('study_id'),
                                                 'assigned' => 0,
                                                 'balance' => Input::get('quantity'),
-                                                'manufacturer' => Input::get('manufacturer'),
-                                                'manufactured_date' => Input::get('manufactured_date'),
+                                                'manufacturer' => $manufacturer,
+                                                'manufactured_date' => $manufactureDate,
                                                 'expire_date' => Input::get('expire_date'),
                                                 'details' => Input::get('details'),
                                                 'status' => 1,
@@ -2184,7 +2190,7 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Manufactured Date:</label>
-                                                        <div class="col-md-9"><input type="date" name="manufactured_date" required /> </div>
+                                                        <div class="col-md-9"><input type="date" name="manufactured_date" /> </div>
                                                     </div>
                                                 </div>
                                             </div>
