@@ -798,9 +798,13 @@ if ($user->isLoggedIn()) {
                         if (Input::get('manufactured_date') < date('Y-m-d') || Input::get('manufactured_date') == '') {
                             if(Input::get('manufactured_date') == ''){
                                 $manufactureDate = '9999-99-99';
+                            }else{
+                                $manufactureDate = Input::get('manufactured_date');
                             }    
                             if(Input::get('manufacturer') == ''){
                                 $manufacturer = 'IHI';
+                            }else{
+                                $manufacturer = Input::get('manufacturer');
                             }                         
                             if (Input::get('expire_date') > date('Y-m-d')) {
                                 if (Input::get('quantity') > 0) {
