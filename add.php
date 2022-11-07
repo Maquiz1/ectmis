@@ -802,7 +802,7 @@ if ($user->isLoggedIn()) {
                                 $manufactureDate = Input::get('manufactured_date');
                             }    
                             if(Input::get('manufacturer') == ''){
-                                $manufacturer = 'IHI';
+                                $manufacturer = 'N/A';
                             }else{
                                 $manufacturer = Input::get('manufacturer');
                             }                         
