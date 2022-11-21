@@ -1348,9 +1348,73 @@ if ($user->isLoggedIn()) {
                                                     <td>
                                                         <a href="#study1<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">View</a>
                                                         <!-- <a href="#delete<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a> -->
+                                                        <a href="#updateGeneric<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Updated</a>
                                                     </td>
-
                                                 </tr>
+                                                <div class="modal fade" id="updateGeneric<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit Batch Description Info</h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+                                                                    <div class="row">
+                                                                        <div class="block-fluid">
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Batch</div>
+                                                                                <div class="col-md-9">
+                                                                                    <input value="<?= $override->get('batch', 'id', $batchDesc['batch_id'])[0]['name'] ?>" type="text" id="name" disabled />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Name:</div>
+                                                                                <div class="col-md-9">
+                                                                                    <input value="<?= $batchDesc['name'] ?>" class="validate[required]" type="text" name="name" id="name" />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Category</div>
+                                                                                <div class="col-md-9">
+                                                                                    <select name="category" style="width: 100%;" required>
+                                                                                        <option value="<?= $batchDesc['cat_id'] ?>"><?= $override->get('drug_cat', 'id', $batchDesc['cat_id'])[0]['name'] ?></option>
+                                                                                        <?php foreach ($override->getData('drug_cat') as $dCat) { ?>
+                                                                                            <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                                                        <?php } ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Quantity:</div>
+                                                                                <div class="col-md-9">
+                                                                                    <input value="<?= $batchDesc['quantity'] ?>" class="validate[required]" type="number" name="quantity" id="name" />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row-form clearfix">
+                                                                                <div class="col-md-3">Notification Amount: </div>
+                                                                                <div class="col-md-9">
+                                                                                    <input value="<?= $batchDesc['notify_amount'] ?>" class="validate[required]" type="text" name="notify_amount" required />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="dr"><span></span></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="batch" value="<?= $batchDesc['batch_id'] ?>">
+                                                                    <input type="hidden" name="id" value="<?= $batchDesc['id'] ?>">
+                                                                    <input type="submit" name="edit_batch_desc" value="Save updates" class="btn btn-warning">
+                                                                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                                 <div class="modal fade" id="study<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <form method="post">
@@ -1872,8 +1936,7 @@ if ($user->isLoggedIn()) {
                                     </table>
                                 </div>
                             </div>
-                        <?php } elseif ($_GET['id'] == 12) {
-                        ?>
+                        <?php } elseif ($_GET['id'] == 12) { ?>
                             <div class="col-md-12">
                                 <div class="head clearfix">
                                     <div class="isw-grid"></div>
@@ -2047,6 +2110,7 @@ if ($user->isLoggedIn()) {
                                     </table>
                                 </div>
                             </div>
+                            
                         <?php } ?>
                     </div>
 
