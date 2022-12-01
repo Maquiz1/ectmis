@@ -367,8 +367,8 @@ if ($user->isLoggedIn()) {
             $data = null;
             $filename = null;
             if (Input::get('full_report')) {
-                $data = $override->getFull('batch', 'amount', 'notify_amount', 'status', 1);
-                $filename = 'Full Report' . '-' . date('Y-m-d');
+                $data = $override->get('batch_records', 'status', 1);
+                $filename = 'Full Stock Report' . '-' . date('Y-m-d');
             } elseif (Input::get('sufficient')) {
                 $data = $override->get4('batch', 'amount', 'notify_amount', 'status', 1, 'type', 1);
                 $filename = 'SUFFICIENT' . '-' . date('Y-m-d');
@@ -1348,7 +1348,7 @@ if ($user->isLoggedIn()) {
                                                     <td>
                                                         <a href="#study1<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">View</a>
                                                         <!-- <a href="#delete<?= $batchDesc['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a> -->
-                                                        <a href="#updateGeneric<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Updated</a>
+                                                        <a href="#updateGeneric<?= $batchDesc['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update</a>
                                                     </td>
                                                 </tr>
                                                 <div class="modal fade" id="updateGeneric<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

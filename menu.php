@@ -186,7 +186,7 @@ if ($user->data()->accessLevel == 1) {
                 </li>
             </ul>
         </li>
-        <!-- <li class="openable">
+        <li class="openable">
             <a href="#"><span class="isw-documents"></span><span class="text">Reports</span></a>
             <ul>
                 <li>
@@ -195,7 +195,7 @@ if ($user->data()->accessLevel == 1) {
                     </a>
                 </li>
             </ul>
-        </li> -->
+        </li> 
         <!-- <li class="">
             <a href="info.php?id=11">
                 <span class="isw-download"></span><span class="text">Download</span>
