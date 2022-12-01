@@ -217,6 +217,12 @@ class OverideData{
         return $result;
     }
 
+    public function searchBtnDate3($table,$var,$value,$var1,$value1,$var2,$value2){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 = '$value2'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
 
     public function searchBtnDateSufficient($table,$var,$value,$var1,$value1,$var2,$value2,$var3,$value3,$var4,$value4){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 < '$value2' AND $var3 = '$value3' AND $var4 = '$value4'");

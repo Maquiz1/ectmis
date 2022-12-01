@@ -28,13 +28,13 @@ if ($user->isLoggedIn()) {
                 try {
                     switch (Input::get('report')) {
                         case 1:
-                            $data = $override->searchBtnDate2('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
+                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
                             break;
                         case 2:
-                            $data = $override->searchBtnDate2('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
-                            break;
+                        $data = $override->searchBtnDate3('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
+                        break;
                         case 3:
-                            $data = $override->searchBtnDate2('generic', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
+                            $data = $override->searchBtnDate3('generic', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
                             break;
                     }
                     $successMessage = 'Report Successful Created';
@@ -121,7 +121,7 @@ if ($user->isLoggedIn()) {
 
                 <div class="row">
                     <?php if ($_GET['id'] == 1) { ?>
-                        <div class="col-md-offset-1 col-md-8">
+                        <div class="col-md-offset-1 col-md-10">
                             <div class="head clearfix">
                                 <div class="isw-ok"></div>
                                 <h1>Search Report</h1>
@@ -143,7 +143,17 @@ if ($user->isLoggedIn()) {
                                                 <option value="">Select Report</option>
                                                 <option value="1">Stock Report</option>
                                                 <option value="2">Check Report</option>
-                                                <option value="3">Current Status</option>
+                                                <option value="3">Current Status</option>                                               
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">Group</div>
+                                        <div class="col-md-2">
+                                            <select name="group" style="width: 100%;" required>
+                                                <option value="">Select Group</option>
+                                                <option value="1">Medicine</option>
+                                                <option value="2">Medical Equipment</option>
+                                                <option value="3">Accesssories</option>
+                                                <option value="4">Supplies</option>
                                             </select>
                                         </div>
                                         <div class="col-md-2">
@@ -282,6 +292,7 @@ if ($user->isLoggedIn()) {
                                     <table id="status" cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
+                                                <th width="10%">DATE</th>
                                                 <th width="10%">GENERIC</th>
                                                 <th width="10%">USED</th>
                                                 <th width="10%">BALANCE</th>
@@ -298,12 +309,13 @@ if ($user->isLoggedIn()) {
                                                 $brand = $override->get('brand', 'id', $records['brand_id'])[0]['name'];
                                             ?>
                                                 <tr>
+                                                    <td><?= $records['create_on'] ?></td>
                                                     <td><?= $generic ?></td>
                                                     <td><?= $used ?></td>
                                                     <td><?= $balance ?></td>
-                                                    <!-- <td>
-                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
-                                                    </td> -->
+                                                    <td>
+                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Details</a>
+                                                    </td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
                                             <?php } ?>
@@ -414,8 +426,8 @@ if ($user->isLoggedIn()) {
                     // targets: [6],
                     // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
                     // }],
-                    Customize: function(){
-                        doc.content[1].table.width = Array(doc.content[1].table.body[0].length+1).join('*').split('');
+                    Customize: function() {
+                        doc.content[1].table.width = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
                     }
                 },
                 {
@@ -459,7 +471,7 @@ if ($user->isLoggedIn()) {
             buttons: [{
 
                     extend: 'excelHtml5',
-                    title: 'CHECK REPORT' + ' ' + d  + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary',
                     // displayFormat: 'dddd D MMMM YYYY',
                     // wireFormat: 'YYYY-MM-DD',
@@ -470,7 +482,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: 'CHECK REPORT' + ' ' + d  + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
@@ -478,7 +490,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'csvHtml5',
-                    title: 'CHECK REPORT' + ' ' + d  + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary'
                 },
                 // {
@@ -508,7 +520,7 @@ if ($user->isLoggedIn()) {
             buttons: [{
 
                     extend: 'excelHtml5',
-                    title: 'STATUS REPORT' + ' ' + d  + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary',
                     // displayFormat: 'dddd D MMMM YYYY',
                     // wireFormat: 'YYYY-MM-DD',
@@ -519,7 +531,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: 'STATUS REPORT' + ' ' + d  + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
@@ -527,7 +539,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'csvHtml5',
-                    title: 'STATUS REPORT' + ' ' + d  + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary'
                 },
                 // {
