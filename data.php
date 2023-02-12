@@ -894,6 +894,7 @@ if ($user->isLoggedIn()) {
                                             $check_brand_id = $override->get('brand', 'id', $batchDesc['brand_id'])[0]['id'];
                                             $check_batch_id = $batchDesc['id'];
                                             $check_batch_no = $batchDesc['batch_no'];
+                                            $category = $override->get('generic', 'id', $_GET['gid'])[0]['use_group'];
                                         ?>
                                             <tr>
                                                 <td><?= $generic_name ?></td>
@@ -924,7 +925,6 @@ if ($user->isLoggedIn()) {
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal"> OK! </a>
                                                     <?php } ?>
                                                 </td>
-
                                             </tr>
                                             <div class="modal fade" id="archive<?= $batchDesc['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">

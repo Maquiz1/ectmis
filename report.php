@@ -8,7 +8,7 @@ $random = new Random();
 $successMessage = null;
 $pageError = null;
 $errorMessage = null;
-$numRec = 10;
+$numRec = 50;
 if ($user->isLoggedIn()) {
     if (Input::exists('post')) {
         $validate = new validate();
@@ -28,13 +28,13 @@ if ($user->isLoggedIn()) {
                 try {
                     switch (Input::get('report')) {
                         case 1:
-                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
+                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'category', Input::get('group'));
                             break;
                         case 2:
                         $data = $override->searchBtnDate3('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
                         break;
                         case 3:
-                            $data = $override->searchBtnDate3('generic', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
+                            $data = $override->searchBtnDate2('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
                             break;
                     }
                     $successMessage = 'Report Successful Created';
@@ -141,12 +141,12 @@ if ($user->isLoggedIn()) {
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
-                                                <option value="1">Stock Report</option>
-                                                <option value="2">Check Report</option>
+                                                <!-- <option value="1">Stock Report(Quantity)</option>
+                                                <option value="2">Check Report</option> -->
                                                 <option value="3">Current Status</option>                                               
                                             </select>
                                         </div>
-                                        <div class="col-md-1">Group</div>
+                                        <!-- <div class="col-md-1">Group</div>
                                         <div class="col-md-2">
                                             <select name="group" style="width: 100%;" required>
                                                 <option value="">Select Group</option>
@@ -155,9 +155,9 @@ if ($user->isLoggedIn()) {
                                                 <option value="3">Accesssories</option>
                                                 <option value="4">Supplies</option>
                                             </select>
-                                        </div>
+                                        </div> -->
                                         <div class="col-md-2">
-                                            <input type="submit" name="search" value="Search Report" class="btn btn-info">
+                                            <input type="submit" id="submit" name="search" value="Search Report" class="btn btn-info">
                                         </div>
                                     </div>
 
@@ -294,8 +294,10 @@ if ($user->isLoggedIn()) {
                                             <tr>
                                                 <th width="10%">DATE</th>
                                                 <th width="10%">GENERIC</th>
+                                                <th width="10%">BRAND</th>
                                                 <th width="10%">USED</th>
                                                 <th width="10%">BALANCE</th>
+                                                <th width="10%">EXPIRE</th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -305,17 +307,16 @@ if ($user->isLoggedIn()) {
                                                 $used = $records['assigned'];
                                                 $balance = $records['balance'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
-                                                $generic = $records['name'];
+                                                $generic = $override->get('generic', 'id', $records['generic_id'])[0]['name'];
                                                 $brand = $override->get('brand', 'id', $records['brand_id'])[0]['name'];
                                             ?>
                                                 <tr>
                                                     <td><?= $records['create_on'] ?></td>
                                                     <td><?= $generic ?></td>
+                                                    <td><?= $brand ?></td>
                                                     <td><?= $used ?></td>
                                                     <td><?= $balance ?></td>
-                                                    <td>
-                                                        <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Details</a>
-                                                    </td>
+                                                    <td><?= $records['expire_date'] ?></td>
                                                     <td><?= $records['details'] ?></td>
                                                 </tr>
                                             <?php } ?>
@@ -365,6 +366,7 @@ if ($user->isLoggedIn()) {
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+
 
 <script>
     <?php if ($user->data()->pswd == 0) { ?>
@@ -532,6 +534,7 @@ if ($user->isLoggedIn()) {
                 {
                     extend: 'pdfHtml5',
                     title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    range: 'STATUS REPORT' + ' ' + start_date + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
                     className: 'btn-primary',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
@@ -555,8 +558,9 @@ if ($user->isLoggedIn()) {
             ],
 
             // paging: true,
-            // scrollY: 10
+            // scrollY: 50
         });
+
     });
 </script>
 
