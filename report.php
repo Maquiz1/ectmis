@@ -127,15 +127,15 @@ if ($user->isLoggedIn()) {
                                 <h1>Search Report</h1>
                             </div>
                             <div class="block-fluid">
-                                <form id="validation" method="post">
+                                <form id="validation3" method="post">
                                     <div class="row-form clearfix">
                                         <div class="col-md-1">Start Date:</div>
                                         <div class="col-md-2">
-                                            <input value="" class="validate[required,custom[date]]" type="date" name="start_date" id="start_date" /><span>Example: 2010-12-01</span>
+                                            <input value="" class="validate[required,custom[date]]" type="date" name="start_date" id="start_date3" /><span>Example: 2010-12-01</span>
                                         </div>
                                         <div class="col-md-1">End Date:</div>
                                         <div class="col-md-2">
-                                            <input value="" class="validate[required,custom[date]]" type="date" name="end_date" id="end_date" /><span>Example: 2010-12-01</span>
+                                            <input value="" class="validate[required,custom[date]]" type="date" name="end_date" id="end_date3" /><span>Example: 2010-12-01</span>
                                         </div>
                                         <div class="col-md-1">Type</div>
                                         <div class="col-md-2">
@@ -157,7 +157,7 @@ if ($user->isLoggedIn()) {
                                             </select>
                                         </div> -->
                                         <div class="col-md-2">
-                                            <input type="submit" id="submit" name="search" value="Search Report" class="btn btn-info">
+                                            <input type="submit" id="submit3" name="search" value="Search Report" class="btn btn-info">
                                         </div>
                                     </div>
 
@@ -403,6 +403,19 @@ if ($user->isLoggedIn()) {
             }
         };
 
+
+        // $(document).on('submit', '#validation3', function(event) {
+        //     event.preventDefault();
+        //     // $('#action').attr('disabled', 'disabled');
+        //     var form_data = $(this).serialize();
+        //     var start_date3 = $(this).attr('start_date3');
+        //     var end_date3 = $('#end_date3').val();
+        //     alert('form_data');
+        //     alert('start_date3');
+        //     alert('end_date3');
+
+        // })
+
         $('#stock').DataTable({
 
             "language": {
@@ -522,7 +535,7 @@ if ($user->isLoggedIn()) {
             buttons: [{
 
                     extend: 'excelHtml5',
-                    title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'STATUS REPORT:- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ' + ' ..............',
                     className: 'btn-primary',
                     // displayFormat: 'dddd D MMMM YYYY',
                     // wireFormat: 'YYYY-MM-DD',
@@ -533,8 +546,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    range: 'STATUS REPORT' + ' ' + start_date + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'STATUS REPORT:- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ' + ' ..............',
                     className: 'btn-primary',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
@@ -542,7 +554,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'csvHtml5',
-                    title: 'STATUS REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+                    title: 'STATUS REPORT:- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ' + ' ..............',
                     className: 'btn-primary'
                 },
                 // {
