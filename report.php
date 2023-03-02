@@ -28,11 +28,11 @@ if ($user->isLoggedIn()) {
                 try {
                     switch (Input::get('report')) {
                         case 1:
-                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'category', Input::get('group'));
+                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'category', Input::get('group'));
                             break;
                         case 2:
-                        $data = $override->searchBtnDate3('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'),'use_group', Input::get('group'));
-                        break;
+                            $data = $override->searchBtnDate3('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'use_group', Input::get('group'));
+                            break;
                         case 3:
                             $data = $override->searchBtnDate2('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
                             break;
@@ -143,7 +143,7 @@ if ($user->isLoggedIn()) {
                                                 <option value="">Select Report</option>
                                                 <!-- <option value="1">Stock Report(Quantity)</option>
                                                 <option value="2">Check Report</option> -->
-                                                <option value="3">Current Status</option>                                               
+                                                <option value="3">Current Status</option>
                                             </select>
                                         </div>
                                         <!-- <div class="col-md-1">Group</div>
@@ -306,6 +306,7 @@ if ($user->isLoggedIn()) {
                                                 $received = $records['quantity'];
                                                 $used = $records['assigned'];
                                                 $balance = $records['balance'];
+                                                $expire = $records['status'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
                                                 $generic = $override->get('generic', 'id', $records['generic_id'])[0]['name'];
                                                 $brand = $override->get('brand', 'id', $records['brand_id'])[0]['name'];
@@ -317,7 +318,13 @@ if ($user->isLoggedIn()) {
                                                     <td><?= $used ?></td>
                                                     <td><?= $balance ?></td>
                                                     <td><?= $records['expire_date'] ?></td>
-                                                    <td><?= $records['details'] ?></td>
+                                                    <td>
+                                                        <?php if ($records['expire_date'] <= date('Y-m-d')) { ?>
+                                                            <a href="data.php?id=1&gid=<?= $records['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $records['id'] ?>" data-toggle="modal" id="check">Expired!</a>
+                                                        <?php } else { ?>
+                                                            <a href="#" role="button" class="btn btn-success btn-sm check" data-toggle="modal" id="check">Valid</a>
+                                                        <?php } ?>
+                                                    </td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
