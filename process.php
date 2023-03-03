@@ -31,6 +31,15 @@ if ($_GET['content'] == 'region') {
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
     <?php }
+}elseif ($_GET['content'] == 'generic_id33') {
+    if ($_GET['getUid']) {
+        $output = array();
+        $project_id = $override->getNews('generic', 'id', $_GET['getUid'], 'status', 1);
+        foreach ($project_id as $name) {
+            $output['use_group'] .= $name['use_group'];
+        }
+        echo json_encode($output);
+    }
 } elseif ($_GET['content'] == 'generic_id4') {
     $batches = $override->get('generic_location', 'generic_id', $_GET['getUid']);
     ?>

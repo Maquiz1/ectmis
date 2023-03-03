@@ -787,6 +787,8 @@ if ($user->isLoggedIn()) {
                     ),
                 ));
                 if ($validate->passed()) {
+
+                    print_r($_POST);
                     $sii = 0;
                     $q = 0;
                     foreach (Input::get('location') as $sid) {
@@ -2249,7 +2251,7 @@ if ($user->isLoggedIn()) {
                                                 <input type="hidden" name="generic_id3" value="<?= Input::get('generic_id3') ?>">
                                                 <input type="hidden" name="brand_id3" value="<?= Input::get('brand_id3') ?>">
                                                 <input type="hidden" name="batch_no" value="<?= Input::get('batch_no') ?>">
-                                                <input type="hidden" name="notify_quantity" id="notify_quantity" value="">
+                                                <input type="hidden" name="notify_quantity" id="notify_quantity3" value="">
                                                 <input type="hidden" name="location_1[<?= $f ?>]" value="<?= $lctn ?>">
                                                 <input type="hidden" name="quantity" value="<?= Input::get('quantity') ?>">
                                                 <input type="hidden" name="category" value="<?= Input::get('category') ?>">
@@ -2259,6 +2261,7 @@ if ($user->isLoggedIn()) {
                                                 <input type="hidden" name="expire_date" value="<?= Input::get('expire_date') ?>">
                                                 <input type="hidden" name="details" value="<?= Input::get('details') ?>">
                                                 <input type="hidden" name="site_id" value="<?= Input::get('site_id') ?>">
+                                                <input type="hidden" name="use_group" id="use_group" value="">
                                                 <div class="col-md-3"><input value="" class="validate[required]" type="number" name="amount[]" id="amount" /> <span></span></div>
                                             </div>
                                         <?php $f++;
@@ -2774,6 +2777,24 @@ if ($user->isLoggedIn()) {
                     dataType: "json",
                     success: function(data) {
                         $('#notify_quantity').val(data.notify_quantity);
+                        $('#fl_wait').hide();
+                    }
+                });
+
+            });
+
+            $('#generic_id3').change(function() {
+                var getUid = $(this).val();
+                $('#fl_wait').show();
+                $.ajax({
+                    url: "process.php?content=generic_id33",
+                    method: "GET",
+                    data: {
+                        getUid: getUid
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#use_group').val(data.use_group);
                         $('#fl_wait').hide();
                     }
                 });

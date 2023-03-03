@@ -146,7 +146,7 @@ if ($user->isLoggedIn()) {
                                                 <option value="3">Current Status</option>
                                             </select>
                                         </div>
-                                        <!-- <div class="col-md-1">Group</div>
+                                        <div class="col-md-1">Group</div>
                                         <div class="col-md-2">
                                             <select name="group" style="width: 100%;" required>
                                                 <option value="">Select Group</option>
@@ -155,7 +155,7 @@ if ($user->isLoggedIn()) {
                                                 <option value="3">Accesssories</option>
                                                 <option value="4">Supplies</option>
                                             </select>
-                                        </div> -->
+                                        </div>
                                         <div class="col-md-2">
                                             <input type="submit" id="submit3" name="search" value="Search Report" class="btn btn-info">
                                         </div>
