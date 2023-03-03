@@ -2808,7 +2808,7 @@ if ($user->isLoggedIn()) {
                         </div>
                     <?php } ?>
                 </div>
-                <div class="pull-right">
+                <div class="pull-right">KKK
                     <div class="btn-group">
                         <a href="data.php?id=<?= $_GET['id'] ?>&page=<?php if (($_GET['page'] - 1) > 0) {
                                                                             echo $_GET['page'] - 1;
