@@ -123,7 +123,7 @@ if ($user->isLoggedIn()) {
                                         $page = ($_GET['page'] * $numRec) - $numRec;
                                     }
                                     $type = $override->getWithLimit('generic', 'status', 1, $page, $numRec);
-                                    // print_r($type['use_group']);
+                                    print_r($type['use_group']);
                                     foreach ($override->getWithLimit('generic', 'status', 1, $page, $numRec) as $bDiscription) {
                                         $generic = $bDiscription['name'];
                                         $generic_id = $bDiscription['id'];

@@ -295,7 +295,6 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">DATE</th>
                                                 <th width="10%">GENERIC</th>
                                                 <th width="10%">BRAND</th>
-                                                <th width="10%">USED</th>
                                                 <th width="10%">BALANCE</th>
                                                 <th width="10%">EXPIRE</th>
                                                 <th width="10%">REMARKS</th>
@@ -315,7 +314,6 @@ if ($user->isLoggedIn()) {
                                                     <td><?= $records['create_on'] ?></td>
                                                     <td><?= $generic ?></td>
                                                     <td><?= $brand ?></td>
-                                                    <td><?= $used ?></td>
                                                     <td><?= $balance ?></td>
                                                     <td><?= $records['expire_date'] ?></td>
                                                     <td>
@@ -410,7 +408,6 @@ if ($user->isLoggedIn()) {
             }
         };
 
-
         // $(document).on('submit', '#validation3', function(event) {
         //     event.preventDefault();
         //     // $('#action').attr('disabled', 'disabled');
@@ -420,116 +417,115 @@ if ($user->isLoggedIn()) {
         //     alert('form_data');
         //     alert('start_date3');
         //     alert('end_date3');
-
         // })
 
-        $('#stock').DataTable({
+        // $('#stock').DataTable({
 
-            "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-            },
+        //     "language": {
+        //         "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+        //     },
 
-            "columnDefs": [{
-                "width": "20%",
-                "targets": 0
-            }],
-
-
-
-            dom: 'Bfrtip',
-            buttons: [{
-
-                    extend: 'excelHtml5',
-                    title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    className: 'btn-primary',
-                    // displayFormat: 'dddd D MMMM YYYY',
-                    // wireFormat: 'YYYY-MM-DD',
-                    // columnDefs: [{
-                    // targets: [6],
-                    // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
-                    // }],
-                    Customize: function() {
-                        doc.content[1].table.width = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    className: 'btn-primary',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
-
-                },
-                {
-                    extend: 'csvHtml5',
-                    title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    className: 'btn-primary'
-                },
-                // {
-                //     extend: 'copyHtml5',
-                //     title: 'VISITS',
-                //     className: 'btn-primary'
-                // },
-                //     {
-                //         extend: 'print',
-                //         // name: 'printButton'
-                //         title: 'VISITS'
-                //     }
-            ],
-
-            // paging: true,
-            // scrollY: 10
-        });
+        //     "columnDefs": [{
+        //         "width": "20%",
+        //         "targets": 0
+        //     }],
 
 
-        $('#check').DataTable({
 
-            "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-            },
+        //     dom: 'Bfrtip',
+        //     buttons: [{
+
+        //             extend: 'excelHtml5',
+        //             title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+        //             className: 'btn-primary',
+        //             // displayFormat: 'dddd D MMMM YYYY',
+        //             // wireFormat: 'YYYY-MM-DD',
+        //             // columnDefs: [{
+        //             // targets: [6],
+        //             // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
+        //             // }],
+        //             Customize: function() {
+        //                 doc.content[1].table.width = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+        //             }
+        //         },
+        //         {
+        //             extend: 'pdfHtml5',
+        //             title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+        //             className: 'btn-primary',
+        //             orientation: 'landscape',
+        //             pageSize: 'LEGAL'
+
+        //         },
+        //         {
+        //             extend: 'csvHtml5',
+        //             title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+        //             className: 'btn-primary'
+        //         },
+        //         // {
+        //         //     extend: 'copyHtml5',
+        //         //     title: 'VISITS',
+        //         //     className: 'btn-primary'
+        //         // },
+        //         //     {
+        //         //         extend: 'print',
+        //         //         // name: 'printButton'
+        //         //         title: 'VISITS'
+        //         //     }
+        //     ],
+
+        //     // paging: true,
+        //     // scrollY: 10
+        // });
 
 
-            dom: 'Bfrtip',
-            buttons: [{
+        // $('#check').DataTable({
 
-                    extend: 'excelHtml5',
-                    title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    className: 'btn-primary',
-                    // displayFormat: 'dddd D MMMM YYYY',
-                    // wireFormat: 'YYYY-MM-DD',
-                    // columnDefs: [{
-                    // targets: [6],
-                    // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
-                    // }],
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    className: 'btn-primary',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
+        //     "language": {
+        //         "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+        //     },
 
-                },
-                {
-                    extend: 'csvHtml5',
-                    title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-                    className: 'btn-primary'
-                },
-                // {
-                //     extend: 'copyHtml5',
-                //     title: 'VISITS',
-                //     className: 'btn-primary'
-                // },
-                //     {
-                //         extend: 'print',
-                //         // name: 'printButton'
-                //         title: 'VISITS'
-                //     }
-            ],
 
-            // paging: true,
-            // scrollY: 10
-        });
+        //     dom: 'Bfrtip',
+        //     buttons: [{
+
+        //             extend: 'excelHtml5',
+        //             title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+        //             className: 'btn-primary',
+        //             // displayFormat: 'dddd D MMMM YYYY',
+        //             // wireFormat: 'YYYY-MM-DD',
+        //             // columnDefs: [{
+        //             // targets: [6],
+        //             // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
+        //             // }],
+        //         },
+        //         {
+        //             extend: 'pdfHtml5',
+        //             title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+        //             className: 'btn-primary',
+        //             orientation: 'landscape',
+        //             pageSize: 'LEGAL'
+
+        //         },
+        //         {
+        //             extend: 'csvHtml5',
+        //             title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
+        //             className: 'btn-primary'
+        //         },
+        //         // {
+        //         //     extend: 'copyHtml5',
+        //         //     title: 'VISITS',
+        //         //     className: 'btn-primary'
+        //         // },
+        //         //     {
+        //         //         extend: 'print',
+        //         //         // name: 'printButton'
+        //         //         title: 'VISITS'
+        //         //     }
+        //     ],
+
+        //     // paging: true,
+        //     // scrollY: 10
+        // });
 
         $('#status').DataTable({
 
