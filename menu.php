@@ -13,6 +13,8 @@ $override = new OverideData();
 // $today = date('Y-m-d');
 // $todayPlus30 = date('Y-m-d', strtotime($today . ' + 30 days'));
 
+
+
 if ($user->data()->accessLevel == 1) {
 } else {
 }
@@ -46,7 +48,8 @@ if ($user->data()->accessLevel == 1) {
                 <span class="isw-grid"></span><span class="text">Dashboard</span>
             </a>
         </li>
-        <?php if ($user->data()->accessLevel == 1) {
+         <?php 
+        // if ($user->data()->accessLevel == 1) { 
         ?>
 
             <li class="openable">
@@ -83,7 +86,7 @@ if ($user->data()->accessLevel == 1) {
             </ul>
         </li>
         <?php
-        }
+        // }
 
         ?>
 

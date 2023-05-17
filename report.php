@@ -28,13 +28,13 @@ if ($user->isLoggedIn()) {
                 try {
                     switch (Input::get('report')) {
                         case 1:
-                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'category', Input::get('group'));
+                            $data = $override->searchBtnDate3('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'use_group', Input::get('use_group'));
                             break;
                         case 2:
-                            $data = $override->searchBtnDate3('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'use_group', Input::get('group'));
+                            $data = $override->searchBtnDate3('check_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'use_group', Input::get('use_group'));
                             break;
                         case 3:
-                            $data = $override->searchBtnDate2('batch', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'));
+                            $data = $override->searchBtnDate3('batch_records', 'create_on', Input::get('start_date'), 'create_on', Input::get('end_date'), 'use_group', Input::get('use_group'));
                             break;
                     }
                     $successMessage = 'Report Successful Created';
@@ -131,24 +131,26 @@ if ($user->isLoggedIn()) {
                                     <div class="row-form clearfix">
                                         <div class="col-md-1">Start Date:</div>
                                         <div class="col-md-2">
-                                            <input value="" class="validate[required,custom[date]]" type="date" name="start_date" id="start_date3" /><span>Example: 2010-12-01</span>
+                                            <input value="" class="validate[required,custom[date]]" type="date" name="start_date" id="start_date3" />
+                                            <span>Example: 2010-12-01</span>
                                         </div>
                                         <div class="col-md-1">End Date:</div>
                                         <div class="col-md-2">
-                                            <input value="" class="validate[required,custom[date]]" type="date" name="end_date" id="end_date3" /><span>Example: 2010-12-01</span>
+                                            <input value="" class="validate[required,custom[date]]" type="date" name="end_date" id="end_date3" />
+                                            <span>Example: 2010-12-01</span>
                                         </div>
                                         <div class="col-md-1">Type</div>
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
-                                                <!-- <option value="1">Stock Report(Quantity)</option>
-                                                <option value="2">Check Report</option> -->
-                                                <option value="3">Current Status</option>
+                                                <option value="1">Current Status</option>
+                                                <option value="2">Check Report</option>
+                                                <option value="3">Quantity Report</option>
                                             </select>
                                         </div>
                                         <div class="col-md-1">Group</div>
                                         <div class="col-md-2">
-                                            <select name="group" style="width: 100%;" required>
+                                            <select name="use_group" style="width: 100%;" required>
                                                 <option value="">Select Group</option>
                                                 <option value="1">Medicine</option>
                                                 <option value="2">Medical Equipment</option>
@@ -208,7 +210,7 @@ if ($user->isLoggedIn()) {
                                     // $data = $override->getDataWithLimit('batch', $page, $numRec);
                                 } ?>
                                 <?php if ($_POST && Input::get('report') == 1) { ?>
-                                    <table id="stock" cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table id="status" cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
                                                 <th width="10%">DATE</th>
@@ -219,7 +221,6 @@ if ($user->isLoggedIn()) {
                                                 <th width="10%">USED</th>
                                                 <th width="10%">BALANCE</th>
                                                 <th width="10%">STAFF</th>
-                                                <!-- <th width="10%"></th> -->
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
@@ -253,14 +254,15 @@ if ($user->isLoggedIn()) {
                                     <table id="check" cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th width="15%">Date</th>
-                                                <th width="15%">Generic</th>
-                                                <th width="15%">Brand</th>
-                                                <th width="15%">Batch No</th>
-                                                <th width="5%">Last Check</th>
+                                                <th width="8%">Date</th>
+                                                <th width="10%">Generic</th>
+                                                <th width="10%">Brand</th>
+                                                <th width="8%">Batch No</th>
+                                                <th width="8%">Last Check</th>
+                                                <th width="5%">Status</th>
+                                                <th width="5%">Action</th>
+                                                <th width="8%">Next Check</th>
                                                 <th width="5%">Staff</th>
-                                                <th width="5%">Next Check</th>
-                                                <th width="5%">Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -278,34 +280,51 @@ if ($user->isLoggedIn()) {
                                                     <td><?= $brand ?></td>
                                                     <td><?= $records['batch_no'] ?></td>
                                                     <td><?= $records['last_check'] ?></td>
-                                                    <td><?= $username ?></td>
+                                                    <td>
+                                                        <?php if ($records['last_check'] != '') { ?>
+                                                            <a href="#" role="button" class="btn btn-info btn-sm" data-toggle="modal">CHECKED</a>
+                                                        <?php } else { ?>
+                                                            <a href="#" role="button" class="btn btn-warning btn-sm" data-toggle="modal">NOT CHECKED</a>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?= $records['details'] ?></td>
                                                     <td><?= $records['next_check'] ?></td>
+                                                    <td><?= $username ?></td>
                                                     <!-- <td>
                                                         <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td> -->
-                                                    <td><?= $records['details'] ?></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
                                 <?php } elseif ($_POST && Input::get('report') == 3) { ?>
-                                    <table id="status" cellpadding="0" cellspacing="0" width="100%" class="table">
+                                    <table id="stock" cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th width="10%">DATE</th>
+                                                <th width="8%">DATE</th>
                                                 <th width="10%">GENERIC</th>
                                                 <th width="10%">BRAND</th>
-                                                <th width="10%">BALANCE</th>
+                                                <th width="8%">BALANCE</th>
                                                 <th width="10%">EXPIRE</th>
-                                                <th width="10%">REMARKS</th>
+                                                <th width="8%">STATUS</th>
+                                                <th width="10%">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                        <div class="col-sm-3">
+                                            <div class="row-form clearfix">
+                                                <div class="form-group">
+                                                    <label>BMI</label>
+                                                    <span id="start_date4"></span>&nbsp;&nbsp;kg/m2
+                                                </div>
+                                            </div>
+                                        </div>    
                                             <?php foreach ($data as $records) {
                                                 $received = $records['quantity'];
                                                 $used = $records['assigned'];
                                                 $balance = $records['balance'];
                                                 $expire = $records['status'];
+                                                $expire = $records['remarks'];
                                                 $username = $override->get('user', 'id', $records['staff_id'])[0]['username'];
                                                 $generic = $override->get('generic', 'id', $records['generic_id'])[0]['name'];
                                                 $brand = $override->get('brand', 'id', $records['brand_id'])[0]['name'];
@@ -323,6 +342,7 @@ if ($user->isLoggedIn()) {
                                                             <a href="#" role="button" class="btn btn-success btn-sm check" data-toggle="modal" id="check">Valid</a>
                                                         <?php } ?>
                                                     </td>
+                                                    <td><?= $records['remarks'] ?></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
@@ -387,6 +407,12 @@ if ($user->isLoggedIn()) {
     }
 
     $(document).ready(function() {
+        
+        var report_start;
+        if($('#start_date3').val() != ''){
+            report_start = $('#start_date3').val();
+        }
+        // alert(report_start);
 
         var currentDate = new Date()
         var day = currentDate.getDate()
@@ -408,6 +434,19 @@ if ($user->isLoggedIn()) {
             }
         };
 
+        $('#start_date3').on('input', function() {
+            // $('#weight, #height').on('input', function() {
+            // setTimeout(function() {
+            // var start_date3 = $('#start_date3').val();
+            // $('#start_date4').text(start_date3);
+            // $('#referred').val();
+            // var weight = $('#weight').val();
+            // var height = $('#height').val() / 100; // Convert cm to m
+            // var bmi = weight / (height * height);
+            // $('#bmi').text(bmi.toFixed(2));
+            // }, 1);
+        });
+
         // $(document).on('submit', '#validation3', function(event) {
         //     event.preventDefault();
         //     // $('#action').attr('disabled', 'disabled');
@@ -419,118 +458,70 @@ if ($user->isLoggedIn()) {
         //     alert('end_date3');
         // })
 
-        // $('#stock').DataTable({
-
-        //     "language": {
-        //         "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-        //     },
-
-        //     "columnDefs": [{
-        //         "width": "20%",
-        //         "targets": 0
-        //     }],
-
-
-
-        //     dom: 'Bfrtip',
-        //     buttons: [{
-
-        //             extend: 'excelHtml5',
-        //             title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-        //             className: 'btn-primary',
-        //             // displayFormat: 'dddd D MMMM YYYY',
-        //             // wireFormat: 'YYYY-MM-DD',
-        //             // columnDefs: [{
-        //             // targets: [6],
-        //             // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
-        //             // }],
-        //             Customize: function() {
-        //                 doc.content[1].table.width = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-        //             }
-        //         },
-        //         {
-        //             extend: 'pdfHtml5',
-        //             title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-        //             className: 'btn-primary',
-        //             orientation: 'landscape',
-        //             pageSize: 'LEGAL'
-
-        //         },
-        //         {
-        //             extend: 'csvHtml5',
-        //             title: 'STOCK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-        //             className: 'btn-primary'
-        //         },
-        //         // {
-        //         //     extend: 'copyHtml5',
-        //         //     title: 'VISITS',
-        //         //     className: 'btn-primary'
-        //         // },
-        //         //     {
-        //         //         extend: 'print',
-        //         //         // name: 'printButton'
-        //         //         title: 'VISITS'
-        //         //     }
-        //     ],
-
-        //     // paging: true,
-        //     // scrollY: 10
-        // });
-
-
-        // $('#check').DataTable({
-
-        //     "language": {
-        //         "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
-        //     },
-
-
-        //     dom: 'Bfrtip',
-        //     buttons: [{
-
-        //             extend: 'excelHtml5',
-        //             title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-        //             className: 'btn-primary',
-        //             // displayFormat: 'dddd D MMMM YYYY',
-        //             // wireFormat: 'YYYY-MM-DD',
-        //             // columnDefs: [{
-        //             // targets: [6],
-        //             // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
-        //             // }],
-        //         },
-        //         {
-        //             extend: 'pdfHtml5',
-        //             title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-        //             className: 'btn-primary',
-        //             orientation: 'landscape',
-        //             pageSize: 'LEGAL'
-
-        //         },
-        //         {
-        //             extend: 'csvHtml5',
-        //             title: 'CHECK REPORT' + ' ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .......................................',
-        //             className: 'btn-primary'
-        //         },
-        //         // {
-        //         //     extend: 'copyHtml5',
-        //         //     title: 'VISITS',
-        //         //     className: 'btn-primary'
-        //         // },
-        //         //     {
-        //         //         extend: 'print',
-        //         //         // name: 'printButton'
-        //         //         title: 'VISITS'
-        //         //     }
-        //     ],
-
-        //     // paging: true,
-        //     // scrollY: 10
-        // });
 
         $('#status').DataTable({
 
             "language": {
-                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Searched</h1><div><span></span></div></div>"
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Found</h1><div><span></span></div></div>"
+            },
+
+            "columnDefs": [{
+                "width": "20%",
+                "targets": 0
+            }],
+
+
+
+            dom: 'Bfrtip',
+            buttons: [{
+
+                    extend: 'excelHtml5',
+                    title: 'STATUS REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    className: 'btn-primary',
+                    // displayFormat: 'dddd D MMMM YYYY',
+                    // wireFormat: 'YYYY-MM-DD',
+                    // columnDefs: [{
+                    // targets: [6],
+                    // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
+                    // }],
+                    Customize: function() {
+                        doc.content[1].table.width = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'STATUS REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    className: 'btn-primary',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL'
+
+                },
+                {
+                    extend: 'csvHtml5',
+                    title: 'STATUS REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    className: 'btn-primary'
+                },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
+                //     {
+                //         extend: 'print',
+                //         // name: 'printButton'
+                //         title: 'VISITS'
+                //     }
+            ],
+
+            // paging: true,
+            // scrollY: 10
+        });
+
+
+        $('#check').DataTable({
+
+            "language": {
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Found</h1><div><span></span></div></div>"
             },
 
 
@@ -538,7 +529,7 @@ if ($user->isLoggedIn()) {
             buttons: [{
 
                     extend: 'excelHtml5',
-                    title: 'STATUS REPORT:- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ' + ' ..............',
+                    title: 'CHECK REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
                     className: 'btn-primary',
                     // displayFormat: 'dddd D MMMM YYYY',
                     // wireFormat: 'YYYY-MM-DD',
@@ -549,7 +540,7 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: 'STATUS REPORT:- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ' + ' ..............',
+                    title: 'CHECK REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
                     className: 'btn-primary',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
@@ -557,7 +548,56 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'csvHtml5',
-                    title: 'STATUS REPORT:- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ' + ' ..............',
+                    title: 'CHECK REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    className: 'btn-primary'
+                },
+                // {
+                //     extend: 'copyHtml5',
+                //     title: 'VISITS',
+                //     className: 'btn-primary'
+                // },
+                //     {
+                //         extend: 'print',
+                //         // name: 'printButton'
+                //         title: 'VISITS'
+                //     }
+            ],
+
+            // paging: true,
+            // scrollY: 10
+        });
+
+        $('#stock').DataTable({
+
+            "language": {
+                "emptyTable": "<div class='display-1 font-weight-bold'><h1 style='color: tomato;visibility: visible'>No Report Found</h1><div><span></span></div></div>"
+            },
+
+
+            dom: 'Bfrtip',
+            buttons: [{
+
+                    extend: 'excelHtml5',
+                    title: 'QUANTITY REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    className: 'btn-primary',
+                    // displayFormat: 'dddd D MMMM YYYY',
+                    // wireFormat: 'YYYY-MM-DD',
+                    // columnDefs: [{
+                    // targets: [6],
+                    // render: $.fn.dataTable.render.moment('DD/MM/YYYY')
+                    // }],
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'QUANTITY REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    className: 'btn-primary',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL'
+
+                },
+                {
+                    extend: 'csvHtml5',
+                    title: 'QUANTITY REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
                     className: 'btn-primary'
                 },
                 // {

@@ -868,6 +868,7 @@ if ($user->isLoggedIn()) {
                                             <th width="8%">Expire Date</th>
                                             <th width="8%">Last Check</th>
                                             <th width="8%">Next Check</th>
+                                            <th width="8%">Remarks</th>
                                             <th width="5%">Expiration</th>
                                             <th width="5%">Checking</th>
                                         </tr>
@@ -895,6 +896,7 @@ if ($user->isLoggedIn()) {
                                             $check_batch_id = $batchDesc['id'];
                                             $check_batch_no = $batchDesc['batch_no'];
                                             $category = $override->get('generic', 'id', $_GET['gid'])[0]['use_group'];
+                                            $remarks = $override->get('check_records', 'batch_id', $check_batch_id)[0]['remarks'];
                                         ?>
                                             <tr>
                                                 <td><?= $generic_name ?></td>
@@ -911,6 +913,7 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $batchDesc['expire_date'] ?></td>
                                                 <td><?= $batchDesc['last_check'] ?></td>
                                                 <td><?= $batchDesc['next_check'] ?></td>
+                                                <td><?= $remarks ?></td>
                                                 <td>
                                                     <?php if ($batchDesc['expire_date'] <= $today) { ?>
                                                         <a href="#archive<?= $batchDesc['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Quarantine</a>
@@ -1022,7 +1025,7 @@ if ($user->isLoggedIn()) {
                                                                             <div class="form-group">
                                                                                 <label>Remarks:</label>
                                                                                 <div class="col-md-9">
-                                                                                    <textarea class="" name="remarks" id="remarks" rows="4"></textarea>
+                                                                                    <textarea class="" name="remarks" id="remarks" rows="4" required></textarea>
                                                                                 </div>
 
                                                                             </div>
