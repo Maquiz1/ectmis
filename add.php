@@ -788,7 +788,7 @@ if ($user->isLoggedIn()) {
                 ));
                 if ($validate->passed()) {
 
-                    print_r($_POST);
+                    // print_r($_POST);
                     $sii = 0;
                     $q = 0;
                     foreach (Input::get('location') as $sid) {
@@ -811,6 +811,8 @@ if ($user->isLoggedIn()) {
                             if (Input::get('expire_date') > date('Y-m-d')) {
                                 if (Input::get('quantity') > 0) {
                                     $checkBatch = $override->selectData1('batch', 'batch_no', Input::get('batch_no'), 'status', 1)[0];
+                                    $use_group = $override->selectData1('generic', 'id', Input::get('generic_id3'), 'status', 1)[0]['use_group'];
+
                                     if ($checkBatch) {
                                         $errorMessage = 'Batch Number Already Registered';
                                     } else {
@@ -833,6 +835,7 @@ if ($user->isLoggedIn()) {
                                                 'last_check' => date('Y-m-d'),
                                                 'next_check' => date('Y-m-d'),
                                                 'site_id' => Input::get('site_id'),
+                                                'use_group' => $use_group,
                                             ));
 
                                             $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
@@ -863,6 +866,7 @@ if ($user->isLoggedIn()) {
                                                 'expire_date' => Input::get('expire_date'),
                                                 'admin_id' => $user->data()->id,
                                                 'site_id' => Input::get('site_id'),
+                                                'use_group' => $use_group,
                                             ));
 
                                             $si = 0;
@@ -895,6 +899,7 @@ if ($user->isLoggedIn()) {
                                                         'create_on' => date('Y-m-d'),
                                                         'admin_id' => $user->data()->id,
                                                         'site_id' => Input::get('site_id'),
+                                                        'use_group' => $use_group,
                                                     ));
                                                 }
 
@@ -919,6 +924,7 @@ if ($user->isLoggedIn()) {
                                                     'expire_date' => Input::get('expire_date'),
                                                     'admin_id' => $user->data()->id,
                                                     'site_id' => Input::get('site_id'),
+                                                    'use_group' => $use_group,
                                                 ));
 
                                                 $si++;
@@ -992,6 +998,8 @@ if ($user->isLoggedIn()) {
                         if (Input::get('expire_date') > date('Y-m-d')) {
                             if (Input::get('quantity') > 0) {
                                 $checkBatch = $override->selectData1('batch', 'batch_no', Input::get('batch_no'), 'status', 1)[0];
+                                $use_group = $override->selectData1('generic', 'id', Input::get('generic_id3'), 'status', 1)[0]['use_group'];
+
                                 if ($checkBatch) {
                                     $errorMessage = 'Batch Number Already Registered';
                                 } else {
@@ -1014,6 +1022,7 @@ if ($user->isLoggedIn()) {
                                             'last_check' => date('Y-m-d'),
                                             'next_check' => date('Y-m-d'),
                                             'site_id' => Input::get('site_id'),
+                                            'use_group' => $use_group,
                                         ));
 
                                         $genericBalance = $override->get('generic', 'id', Input::get('generic_id3'))[0];
@@ -1044,6 +1053,7 @@ if ($user->isLoggedIn()) {
                                             'expire_date' => Input::get('expire_date'),
                                             'admin_id' => $user->data()->id,
                                             'site_id' => Input::get('site_id'),
+                                            'use_group' => $use_group,
                                         ));
 
                                         $si = 0;
@@ -1076,6 +1086,7 @@ if ($user->isLoggedIn()) {
                                                     'create_on' => date('Y-m-d'),
                                                     'admin_id' => $user->data()->id,
                                                     'site_id' => Input::get('site_id'),
+                                                    'use_group' => $use_group,
                                                 ));
                                             }
 
@@ -1100,6 +1111,7 @@ if ($user->isLoggedIn()) {
                                                 'expire_date' => Input::get('expire_date'),
                                                 'admin_id' => $user->data()->id,
                                                 'site_id' => Input::get('site_id'),
+                                                'use_group' => $use_group,
                                             ));
 
                                             $si++;

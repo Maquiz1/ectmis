@@ -143,7 +143,7 @@ if ($user->isLoggedIn()) {
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
-                                                <option value="1">Current Status</option>
+                                                <option value="1">Current Status(by generic)</option>
                                                 <option value="2">Check Report</option>
                                                 <option value="3">Quantity Report</option>
                                             </select>
@@ -213,19 +213,22 @@ if ($user->isLoggedIn()) {
                                     <table id="status" cellpadding="0" cellspacing="0" width="100%" class="table">
                                         <thead>
                                             <tr>
-                                                <th width="10%">DATE</th>
+                                                <th width="8%">DATE</th>
                                                 <th width="10%">GENERIC</th>
                                                 <th width="10%">BRAND</th>
-                                                <th width="10%">BATCH</th>
-                                                <th width="10%">RECEIVED</th>
-                                                <th width="10%">USED</th>
-                                                <th width="10%">BALANCE</th>
+                                                <th width="8%">BATCH</th>
+                                                <!-- <th width="10%">sum_balance</th> -->
+                                                <!-- <th width="10%">RECEIVED</th> -->
+                                                <!-- <th width="10%">USED</th>  -->
+                                                <th width="5%">BALANCE</th>
                                                 <th width="10%">STAFF</th>
                                                 <th width="10%">REMARKS</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($data as $records) {
+                                                // $sum_balance = $override->getSumD3('assigned_batch', 'balance', 'generic_id', $bDiscription['id'], 'location_id', $EmKits['location_id'], 'status', 1)[0]['SUM(balance)'];
+                                                $sum_balance = $override->getSumD2('batch', 'balance', 'generic_id', $records['generic_id'], 'use_group', Input::get('use_group'))[0]['SUM(balance)'];
                                                 $received = $records['quantity'];
                                                 $used = $records['assigned'];
                                                 $balance = $records['balance'];
@@ -238,9 +241,10 @@ if ($user->isLoggedIn()) {
                                                     <td><?= $generic ?></td>
                                                     <td><?= $brand ?></td>
                                                     <td><?= $records['batch_no'] ?></td>
-                                                    <td><?= $received ?></td>
-                                                    <td><?= $used ?></td>
-                                                    <td><?= $balance ?></td>
+                                                    <!-- <td><?= $sum_balance ?></td> -->
+                                                    <!-- <td><?= $received ?></td> -->
+                                                    <!-- <td><?= $used ?></td>  -->
+                                                    <td><?= $sum_balance ?></td>
                                                     <td><?= $username ?></td>
                                                     <!-- <td>
                                                         <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
@@ -311,14 +315,6 @@ if ($user->isLoggedIn()) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        <div class="col-sm-3">
-                                            <div class="row-form clearfix">
-                                                <div class="form-group">
-                                                    <label>BMI</label>
-                                                    <span id="start_date4"></span>&nbsp;&nbsp;kg/m2
-                                                </div>
-                                            </div>
-                                        </div>    
                                             <?php foreach ($data as $records) {
                                                 $received = $records['quantity'];
                                                 $used = $records['assigned'];
@@ -407,9 +403,9 @@ if ($user->isLoggedIn()) {
     }
 
     $(document).ready(function() {
-        
+
         var report_start;
-        if($('#start_date3').val() != ''){
+        if ($('#start_date3').val() != '') {
             report_start = $('#start_date3').val();
         }
         // alert(report_start);

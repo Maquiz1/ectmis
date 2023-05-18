@@ -472,6 +472,8 @@ if ($user->isLoggedIn()) {
                     if (Input::get('last_check') >= Input::get('last')) {
                         if (Input::get('next_check') >= date('Y-m-d')) {
                             if (Input::get('next_check') >= Input::get('next')) {
+                                $use_group = $override->get('generic', 'id', Input::get('check_generic_id'))[0]['use_group'];
+
                                 try {
                                     $user->createRecord('check_records', array(
                                         'generic_id' => Input::get('check_generic_id'),
@@ -484,6 +486,7 @@ if ($user->isLoggedIn()) {
                                         'last_check' => Input::get('last_check'),
                                         'next_check' => Input::get('next_check'),
                                         'remarks' => Input::get('remarks'),
+                                        'use_group' => $use_group,
                                     ));
                                     $BatchLastRow1 = $override->lastRow('check_records', 'id');
                                     $user->updateRecord('batch', array('next_check' => Input::get('next_check')), Input::get('check_batch_id'));
@@ -520,6 +523,7 @@ if ($user->isLoggedIn()) {
                 $total_quantity = 0;
                 if (Input::get('added') > 0) {
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $use_group = $override->get('generic', 'id', Input::get('update_generic_id'))[0]['use_group'];
                     $genericBalance = $checkGeneric['balance'] + Input::get('added');
 
                     $checkBatch = $override->get('batch', 'id', Input::get('id'))[0];
@@ -563,6 +567,7 @@ if ($user->isLoggedIn()) {
                             'category' => Input::get('update_category_id'),
                             'remarks' => Input::get('remarks'),
                             'expire_date' => $batchexpire,
+                            'use_group' => $use_group,
                         ));
 
                         $user->createRecord('assigned_batch_records', array(
@@ -584,6 +589,7 @@ if ($user->isLoggedIn()) {
                             'category' => Input::get('category'),
                             'remarks' => '',
                             'expire_date' => Input::get('expire_date'),
+                            'use_group' => $use_group,
                         ));
 
                         $successMessage = 'Stock guied Successful Updated';
@@ -608,6 +614,7 @@ if ($user->isLoggedIn()) {
                     $checkAssignedBalance = $checkAssigned['balance'] + Input::get('add_quantity');
 
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $use_group = $override->get('generic', 'id', Input::get('update_generic_id'))[0]['use_group'];
                     $genericBalance = $checkGeneric['balance'] + Input::get('add_quantity');
 
                     $checkBatch = $override->selectData1('batch', 'id', Input::get('id'), 'status', 1)[0];
@@ -651,6 +658,7 @@ if ($user->isLoggedIn()) {
                             'expire_date' => $batchexpire,
                             'admin_id' => $user->data()->id,
                             'site_id' => Input::get('site_id'),
+                            'use_group' => $use_group,
                         ));
 
                         $user->createRecord('batch_records', array(
@@ -673,6 +681,7 @@ if ($user->isLoggedIn()) {
                             'expire_date' => $batchexpire,
                             'admin_id' => $user->data()->id,
                             'site_id' => Input::get('site_id'),
+                            'use_group' => $use_group,
                         ));
 
                         $successMessage = 'Stock guied Successful Allocated';
@@ -698,6 +707,7 @@ if ($user->isLoggedIn()) {
                     $checkAssignedUsed = $checkAssigned['used'] + Input::get('remove_quantity');
 
                     $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $use_group = $override->get('generic', 'id', Input::get('update_generic_id'))[0]['use_group'];
                     $genericBalance = $checkGeneric['balance'] - Input::get('remove_quantity');
                     $genericUsed = $checkGeneric['assigned'] - Input::get('remove_quantity');
 
@@ -746,7 +756,8 @@ if ($user->isLoggedIn()) {
                                 'remarks' => '',
                                 'expire_date' => $batchexpire,
                                 'admin_id' => $user->data()->id,
-                                'site_id' => Input::get('site_id')
+                                'site_id' => Input::get('site_id'),
+                                'use_group' => $use_group,                                
                             ));
 
                             $user->createRecord('batch_records', array(
@@ -769,6 +780,7 @@ if ($user->isLoggedIn()) {
                                 'expire_date' => $batchexpire,
                                 'admin_id' => $user->data()->id,
                                 'site_id' => Input::get('site_id'),
+                                'use_group' => $use_group,                                
                             ));
 
                             $successMessage = 'Stock guied Successful Allocated';
