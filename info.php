@@ -198,6 +198,42 @@ if ($user->isLoggedIn()) {
                 'status' => 0,
             ), Input::get('id'));
             $successMessage = 'User Deleted Successful';
+        } elseif (Input::get('edit_generic')) {
+            $validate = new validate();
+            $validate = $validate->check($_POST, array(
+                'name' => array(
+                    'required' => true,
+                ),
+            ));
+            if ($validate->passed()) {
+                try {
+                    $user->updateRecord('generic', array(
+                        'name' => Input::get('name'),                        
+                        // 'create_on' => date('Y-m-d'),
+                        // 'details' => Input::get('details'),
+                        // 'status' => 1,
+                        // 'staff_id' => $user->data()->id
+                    ), Input::get('id'));
+
+                    // $user->createRecord('generic_records', array(
+                    //     'generic_id' => $generic_id,
+                    //     'notify_quantity' => $q,
+                    //     'location_id' => $location['id'],
+                    //     'create_on' => date('Y-m-d'),
+                    //     'staff_id' => $user->data()->id,
+                    //     'status' => 1,
+                    //     'use_case' => $use_case,
+                    //     'use_group' => $use_group,
+                    //     'maintainance' => Input::get('maintainance'),
+                    // ));
+
+                    $successMessage = 'Generic Updated Successful';
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
         } elseif (Input::get('edit_batch')) {
             $validate = new validate();
             $validate = $validate->check($_POST, array(
@@ -244,6 +280,11 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('delete_generic')) {
+            $user->updateRecord('generic', array(
+                'status' => 0,
+            ), Input::get('id'));
+            $successMessage = 'Generic Deleted Successful';
         } elseif (Input::get('delete_batch')) {
             $user->updateRecord('batch', array(
                 'status' => 0,
@@ -993,12 +1034,11 @@ if ($user->isLoggedIn()) {
                                     </table>
                                 </div>
                             </div>
-                        <?php } elseif ($_GET['id'] == 3) {
-                        ?>
+                        <?php } elseif ($_GET['id'] == 3) { ?>
                             <div class="col-md-12">
                                 <div class="head clearfix">
                                     <div class="isw-grid"></div>
-                                    <h1>Batch List</h1>
+                                    <h1>Generic List</h1>
                                     <ul class="buttons">
                                         <li><a href="#" class="isw-download"></a></li>
                                         <li><a href="#" class="isw-attachment"></a></li>
@@ -1020,38 +1060,20 @@ if ($user->isLoggedIn()) {
                                             <tr>
                                                 <th width="10%">Date</th>
                                                 <th width="10%">Generic</th>
-                                                <th width="10%">Brand</th>
-                                                <th width="10%">Amount</th>
-                                                <th width="5%">Status</th>
                                                 <th width="20%">Manage</th>
                                             </tr>
                                         </thead>
                                         <tbody id="myTable">
                                             <?php $amnt = 0;
-                                            $type = $_GET['type'];
-                                            foreach ($override->getNews('generic', 'status', 1, 'use_grop', $type) as $batch) {
-                                                $study = $override->get('study', 'id', $batch['study_id'])[0];
-                                                $use_case = $override->get('use_case', 'id', $batch['use_case'])[0];
-                                                $batchItems = $override->getSumD1('batch_product', 'assigned', 'batch_id', $batch['id']);
-                                                // print_r($use_case);
-                                                // $amnt = $batch['amount'] - $batchItems[0]['SUM(assigned)']; 
+                                            foreach ($override->get('generic', 'status', 1) as $batch) {
+                                               
                                             ?>
                                                 <tr>
                                                     <td><?= $batch['create_on'] ?></td>
-                                                    <td> <a href="info.php?id=5&bt=<?= $batch['id'] ?>"><?= $batch['name'] ?></a></td>
                                                     <td><?= $batch['name'] ?></td>
-                                                    <td><?= $batch['amount'] ?></td>
+                                                   
                                                     <td>
-                                                        <?php if ($amnt <= $batch['notify_amount'] && $amnt > 0) { ?>
-                                                            <a href="#" role="button" class="btn btn-warning btn-sm">Running Low</a>
-                                                        <?php } elseif ($amnt == 0) { ?>
-                                                            <a href="#" role="button" class="btn btn-danger">Out of Stock</a>
-                                                        <?php } else { ?>
-                                                            <a href="#" role="button" class="btn btn-success">Sufficient</a>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <a href="info.php?id=5&bt=<?= $batch['id'] ?>" class="btn btn-default">View</a>
+                                                        <!-- <a href="info.php?id=5&bt=<?= $batch['id'] ?>" class="btn btn-default">View</a> -->
                                                         <a href="#user<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
                                                         <a href="#delete<?= $batch['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
                                                     </td>
@@ -1063,7 +1085,7 @@ if ($user->isLoggedIn()) {
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                    <h4>Edit Batch Info</h4>
+                                                                    <h4>Edit Generic Info</h4>
                                                                 </div>
                                                                 <div class="modal-body modal-body-np">
                                                                     <div class="row">
@@ -1074,68 +1096,13 @@ if ($user->isLoggedIn()) {
                                                                                     <input value="<?= $batch['name'] ?>" class="validate[required]" type="text" name="name" id="name" required />
                                                                                 </div>
                                                                             </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Batch No: </div>
-                                                                                <div class="col-md-9">
-                                                                                    <input value="<?= $batch['batch_no'] ?>" class="validate[required]" type="text" name="batch_no" id="name" required />
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Study</div>
-                                                                                <div class="col-md-9">
-                                                                                    <select name="study" style="width: 100%;" required>
-                                                                                        <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
-                                                                                        <?php foreach ($override->getData('study') as $study) { ?>
-                                                                                            <option value="<?= $study['id'] ?>"><?= $study['name'] ?></option>
-                                                                                        <?php } ?>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Amount: </div>
-                                                                                <div class="col-md-9">
-                                                                                    <input value="<?= $batch['amount'] ?>" class="validate[required]" type="text" name="amount" id="name" required />
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Manufacturer:</div>
-                                                                                <div class="col-md-9"><input type="text" value="<?= $batch['manufacturer'] ?>" name="manufacturer" id="manufacturer" /></div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Manufactured Date:</div>
-                                                                                <div class="col-md-9"><input type="date" name="manufactured_date" value="<?= $batch['manufactured_date'] ?>" required /> </div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Expire Date:</div>
-                                                                                <div class="col-md-9"><input type="date" name="expire_date" value="<?= $batch['expire_date'] ?>" required /> </div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Notification Amount: </div>
-                                                                                <div class="col-md-9">
-                                                                                    <input value="<?= $batch['notify_amount'] ?>" class="validate[required]" type="text" name="notify_amount" id="name" required />
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="row-form clearfix">
-                                                                                <div class="col-md-3">Details: </div>
-                                                                                <div class="col-md-9">
-                                                                                    <textarea class="" name="details" id="details" rows="4"><?= $batch['details'] ?></textarea>
-                                                                                </div>
-                                                                            </div>
                                                                         </div>
                                                                         <div class="dr"><span></span></div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="id" value="<?= $batch['id'] ?>">
-                                                                    <input type="submit" name="edit_batch" value="Save updates" class="btn btn-warning">
+                                                                    <input type="submit" name="edit_generic" value="Save updates" class="btn btn-warning">
                                                                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                                 </div>
                                                             </div>
@@ -1157,7 +1124,7 @@ if ($user->isLoggedIn()) {
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="id" value="<?= $batch['id'] ?>">
-                                                                    <input type="submit" name="delete_batch" value="Delete" class="btn btn-danger">
+                                                                    <input type="submit" name="delete_generic" value="Delete" class="btn btn-danger">
                                                                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                                 </div>
                                                             </div>
@@ -2179,7 +2146,7 @@ if ($user->isLoggedIn()) {
                                     </table>
                                 </div>
                             </div>
-                            
+
                         <?php } ?>
                     </div>
 
