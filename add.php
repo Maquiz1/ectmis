@@ -1183,35 +1183,35 @@ if ($user->isLoggedIn()) {
             cursor: pointer;
         } */
 
-        .autocomplete-items {
+        /* .autocomplete-items {
             position: absolute;
             border: 1px solid #d4d4d4;
             border-bottom: none;
             border-top: none;
-            z-index: 99;
-            /*position the autocomplete items to be the same width as the container:*/
-            top: 100%;
+            z-index: 99; */
+        /*position the autocomplete items to be the same width as the container:*/
+        /* top: 100%;
             left: 0;
             right: 0;
-        }
+        } */
 
-        .autocomplete-items div {
+        /* .autocomplete-items div {
             padding: 10px;
             cursor: pointer;
             background-color: #fff;
             border-bottom: 1px solid #d4d4d4;
-        }
+        } */
 
         /*when hovering an item:*/
-        .autocomplete-items div:hover {
-            background-color: #e9e9e9;
-        }
+        /* .autocomplete-items div:hover { */
+        /* background-color: #e9e9e9;
+        } */
 
         /*when navigating through the items using the arrow keys:*/
-        .autocomplete-active {
+        /* .autocomplete-active {
             background-color: DodgerBlue !important;
             color: #ffffff;
-        }
+        } */
     </style>
 </head>
 
@@ -1506,7 +1506,7 @@ if ($user->isLoggedIn()) {
                                                 <div class="row-form clearfix">
                                                     <div class="form-group">
                                                         <label>Batch No:</label>
-                                                        <input value="" class="validate[required]" type="text" name="batch_no" id="batch_no" required />
+                                                        <input value="" class="validate[required]" type="text" name="batch_no" id="batch_no1" required />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1599,7 +1599,7 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Manufacturer:</label>
-                                                        <div class="col-md-9"><input type="text" name="manufacturer" id="manufacturer" /></div>
+                                                        <div class="col-md-9"><input type="text" name="manufacturer" id="manufacturer1" /></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2108,7 +2108,7 @@ if ($user->isLoggedIn()) {
                                 <h1>Add Brand</h1>
                             </div>
                             <div class="block-fluid">
-                                <form id="validation" method="post">
+                                <form id="validation" method="post" autocomplete="off">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="row-form clearfix">
@@ -2124,16 +2124,19 @@ if ($user->isLoggedIn()) {
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-sm-6">
                                             <div class="row-form clearfix">
                                                 <!-- select -->
                                                 <div class="form-group">
-                                                    <label>BRAND NAME:</label>
-                                                    <input value="" type="text" name="brand_id2" id="brand_id2" />
+                                                    <div class="autocomplete" style="width:300px;">
+                                                        <!-- <div class="form-group autocomplete" style="width:300px;"> -->
+                                                        <label>BRAND NAME:</label>
+                                                        <input value="" class="validate[required]" id="brand_id2" type="text" name="brand_id2" placeholder="Type name..." onkeyup="myFunction()" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
 
                                     <div class="footer tar">
@@ -2150,7 +2153,7 @@ if ($user->isLoggedIn()) {
                                 <h1>Add Batch Details</h1>
                             </div>
                             <div class="block-fluid">
-                                <form id="validation" method="post">
+                                <form id="validation" method="post" autocomplete="off">
 
                                     <?php if (!Input::get('location') && !Input::get('location_1')) { ?>
 
@@ -2184,9 +2187,13 @@ if ($user->isLoggedIn()) {
 
                                             <div class="col-sm-4">
                                                 <div class="row-form clearfix">
+                                                    <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Batch No:</label>
-                                                        <input value="" class="validate[required]" type="text" name="batch_no" id="batch_no" required />
+                                                        <div class="autocomplete" style="width:130px;">
+                                                            <!-- <div class="form-group autocomplete" style="width:300px;"> -->
+                                                            <label>Batch No:</label>
+                                                            <input value="" class="validate[required]" id="batch_no" type="text" name="batch_no" placeholder="Type name..." onkeyup="myFunction()" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2265,8 +2272,11 @@ if ($user->isLoggedIn()) {
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
                                                     <div class="form-group">
-                                                        <label>Manufacturer:</label>
-                                                        <input value="" type="text" name="manufacturer" id="manufacturer" />
+                                                        <div class="autocomplete" style="width:100px;">
+                                                            <!-- <div class="form-group autocomplete" style="width:300px;"> -->
+                                                            <label>Manufacturer:</label>
+                                                            <input value="" class="validate[required]" id="manufacturer" type="text" name="manufacturer" placeholder="Type name..." onkeyup="myFunction()" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2476,7 +2486,7 @@ if ($user->isLoggedIn()) {
                                             <div class="row-form clearfix">
                                                 <div class="form-group">
                                                     <label>Batch No:</label>
-                                                    <input value="" class="validate[required]" type="text" name="batch_no" id="batch_no" required />
+                                                    <input value="" class="validate[required]" type="text" name="batch_no" id="batch_no2" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -2551,7 +2561,7 @@ if ($user->isLoggedIn()) {
                                                 <!-- select -->
                                                 <div class="form-group">
                                                     <label>Manufacturer:</label>
-                                                    <input value="" class="validate[required]" type="text" name="manufacturer" id="manufacturer" required />
+                                                    <input value="" class="validate[required]" type="text" name="manufacturer" id="manufacturer2" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -2913,6 +2923,43 @@ if ($user->isLoggedIn()) {
                 // Process the data received from the PHP script
                 // console.log(data);
                 autocomplete(document.getElementById("name"), data);
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch request
+                console.error('Error:', error);
+            });
+
+        fetch('fetching_brand.php')
+            .then(response => response.json())
+            .then(data => {
+                // Process the data received from the PHP script
+                // console.log(data);
+                autocomplete(document.getElementById("brand_id2"), data);
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch request
+                console.error('Error:', error);
+            });
+
+
+        fetch('fetching_batch.php')
+            .then(response => response.json())
+            .then(data => {
+                // Process the data received from the PHP script
+                // console.log(data);
+                autocomplete(document.getElementById("batch_no"), data);
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch request
+                console.error('Error:', error);
+            });
+
+        fetch('fetching_manufacturer.php')
+            .then(response => response.json())
+            .then(data => {
+                // Process the data received from the PHP script
+                // console.log(data);
+                autocomplete(document.getElementById("manufacturer"), data);
             })
             .catch(error => {
                 // Handle any errors that occurred during the fetch request

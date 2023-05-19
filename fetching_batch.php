@@ -1,0 +1,14 @@
+<?php
+require_once 'php/core/init.php';
+$user = new User();
+$override = new OverideData();
+$email = new Email();
+$random = new Random();
+header('Content-Type: application/json');
+
+$output = array();
+$all_generic = $override->get2('batch', 'batch_no','status', 1);
+foreach ($all_generic as $name) {
+    $output[] = $name['name'];
+}
+echo json_encode($output);

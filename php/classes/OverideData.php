@@ -148,6 +148,13 @@ class OverideData{
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
+
+    public function get2($table,$value,$where,$id){
+        $query = $this->_pdo->query("SELECT $value FROM $table WHERE $where = '$id'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
     public function delete($table,$field,$value){
         return $this->_pdo->query("DELETE FROM $table WHERE $field = $value");
     }
