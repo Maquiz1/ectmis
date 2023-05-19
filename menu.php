@@ -188,6 +188,11 @@ if ($user->data()->accessLevel == 1) {
                     </a>
                 </li>
                 <li class="">
+                    <a href="view_pdf.php">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">View Pdf</span>
+                    </a>
+                </li>
+                <li class="">
                     <a href="info.php?id=3">
                         <span class="glyphicon glyphicon-list"></span><span class="text">List Generic</span>
                     </a>

@@ -221,8 +221,8 @@ if ($user->isLoggedIn()) {
                                                 <!-- <th width="10%">RECEIVED</th> -->
                                                 <!-- <th width="10%">USED</th>  -->
                                                 <th width="5%">BALANCE</th>
-                                                <th width="10%">STAFF</th>
-                                                <th width="10%">REMARKS</th>
+                                                <!-- <th width="10%">STAFF</th> -->
+                                                <!-- <th width="10%">REMARKS</th> -->
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -241,15 +241,15 @@ if ($user->isLoggedIn()) {
                                                     <td><?= $generic ?></td>
                                                     <td><?= $brand ?></td>
                                                     <td><?= $records['batch_no'] ?></td>
-                                                    <!-- <td><?= $sum_balance ?></td> -->
+                                                    <td><?= $sum_balance ?></td>
                                                     <!-- <td><?= $received ?></td> -->
                                                     <!-- <td><?= $used ?></td>  -->
-                                                    <td><?= $sum_balance ?></td>
-                                                    <td><?= $username ?></td>
+                                                    <!-- <td><?= $sum_balance ?></td> -->
+                                                    <!-- <td><?= $username ?></td> -->
                                                     <!-- <td>
                                                         <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td> -->
-                                                    <td><?= $records['details'] ?></td>
+                                                    <!-- <td><?= $records['details'] ?></td> -->
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
@@ -266,7 +266,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="5%">Status</th>
                                                 <th width="5%">Action</th>
                                                 <th width="8%">Next Check</th>
-                                                <th width="5%">Staff</th>
+                                                <!-- <th width="5%">Staff</th> -->
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -293,7 +293,7 @@ if ($user->isLoggedIn()) {
                                                     </td>
                                                     <td><?= $records['details'] ?></td>
                                                     <td><?= $records['next_check'] ?></td>
-                                                    <td><?= $username ?></td>
+                                                    <!-- <td><?= $username ?></td> -->
                                                     <!-- <td>
                                                         <a href="data.php?id=10&report_id=<?= $records['id'] ?>" role="button" class="btn btn-info btn-sm">View Report</a>
                                                     </td> -->
@@ -311,7 +311,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="8%">BALANCE</th>
                                                 <th width="10%">EXPIRE</th>
                                                 <th width="8%">STATUS</th>
-                                                <th width="10%">ACTION</th>
+                                                <!-- <th width="10%">ACTION</th> -->
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -338,7 +338,7 @@ if ($user->isLoggedIn()) {
                                                             <a href="#" role="button" class="btn btn-success btn-sm check" data-toggle="modal" id="check">Valid</a>
                                                         <?php } ?>
                                                     </td>
-                                                    <td><?= $records['remarks'] ?></td>
+                                                    <!-- <td><?= $records['remarks'] ?></td> -->
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
@@ -486,9 +486,12 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: 'STATUS REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    title: 'QUANTITY REPORT:( Medical Equipment ) \n\n' + 
+                    'DATE PRINTED: ' + d + '  ' + ' \n\n'
+                     + 'PRINTED BY : ' + ' WINSTONE \n\n' + 
+                    'FOR MONTH: ( NOV-2022 TO MAY 2023 )',
                     className: 'btn-primary',
-                    orientation: 'landscape',
+                    orientation: 'portrait',
                     pageSize: 'LEGAL'
 
                 },
@@ -574,7 +577,7 @@ if ($user->isLoggedIn()) {
             buttons: [{
 
                     extend: 'excelHtml5',
-                    title: 'QUANTITY REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    title: 'QUANTITY REPORT:(SUPPLIES) ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' WINSTONE ' + 'FOR MONTH: NOV-2022 TO MAY 2023',
                     className: 'btn-primary',
                     // displayFormat: 'dddd D MMMM YYYY',
                     // wireFormat: 'YYYY-MM-DD',
@@ -585,15 +588,18 @@ if ($user->isLoggedIn()) {
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: 'QUANTITY REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    title: 'QUANTITY REPORT:( Medicines ) \n\n' + 
+                    'DATE PRINTED: ' + d + '  ' + ' \n\n'
+                     + 'PRINTED BY : ' + ' WINSTONE \n\n' + 
+                    'FOR MONTH: ( NOV-2022 TO MAY 2023 )',
                     className: 'btn-primary',
-                    orientation: 'landscape',
+                    orientation: 'portrait',
                     pageSize: 'LEGAL'
 
                 },
                 {
                     extend: 'csvHtml5',
-                    title: 'QUANTITY REPORT:..................- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' .....................' + 'FOR MONTH: ...........................',
+                    title: 'QUANTITY REPORT:.(MEDICINES).- ' + 'DATE PRINTED: ' + d + '  ' + ' :' + 'PRINTED BY : ' + ' WINSTONE ' + 'FOR MONTH: NOV-2022 TO MAY 2023',
                     className: 'btn-primary'
                 },
                 // {

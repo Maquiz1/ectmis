@@ -19,7 +19,7 @@ $random = new Random();
         <?php foreach ($override->get('study_group', 'staff_id', $user->data()->id) as $id) {
             if ($id['group_id'] == 1) {
         ?>
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="wBlock green clearfix">
                         <a href="dashboard.php?use_group=1">
                             <div class="dSpace">
@@ -39,7 +39,7 @@ $random = new Random();
             <?php
             if ($id['group_id'] == 2) {
             ?>
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="wBlock blue clearfix">
                         <a href="dashboard.php?use_group=2">
                             <div class="dSpace">
@@ -58,7 +58,7 @@ $random = new Random();
             <?php
             if ($id['group_id'] == 3) {
             ?>
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="wBlock yellow clearfix">
                         <a href="dashboard.php?use_group=3">
                             <div class="dSpace">
@@ -78,7 +78,7 @@ $random = new Random();
             <?php
             if ($id['group_id'] == 4) {
             ?>
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="wBlock orrange clearfix">
                         <a href="dashboard.php?use_group=4">
                             <div class="dSpace">

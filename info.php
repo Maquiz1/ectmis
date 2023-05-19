@@ -2147,7 +2147,10 @@ if ($user->isLoggedIn()) {
                                 </div>
                             </div>
 
+                        <?php } elseif ($_GET['id'] == 13) { ?>
+                            
                         <?php } ?>
+
                     </div>
 
                     <div class="dr"><span></span></div>
