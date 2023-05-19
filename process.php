@@ -31,7 +31,7 @@ if ($_GET['content'] == 'region') {
     <?php foreach ($batches as $batch) { ?>
         <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
     <?php }
-}elseif ($_GET['content'] == 'generic_id33') {
+} elseif ($_GET['content'] == 'generic_id33') {
     if ($_GET['getUid']) {
         $output = array();
         $project_id = $override->getNews('generic', 'id', $_GET['getUid'], 'status', 1);
@@ -270,5 +270,26 @@ if ($_GET['content'] == 'region') {
             </tbody>
         </table>
     </span>
+<?php
+} elseif ($_GET['content'] == 'all_generic') {
+    header('Content-Type: application/json');
 
-<?php } ?>
+    if ($_GET['getUid_status']) {
+        $output = array();
+        $all_generic = $override->get('generic', 'status', $_GET['getUid_status']);
+        foreach ($all_generic as $name) {
+            $output[] = $name['name'];
+        }
+        echo json_encode($output);
+    }
+}
+
+elseif ($_GET['content'] == 'all_generic2') {
+    $all_generic = $override->get('generic', 'status', $_GET['getUid_status']);
+    ?>
+    <option value="">Select Brands</option>
+    <?php foreach ($all_generic as $batch) { ?>
+        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+<?php }
+}
+?>

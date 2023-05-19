@@ -197,6 +197,11 @@ if ($user->data()->accessLevel == 1) {
                         <span class="glyphicon glyphicon-list"></span><span class="text">List Generic</span>
                     </a>
                 </li>
+                <li class="">
+                    <a href="add.php?id=17">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Generic Test</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="openable">
