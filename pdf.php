@@ -1,13 +1,14 @@
 <?php
-    require_once 'dompdf/autoload.inc.php';
+require_once 'dompdf/autoload.inc.php';
 
-    use Dompdf\Dompdf;
+use Dompdf\Dompdf;
 
-    class Pdf extends Dompdf{
-        public function __construct(){
-            parent::__construct();
-        }            
+class Pdf extends Dompdf
+{
+    public function __construct()
+    {
+        parent::__construct();
     }
+}
 
-
-?>
+require_once 'php/core/init.php';

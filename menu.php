@@ -188,7 +188,7 @@ if ($user->data()->accessLevel == 1) {
                     </a>
                 </li>
                 <li class="">
-                    <a href="view_pdf.php">
+                    <a href="PDFGenerator.php">
                         <span class="glyphicon glyphicon-list"></span><span class="text">View Pdf</span>
                     </a>
                 </li>
