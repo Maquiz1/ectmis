@@ -21,6 +21,13 @@ class OverideData{
         $num = $query->rowCount();
         return $num;
     }
+
+    public function getCountReport($table,$field,$value,$where2,$id2,$where3,$id3){
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $field >= '$value' AND $where2 <= '$id2' AND $where3 = '$id3'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
     public function getCount($table,$field,$value){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $field = '$value'");
         $num = $query->rowCount();

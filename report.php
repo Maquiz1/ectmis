@@ -11,12 +11,15 @@ if ($user->isLoggedIn()) {
         switch (Input::get('report')) {
             case 1:
                 $data = $override->searchBtnDate3('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                $data_count = $override->getCountReport('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 break;
             case 2:
                 $data = $override->searchBtnDate3('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                $data_count = $override->getCountReport('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 break;
             case 3:
                 $data = $override->searchBtnDate3('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                $data_count = $override->getCountReport('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 break;
         }
         $successMessage = 'Report Successful Created';
@@ -36,6 +39,7 @@ if ($_GET['group'] == 1) {
 } elseif ($_GET['group'] == 4) {
     $title = 'Supplies';
 }
+
 $pdf = new Pdf();
 
 $file_name = $title . '.pdf';
@@ -44,14 +48,20 @@ $output = ' ';
 
 $output .= '
 <table width="100%" border="1" cellpadding="5" cellspacing="0">
+
     <tr>
-        <td colspan="12" align="center" style="font-size: 18px">
-            <b>Report FOR ' . $title . '</b>
+        <td colspan="15" align="center" style="font-size: 18px">
+            <b>IFAKARA HEALTH INSTITUTE ( e-CTMIS Report)</b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="15" align="center" style="font-size: 18px">
+            <b>Report FOR ' . $title . ':  Total ( '. $data_count .' )</b>
         </td>
     </tr>
 
     <tr>
-    <td colspan="12" align="center" style="font-size: 18px">
+    <td colspan="15" align="center" style="font-size: 18px">
         <b>For Period ' . $_GET['start'] . ' to ' .$_GET['end'].'</b>
     </td>
     </tr>
@@ -60,7 +70,7 @@ $output .= '
         <th colspan="1">No.</th>
         <th colspan="2">Date</th>
         <th colspan="2">Generic Name</th>
-        <th colspan="2">Brand Name</th>
+        <th colspan="2">Brand Name</th>        
         <th colspan="2">Batch No</th>
         <th colspan="2">Balance</th>
         <th colspan="2">Units</th>
@@ -91,11 +101,15 @@ foreach ($data as $row) {
         <td colspan="2">' . $row['expire_date'] . '</td>
     </tr>
     ';
+
+    $x +=1;
+
 }
+
 
     $output .= '
     <tr>
-        <td colspan="6" align="center" style="font-size: 18px">
+        <td colspan="7" align="center" style="font-size: 18px">
             <br />
             <br />
             <br />
@@ -108,7 +122,7 @@ foreach ($data as $row) {
             <br />
         </td>
 
-        <td colspan="6" align="center" style="font-size: 18px">
+        <td colspan="8" align="center" style="font-size: 18px">
             <br />
             <br />
             <br />
@@ -135,3 +149,5 @@ $pdf->render();
 
 // Output the generated PDF
 $pdf->stream($file_name, array("Attachment" => false));
+
+?>
