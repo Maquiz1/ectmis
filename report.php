@@ -46,66 +46,156 @@ $file_name = $title . '.pdf';
 
 $output = ' ';
 
-$output .= '
-<table width="100%" border="1" cellpadding="5" cellspacing="0">
-
-    <tr>
-        <td colspan="15" align="center" style="font-size: 18px">
-            <b>IFAKARA HEALTH INSTITUTE ( e-CTMIS Report)</b>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="15" align="center" style="font-size: 18px">
-            <b>Report FOR ' . $title . ':  Total ( '. $data_count .' )</b>
-        </td>
-    </tr>
-
-    <tr>
-    <td colspan="15" align="center" style="font-size: 18px">
-        <b>For Period ' . $_GET['start'] . ' to ' .$_GET['end'].'</b>
-    </td>
-    </tr>
-
-    <tr>
-        <th colspan="1">No.</th>
-        <th colspan="2">Date</th>
-        <th colspan="2">Generic Name</th>
-        <th colspan="2">Brand Name</th>        
-        <th colspan="2">Batch No</th>
-        <th colspan="2">Balance</th>
-        <th colspan="2">Units</th>
-        <th colspan="2">Expire Date</th>
-    </tr>
-
- ';
-
-// Load HTML content into dompdf
-$x = 1;
-foreach ($data as $row) {
-    $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
-    $brand_name = $override->getNews('brand', 'id', $row['brand_id'], 'status', 1)[0]['name'];
-    $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
-    $staff = $override->get('user', 'id', $row['staff_id'])[0];
-    $batch_no = $row['batch_no'];
-
+if ($_GET['group'] == 2) {
 
     $output .= '
-     <tr>
-        <td colspan="1">' . $x . '</td>
-        <td colspan="2">' . $row['create_on'] . '</td>
-        <td colspan="2">' . $generic_name . '</td>
-        <td colspan="2">' . $brand_name . '</td>
-        <td colspan="2">' . $batch_no . '</td>
-        <td colspan="2">' . $row['balance'] . '</td>
-        <td colspan="2">' . $category_name . '</td>
-        <td colspan="2">' . $row['expire_date'] . '</td>
+    <table width="100%" border="1" cellpadding="5" cellspacing="0">
+    
+        <tr>
+            <td colspan="11" align="center" style="font-size: 18px">
+                <b>IFAKARA HEALTH INSTITUTE ( e-CTMIS Report)</b>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="11" align="center" style="font-size: 18px">
+                <b>Report FOR ' . $title . ':  Total ( '. $data_count .' )</b>
+            </td>
+        </tr>
+    
+        <tr>
+        <td colspan="11" align="center" style="font-size: 18px">
+            <b>For Period ' . $_GET['start'] . ' to ' .$_GET['end'].'</b>
+        </td>
+        </tr>
+    
+        <tr>
+            <th colspan="1">No.</th>
+            <th colspan="2">Date</th>
+            <th colspan="2">Generic Name</th>
+            <th colspan="2">Brand Name</th>        
+            <th colspan="2">Quantity</th>
+            <th colspan="2">Units</th>
+        </tr>
+    
+     ';
+    
+    // Load HTML content into dompdf
+    $x = 1;
+    foreach ($data as $row) {
+        $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
+        $brand_name = $override->getNews('brand', 'id', $row['brand_id'], 'status', 1)[0]['name'];
+        $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
+        $staff = $override->get('user', 'id', $row['staff_id'])[0];
+        $batch_no = $row['batch_no'];
+    
+    
+        $output .= '
+         <tr>
+            <td colspan="1">' . $x . '</td>
+            <td colspan="2">' . $row['create_on'] . '</td>
+            <td colspan="2">' . $generic_name . '</td>
+            <td colspan="2">' . $brand_name . '</td>
+            <td colspan="2">' . $row['balance'] . '</td>
+            <td colspan="2">' . $category_name . '</td>
+        </tr>
+        ';
+    
+        $x +=1;
+    
+    }
+
+    $output .= '
+    <tr>
+        <td colspan="5" align="center" style="font-size: 18px">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <p align="right">----'.$user->data()->firstname. ' '.$user->data()->lastname.'-----<br />Printed By</p>
+            <br />
+            <br />
+            <br />
+        </td>
+
+        <td colspan="6" align="center" style="font-size: 18px">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <p align="right">-----'.date('Y-m-d').'-------<br />Date Printed</p>
+            <br />
+            <br />
+            <br />
+        </td>
     </tr>
+        </table>  
+    ';  
+
+} else{
+
+    $output .= '
+    <table width="100%" border="1" cellpadding="5" cellspacing="0">
+
+        <tr>
+            <td colspan="15" align="center" style="font-size: 18px">
+                <b>IFAKARA HEALTH INSTITUTE ( e-CTMIS Report)</b>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="15" align="center" style="font-size: 18px">
+                <b>Report FOR ' . $title . ':  Total ( '. $data_count .' )</b>
+            </td>
+        </tr>
+
+        <tr>
+        <td colspan="15" align="center" style="font-size: 18px">
+            <b>For Period ' . $_GET['start'] . ' to ' .$_GET['end'].'</b>
+        </td>
+        </tr>
+
+        <tr>
+            <th colspan="1">No.</th>
+            <th colspan="2">Date</th>
+            <th colspan="2">Generic Name</th>
+            <th colspan="2">Brand Name</th>        
+            <th colspan="2">Batch No</th>
+            <th colspan="2">Quantity</th>
+            <th colspan="2">Units</th>
+            <th colspan="2">Expire Date</th>
+        </tr>
+
     ';
 
-    $x +=1;
+    // Load HTML content into dompdf
+    $x = 1;
+    foreach ($data as $row) {
+        $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
+        $brand_name = $override->getNews('brand', 'id', $row['brand_id'], 'status', 1)[0]['name'];
+        $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
+        $staff = $override->get('user', 'id', $row['staff_id'])[0];
+        $batch_no = $row['batch_no'];
 
-}
 
+        $output .= '
+        <tr>
+            <td colspan="1">' . $x . '</td>
+            <td colspan="2">' . $row['create_on'] . '</td>
+            <td colspan="2">' . $generic_name . '</td>
+            <td colspan="2">' . $brand_name . '</td>
+            <td colspan="2">' . $batch_no . '</td>
+            <td colspan="2">' . $row['balance'] . '</td>
+            <td colspan="2">' . $category_name . '</td>
+            <td colspan="2">' . $row['expire_date'] . '</td>
+        </tr>
+        ';
+
+        $x +=1;
+
+    }
 
     $output .= '
     <tr>
@@ -138,6 +228,11 @@ foreach ($data as $row) {
         </table>  
     ';  
 
+}
+
+
+   
+
 // $output = '<html><body><h1>Hello, dompdf!' . $row . '</h1></body></html>';
 $pdf->loadHtml($output);
 
@@ -149,5 +244,3 @@ $pdf->render();
 
 // Output the generated PDF
 $pdf->stream($file_name, array("Attachment" => false));
-
-?>
