@@ -205,9 +205,13 @@ if ($user->isLoggedIn()) {
                     'status' => 2,
                 ), Input::get('id'));
 
-                // $user->updateRecord('assigned_batch', array(
-                //     'status' => 2,
-                // ), Input::get('id'));
+                $checkAssignedBatch = $override->selectData1('assigned_batch', 'batch_id', Input::get('id'), 'status', 1);
+                foreach ($checkAssignedBatch as $AssignedBatchID) {
+                $user->updateRecord('assigned_batch', array(
+                    'status' => 2,
+                ), $AssignedBatchID['id']);
+                }
+
 
                 $user->updateRecord('generic', array(
                     'balance' => $genericBalance,
@@ -230,6 +234,7 @@ if ($user->isLoggedIn()) {
                     'category' => $category,
                     'remarks' => $remarks,
                     'expire_date' => $batchexpire,
+                    'use_group' => $checkGeneric['use_group'],
                 ));
 
                 $successMessage = 'Medicine / Device Quarantine Successful';

@@ -377,9 +377,9 @@ if ($user->isLoggedIn()) {
                                                         <a href="#" role="button" class="btn btn-success btn-sm check" data-toggle="modal" id="check">OK!</a>
                                                     <?php } ?>                                                </td>
                                                 <td>
-                                                    <?php if ($check1 == 1) { ?>
+                                                    <?php if ($check1 == 2) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
-                                                    <?php } else if($check1 == 2){ ?>
+                                                    <?php } else if($check1 == 1){ ?>
                                                         <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Not available!</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
