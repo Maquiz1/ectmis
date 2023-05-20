@@ -188,7 +188,7 @@ if ($user->data()->accessLevel == 1) {
                     </a>
                 </li>
                 <li class="">
-                    <a href="PDFGenerator.php">
+                    <a href="search.php">
                         <span class="glyphicon glyphicon-list"></span><span class="text">View Pdf</span>
                     </a>
                 </li>
@@ -208,7 +208,7 @@ if ($user->data()->accessLevel == 1) {
             <a href="#"><span class="isw-documents"></span><span class="text">Reports</span></a>
             <ul>
                 <li>
-                    <a href="report.php?id=1">
+                    <a href="search.php?id=1">
                         <span class="glyphicon glyphicon-search"></span><span class="text">Search Reports</span>
                     </a>
                 </li>
