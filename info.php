@@ -175,6 +175,35 @@ if ($user->isLoggedIn()) {
 
                     $successMessage = 'Group Added Successful to a Study';
                 } else {
+                    $user->updateRecord('study_group', array(
+                        'group_id' => Input::get('use_group_id'),
+                        'status' => 1,
+                        'create_on' => date('Y-m-d'),
+                    ),Input::get('id'));
+                    $successMessage = 'Group Updated Successful to a Study';
+                }
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        }elseif (Input::get('update_user_group')) {
+            try {
+                $study_groups = 0;
+                foreach ($override->getNews('study_group', 'group_id', Input::get('use_group_id'), 'staff_id', Input::get('id')) as $study_group) {
+                    if ($study_group) {
+                        $study_groups = 1;
+                    }
+                }
+
+                if ($study_groups) {
+                    $user->updateRecord('study_group', array(
+                        'staff_id' => Input::get('id'),
+                        'group_id' => Input::get('use_group_id'),
+                        'status' => 1,
+                        'create_on' => date('Y-m-d'),
+                    ));
+
+                    $successMessage = 'Group Update Successful to a Study';
+                } else {
                     $errorMessage = 'Group Already Registered to a Study';
                 }
             } catch (Exception $e) {
@@ -832,7 +861,7 @@ if ($user->isLoggedIn()) {
                                                                 </div>
                                                         </form>
                                                     </div>
-                                                </div>
+                                                </div>                                      
                                             <?php } ?>
                                         </tbody>
                                     </table>
