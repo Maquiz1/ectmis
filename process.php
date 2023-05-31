@@ -4,6 +4,7 @@ $user = new User();
 $override = new OverideData();
 $email = new Email();
 $random = new Random();
+
 if ($_GET['content'] == 'region') {
     $districts = $override->get('district', 'region_id', $_GET['getUid']); ?>
     <option value="">Select District</option>

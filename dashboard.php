@@ -114,7 +114,7 @@ if ($user->isLoggedIn()) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
+                                    <?php                     
                                     $userid = $user->data()->id;
                                     $amnt = 0;
                                     $data1 = $override->get('study_group', 'staff_id', $userid);
@@ -190,13 +190,13 @@ if ($user->isLoggedIn()) {
                                                 $expireDate = $batch2['expire_date'];
                                                 if ($nextCheck == "") {
                                                     $check = 1;
-                                                }else if($nextCheck <= date('Y-m-d')){
+                                                } else if ($nextCheck <= date('Y-m-d')) {
                                                     $check = 2;
                                                 }
 
                                                 if ($expireDate == "") {
                                                     $check1 = 1;
-                                                }else if($expireDate <= date('Y-m-d')){
+                                                } else if ($expireDate <= date('Y-m-d')) {
                                                     $check1 = 2;
                                                 }
                                             }
@@ -371,19 +371,21 @@ if ($user->isLoggedIn()) {
                                                 <td>
                                                     <?php if ($check == 1) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Checked!</a>
-                                                    <?php } else if($check == 2){ ?>
+                                                    <?php } else if ($check == 2) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger btn-sm check" check_id="<?= $bDiscription['id'] ?>" data-toggle="modal" id="check">Not Available!</a>
-                                                        <?php } else { ?>
+                                                    <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success btn-sm check" data-toggle="modal" id="check">OK!</a>
-                                                    <?php } ?>                                                </td>
+                                                    <?php } ?>
+                                                </td>
                                                 <td>
                                                     <?php if ($check1 == 2) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired</a>
-                                                    <?php } else if($check1 == 1){ ?>
+                                                    <?php } else if ($check1 == 1) { ?>
                                                         <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Not available!</a>
                                                     <?php } else { ?>
                                                         <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
-                                                    <?php } ?>                                                </td>
+                                                    <?php } ?>
+                                                </td>
                                                 <td>
                                                     <a href="data.php?id=11&gid=<?= $bDiscription['id'] ?>" class="btn btn-default">View</a>
                                                 </td>

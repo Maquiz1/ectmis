@@ -74,6 +74,13 @@ class OverideData{
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
+
+    public function getReport($table1,$table2,$id1,$id2){
+        $query = $this->_pdo->query("SELECT '$table2'.'$id2','$table1'.'$id1' FROM $table2 INNER JOIN '$table1' ON '$table2'.'$id2'='$table1'.'$id1'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
     public function getNews($table,$where,$id,$where2,$id2){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 = '$id2'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
