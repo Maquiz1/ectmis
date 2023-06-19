@@ -117,7 +117,7 @@ if ($user->isLoggedIn()) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
+                                    <?php                     
                                     $userid = $user->data()->id;
                                     $amnt = 0;
                                     $data1 = $override->get('study_group', 'staff_id', $userid);
