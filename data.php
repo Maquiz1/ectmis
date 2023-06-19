@@ -801,6 +801,98 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('update_location')) {
+            $validate = $validate->check($_POST, array(
+                // 'add_quantity' => array(
+                //     'required' => true,
+                // ),
+            ));
+            if ($validate->passed()) {
+                if (Input::get('add_quantity') > 0) {
+                    $checkAssigned = $override->selectData1('assigned_batch', 'batch_id', Input::get('id'), 'location_id', Input::get('location_id'))[0];
+                    $checkAssignedBalance = $checkAssigned['balance'] + Input::get('add_quantity');
+
+                    $checkGeneric = $override->get('generic', 'id', Input::get('update_generic_id'))[0];
+                    $use_group = $override->get('generic', 'id', Input::get('update_generic_id'))[0]['use_group'];
+                    $genericBalance = $checkGeneric['balance'] + Input::get('add_quantity');
+
+                    $checkBatch = $override->selectData1('batch', 'id', Input::get('id'), 'status', 1)[0];
+                    $batchLast = $checkBatch['last_check'];
+                    $batchNext = $checkBatch['next_check'];
+                    $batchexpire = $checkBatch['expire_date'];
+                    $category = $checkBatch['category'];
+
+                    $batchBalance = $checkBatch['balance'] + Input::get('add_quantity');
+                    try {
+                        $user->updateRecord('assigned_batch', array(
+                            'balance' => $checkAssignedBalance,
+                        ), $checkAssigned['id']);
+
+                        $user->updateRecord('batch', array(
+                            'balance' => $batchBalance,
+                        ), Input::get('id'));
+
+                        $user->updateRecord('generic', array(
+                            'balance' => $genericBalance,
+                        ), Input::get('update_generic_id'));
+
+                        $user->createRecord('assigned_batch_records', array(
+                            'generic_id' => Input::get('update_generic_id'),
+                            'brand_id' => Input::get('update_brand_id'),
+                            'batch_id' => Input::get('id'),
+                            'batch_no' => Input::get('update_batch_no'),
+                            'quantity' => Input::get('add_quantity'),
+                            'assigned' => 0,
+                            'batch_balance' => $batchBalance,
+                            'balance' => $genericBalance,
+                            'location_id' => Input::get('location_id'),
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                            'status' => 1,
+                            'study_id' => Input::get('study_id'),
+                            'last_check' => $batchLast,
+                            'next_check' => $batchNext,
+                            'category' => $category,
+                            'remarks' => '',
+                            'expire_date' => $batchexpire,
+                            'admin_id' => $user->data()->id,
+                            'site_id' => Input::get('site_id'),
+                            'use_group' => $use_group,
+                        ));
+
+                        $user->createRecord('batch_records', array(
+                            'generic_id' => Input::get('update_generic_id'),
+                            'brand_id' => Input::get('update_brand_id'),
+                            'batch_id' => Input::get('id'),
+                            'batch_no' => Input::get('update_batch_no'),
+                            'quantity' => Input::get('add_quantity'),
+                            'assigned' => 0,
+                            'batch_balance' => $batchBalance,
+                            'balance' => $genericBalance,
+                            'create_on' => date('Y-m-d'),
+                            'staff_id' => $user->data()->id,
+                            'status' => 1,
+                            'study_id' => Input::get('study_id'),
+                            'last_check' => $batchLast,
+                            'next_check' => $batchNext,
+                            'category' => $category,
+                            'remarks' => '',
+                            'expire_date' => $batchexpire,
+                            'admin_id' => $user->data()->id,
+                            'site_id' => Input::get('site_id'),
+                            'use_group' => $use_group,
+                        ));
+
+                        $successMessage = 'Stock guied Successful Allocated';
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                } else {
+                    $errorMessage = 'Amount to Add Must not Be Greater Than B Amount';
+                }
+            } else {
+                $pageError = $validate->errors();
+            }
         }
     }
 } else {

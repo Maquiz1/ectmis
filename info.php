@@ -179,13 +179,13 @@ if ($user->isLoggedIn()) {
                         'group_id' => Input::get('use_group_id'),
                         'status' => 1,
                         'create_on' => date('Y-m-d'),
-                    ),Input::get('id'));
+                    ), Input::get('id'));
                     $successMessage = 'Group Updated Successful to a Study';
                 }
             } catch (Exception $e) {
                 die($e->getMessage());
             }
-        }elseif (Input::get('update_user_group')) {
+        } elseif (Input::get('update_user_group')) {
             try {
                 $study_groups = 0;
                 foreach ($override->getNews('study_group', 'group_id', Input::get('use_group_id'), 'staff_id', Input::get('id')) as $study_group) {
@@ -237,7 +237,7 @@ if ($user->isLoggedIn()) {
             if ($validate->passed()) {
                 try {
                     $user->updateRecord('generic', array(
-                        'name' => Input::get('name'),                        
+                        'name' => Input::get('name'),
                         // 'create_on' => date('Y-m-d'),
                         // 'details' => Input::get('details'),
                         // 'status' => 1,
@@ -455,7 +455,77 @@ if ($user->isLoggedIn()) {
             } else {
                 $pageError = $validate->errors();
             }
+        } elseif (Input::get('update_location')) {
+            try {
+                $update_location = 0;
+                foreach ($override->getNews('generic_location', 'generic_id', Input::get('id'), 'location_id', Input::get('generic_location')) as $location) {
+                    if ($location) {
+                        $update_location = 1;
+                    }
+                }
+
+                if (!$update_location) {
+                    $user->createRecord('generic_location', array(
+                        'generic_id' => Input::get('id'),
+                        'notify_quantity' => Input::get('notify_quantity'),
+                        'location_id' => Input::get('generic_location'),
+                        'create_on' => date('Y-m-d'),
+                        'staff_id' => $user->data()->id,
+                        'status' => 1,
+                    ));
+
+                    // $user->createRecord('assigned_batch', array(
+                    //     'study_id' => '',
+                    //     'generic_id' => Input::get('id'),
+                    //     'brand_id' => '',
+                    //     'batch_id' => '',
+                    //     'location_id' => Input::get('generic_location'),
+                    //     'batch_no' => '',
+                    //     'staff_id' => $user->data()->id,
+                    //     'notify_quantity' => $notify_quantity['notify_quantity'],
+                    //     'used' => 0,
+                    //     'balance' => 0,
+                    //     'notes' => Input::get('details'),
+                    //     'status' => 1,
+                    //     'admin_id' => $user->data()->id,
+                    //     'create_on' => date('Y-m-d'),
+                    //     'admin_id' => $user->data()->id,
+                    //     'site_id' => Input::get('site_id'),
+                    //     'use_group' => Input::get('use_group'),
+                    // ));
+
+                    $successMessage = 'Location Added Successful';
+                } else {
+                    $errorMessage = 'Location Already Registered';
+                }
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        } elseif (Input::get('remove_location')) {
+            try {
+                $update_location = 0;
+                foreach ($override->getNews('generic_location', 'generic_id', Input::get('id'), 'location_id', Input::get('generic_location')) as $location) {
+                    if ($location) {
+                        $update_location = 1;
+                    }
+                }
+
+                if ($update_location) {
+                    $user->updateRecord('generic_location', array(
+                        'location_id' => Input::get('generic_location'),
+                        'staff_id' => $user->data()->id,
+                        'status' => 0,
+                    ), $location['id']);
+
+                    $successMessage = 'Location Removed Successful';
+                } else {
+                    $errorMessage = 'Location Already Removed';
+                }
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
         }
+
 
         if ($_GET['id'] == 11) {
             $data = null;
@@ -861,7 +931,7 @@ if ($user->isLoggedIn()) {
                                                                 </div>
                                                         </form>
                                                     </div>
-                                                </div>                                      
+                                                </div>
                                             <?php } ?>
                                         </tbody>
                                     </table>
@@ -1095,16 +1165,18 @@ if ($user->isLoggedIn()) {
                                         <tbody id="myTable">
                                             <?php $amnt = 0;
                                             foreach ($override->get('generic', 'status', 1) as $batch) {
-                                               
+
                                             ?>
                                                 <tr>
                                                     <td><?= $batch['create_on'] ?></td>
                                                     <td><?= $batch['name'] ?></td>
-                                                   
+
                                                     <td>
                                                         <!-- <a href="info.php?id=5&bt=<?= $batch['id'] ?>" class="btn btn-default">View</a> -->
                                                         <a href="#user<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Edit</a>
                                                         <a href="#delete<?= $batch['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                                        <a href="#updateLocation<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update Locations Of Inventory</a>
+                                                        <a href="#removeLocation<?= $batch['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Remove Locations Of Inventory</a>
                                                     </td>
 
                                                 </tr>
@@ -1144,11 +1216,11 @@ if ($user->isLoggedIn()) {
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                                    <h4>Delete Batch</h4>
+                                                                    <h4>Delete Generic List</h4>
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <strong style="font-weight: bold;color: red">
-                                                                        <p>Are you sure you want to delete this Batch</p>
+                                                                        <p>Are you sure you want to delete this Generic List</p>
                                                                     </strong>
                                                                 </div>
                                                                 <div class="modal-footer">
@@ -1157,6 +1229,105 @@ if ($user->isLoggedIn()) {
                                                                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                                                                 </div>
                                                             </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="updateLocation<?= $batch['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit Generic Info</h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+
+                                                                    <div class="row">
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Generic Name::</label>
+                                                                                    <input value="<?= $batch['name'] ?>" class="validate[required]" type="text" name="name" id="name11" disabled />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Notify Quantity:</label>
+                                                                                    <input value="" class="validate[required]" type="text" name="notify_quantity" id="notify_quantity11" required />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Generic Name Location:</label>
+                                                                                    <select name="generic_location" id="generic_location" style="width: 100%;" required>
+                                                                                        <option value="">Select Location</option>
+                                                                                        <?php foreach ($override->getData('location') as $cat) { ?>
+                                                                                            <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
+                                                                                        <?php } ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="id" value="<?= $batch['id'] ?>">
+                                                                        <input type="submit" name="update_location" value="Save updates" class="btn btn-warning">
+                                                                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="removeLocation<?= $batch['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                                    <h4>Edit Generic Info</h4>
+                                                                </div>
+                                                                <div class="modal-body modal-body-np">
+
+                                                                    <div class="row">
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Generic Name::</label>
+                                                                                    <input value="<?= $batch['name'] ?>" class="validate[required]" type="text" name="name" id="name11" disabled />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-sm-4">
+                                                                            <div class="row-form clearfix">
+                                                                                <!-- select -->
+                                                                                <div class="form-group">
+                                                                                    <label>Generic Name Location:</label>
+                                                                                    <select name="generic_location" id="generic_location1" style="width: 100%;" required>
+                                                                                        <option value="">Select Location</option>
+                                                                                        <?php foreach ($override->getData('location') as $cat) { ?>
+                                                                                            <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
+                                                                                        <?php } ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="id" value="<?= $batch['id'] ?>">
+                                                                        <input type="submit" name="remove_location" value="Save updates" class="btn btn-warning">
+                                                                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                                                                    </div>
+                                                                </div>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -2177,7 +2348,7 @@ if ($user->isLoggedIn()) {
                             </div>
 
                         <?php } elseif ($_GET['id'] == 13) { ?>
-                            
+
                         <?php } ?>
 
                     </div>

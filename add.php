@@ -2164,14 +2164,28 @@ if ($user->isLoggedIn()) {
                                                     <div class="form-group">
                                                         <label>Generic Name::</label>
                                                         <select name="generic_id3" id="generic_id3" style="width: 100%;" required>
-                                                            <option value="">Select Generic Name</option>
-                                                            <?php foreach ($override->getData('generic') as $dCat) { ?>
-                                                                <option value="<?= $dCat['id'] ?>"><?= $dCat['name'] ?></option>
+                                                            <option value="">Select Generic</option>
+                                                            <?php foreach ($override->getData('generic') as $cat) { ?>
+                                                                <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
                                                             <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- <div class="col-sm-12">
+                                                <div class="row-form clearfix"> -->
+                                                    <!-- select -->
+                                                    <!-- <div class="form-group">
+                                                        <div class="autocomplete" style="width:300px;"> -->
+                                                            <!-- <div class="form-group autocomplete" style="width:300px;"> -->
+                                                            <!-- <label>Generic Name2:</label>
+                                                            <input value="" class="validate[required]" id="name" type="text" name="name" placeholder="Type name..." onkeyup="myFunction()" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
                                             <div class="col-sm-4">
                                                 <div class="row-form clearfix">
                                                     <!-- select -->
@@ -2192,7 +2206,7 @@ if ($user->isLoggedIn()) {
                                                         <div class="autocomplete" style="width:130px;">
                                                             <!-- <div class="form-group autocomplete" style="width:300px;"> -->
                                                             <label>Batch No:</label>
-                                                            <input value="" class="validate[required]" id="batch_no" type="text" name="batch_no" placeholder="Type name..." onkeyup="myFunction()" />
+                                                            <input value="" id="batch_no" type="text" name="batch_no" placeholder="Type name..." onkeyup="myFunction()" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2275,7 +2289,7 @@ if ($user->isLoggedIn()) {
                                                         <div class="autocomplete" style="width:100px;">
                                                             <!-- <div class="form-group autocomplete" style="width:300px;"> -->
                                                             <label>Manufacturer:</label>
-                                                            <input value="" class="validate[required]" id="manufacturer" type="text" name="manufacturer" placeholder="Type name..." onkeyup="myFunction()" />
+                                                            <input value="" id="manufacturer" type="text" name="manufacturer" placeholder="Type name..." onkeyup="myFunction()" />
                                                         </div>
                                                     </div>
                                                 </div>
