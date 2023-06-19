@@ -50,7 +50,7 @@ if ($user->data()->accessLevel == 1) {
         </li>
         <li class="active">
             <a href="dashboard1.php">
-                <span class="isw-grid"></span><span class="text">Summary</span>
+                <span class="isw-grid"></span><span class="text">Dashboard 1</span>
             </a>
         </li>
         <?php
@@ -110,7 +110,8 @@ if ($user->data()->accessLevel == 1) {
             <ul>
 
                 <li>
-                    <?php if ($user->data()->accessLevel == 1) {
+                    <?php
+                    if ($user->data()->accessLevel == 1) {
                     ?>
 
                         <a href="add.php?id=2">
