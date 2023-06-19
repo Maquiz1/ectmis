@@ -153,14 +153,14 @@ if ($user->data()->accessLevel == 1) {
                         <span class="glyphicon glyphicon-list"></span><span class="text">View</span>
                     </a>
                 </li> -->
-                <li class="">
+                <!-- <li class="">
                     <a href="search.php">
                         <span class="glyphicon glyphicon-list"></span><span class="text">View Pdf</span>
                     </a>
-                </li>
+                </li> -->
                 <li class="">
                     <a href="info.php?id=3">
-                        <span class="glyphicon glyphicon-list"></span><span class="text">List Generic</span>
+                        <span class="glyphicon glyphicon-list"></span><span class="text">List of All Generic Names</span>
                     </a>
                 </li>
                 <!-- <li class="">
