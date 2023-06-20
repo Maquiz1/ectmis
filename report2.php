@@ -144,6 +144,8 @@ $output .= '
     $status = '';
     $balance_status = '';
 
+    // print_r($data[0]['next_check']);
+
     foreach ($data as $row) {
         $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
         $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
@@ -158,16 +160,12 @@ $output .= '
         $batch_no = $row['batch_no'];
 
 
+
+
         if ($row['expire_date'] <= date('Y-m-d')) {
             $status = 'Expired';        
         } else{
             $status = 'Valid';        
-        }
-
-        if ($row['last_check'] = '') {
-            $check_status = 'Not Checked1';
-        } else {
-            $check_status = 'Checked!';
         }
 
         if ($row['balance'] <= 0) {
@@ -176,6 +174,12 @@ $output .= '
             $balance_status = 'Running Low';
         } else {
             $balance_status = 'Sufficient';
+        }
+
+        if ($row['last_check'] = '') {
+            $check_status = 'Not Checked1' .' - '. $balance_status;
+        } else {
+            $check_status = 'Checked!' .' - '. $balance_status;
         }
 
 
