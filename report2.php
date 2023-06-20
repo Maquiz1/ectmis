@@ -32,17 +32,17 @@ if ($user->isLoggedIn()) {
     Redirect::to('index.php');
 }
 
-$span0 = 18;
-$span1 = 9;
-$span2 = 9;
+$span0 = 16;
+$span1 = 8;
+$span2 = 8;
 
 if ($_GET['group'] == 1) {
     $title = 'Medicines';
 } elseif ($_GET['group'] == 2) {
     $title = 'Medical Equipments';
-    $span0 = 20;
-    $span1 = 10;
-    $span2 = 10;
+    $span0 = 16;
+    $span1 = 8;
+    $span2 = 8;
 } elseif ($_GET['group'] == 3) {
     $title = 'Accessories';
     
@@ -105,10 +105,9 @@ $output .= '
     
         <tr>
             <th colspan="2">No.</th>
-            <th colspan="2">Date Entered</th>
             <th colspan="2">Generic Name</th>
             ';
-            if ($_GET['group'] == 1) {
+            if ($_GET['group'] == 1 || $_GET['group'] == 3 || $_GET['group'] == 4) {
 
     $output .= '
    
@@ -128,7 +127,6 @@ $output .= '
     $output .= '
             <th colspan="2">Required Quantity</th>
             <th colspan="2">Available Quantity</th>
-            <th colspan="2">Units</th>
             <th colspan="2">Last Check</th>  
             <th colspan="2">Status</th>   
             <th colspan="2">Remarks</th>   
@@ -186,12 +184,11 @@ $output .= '
         $output .= '
          <tr>
             <td colspan="2">' . $x . '</td>
-            <td colspan="2">' . $row['create_on'] . '</td>
             <td colspan="2">' . $generic_name . '</td>   
             <td colspan="2">' . $generic_balance . '</td>
      
         ';
-        if ($_GET['group'] == 1) {
+        if ($_GET['group'] == 1 || $_GET['group'] == 3 || $_GET['group'] == 4) {
 
     $output .= '
             <td colspan="2">' . $row['balance'] . '</td>
@@ -207,7 +204,6 @@ $output .= '
         $output .= '
  
             <td colspan="2">' . $row['balance'] . '</td>
-            <td colspan="2">' . $category_name .  '</td>
             <td colspan="2">' . $row['last_check'] . '</td>
             <td colspan="2">' . $check_status .  '</td>
             <td colspan="2">' . $row['check_remarks'] . '</td>
@@ -227,21 +223,13 @@ $output .= '
     <tr>
         <td colspan="' . $span1 . '" align="center" style="font-size: 18px">
             <br />
-            <br />
-            <br />
             <p align="right">----' . $user->data()->firstname . ' ' . $user->data()->lastname . '-----<br />Printed By</p>
-            <br />
-            <br />
             <br />
         </td>
 
         <td colspan="' . $span2 . '" align="center" style="font-size: 18px">
             <br />
-            <br />
-            <br />
             <p align="right">-----' . date('Y-m-d') . '-------<br />Date Printed</p>
-            <br />
-            <br />
             <br />
         </td>
     </tr>
