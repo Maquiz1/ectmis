@@ -29,7 +29,7 @@ if ($user->isLoggedIn()) {
             ));
             if ($validate->passed()) {
                 try {
-                    Redirect::to('report2.php?report=' . Input::get('report') . '&start=' . Input::get('start_date') . '&end=' . Input::get('end_date') . '&group=' . Input::get('use_group'));
+                    Redirect::to('report.php?report=' . Input::get('report') . '&start=' . Input::get('start_date') . '&end=' . Input::get('end_date') . '&group=' . Input::get('use_group'));
                 } catch (Exception $e) {
                     die($e->getMessage());
                 }

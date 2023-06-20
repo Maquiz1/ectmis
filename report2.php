@@ -15,7 +15,7 @@ if ($user->isLoggedIn()) {
                 break;
             case 2:
                 $data = $override->searchBtnDate3('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group']);
-                $data_count = $override->getCountReport('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                $data_count = $override->getCountReport('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group']);
                 // $data = $override->searchBtnDate3('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 // $data_count = $override->getCountReport('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 break;
@@ -152,15 +152,12 @@ $output .= '
         $maintainance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['maintainance'];
 
 
-        $batch_balance = $override->getNews('batch', 'id', $row['batch_id'], 'status', 1)[0]['balance'];
+        // $batch_balance = $override->getNews('batch', 'id', $row['batch_id'], 'status', 1)[0]['balance'];
         $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
-        $category_name1 = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
+        // $category_name1 = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
 
-        $staff = $override->get('user', 'id', $row['staff_id'])[0];
-        $batch_no = $row['batch_no'];
-
-
-
+        // $staff = $override->get('user', 'id', $row['staff_id'])[0];
+        // $batch_no = $row['batch_no'];
 
         if ($row['expire_date'] <= date('Y-m-d')) {
             $status = 'Expired';        
