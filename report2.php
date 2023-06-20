@@ -62,12 +62,12 @@ $output .= '
             header { position: fixed; top: -30px; left: 0px; right: 0px; height: 50px; }
             footer { position: fixed; bottom: -50px; left: 0px; right: 0px; height: 50px; }
 
-            .page-number {
+            .tittle {
                 position: fixed;
                 right: 20px;
                 top: -30px;
              }
-            .page-number1 {
+            .period {
                 position: fixed;
                 right: 470px;
                 top: -30px;
@@ -78,8 +78,8 @@ $output .= '
     <body>
         <header>
             <div><span class="page"> e-CTMIS Report </span></div>
-            <div class="page-number">IFAKARA HEALTH INSTITUTE</div>
-            <div class="page-number1">Period ' . $_GET['start'] . ' to ' . $_GET['end'] . '</div>
+            <div class="tittle">IFAKARA HEALTH INSTITUTE</div>
+            <div class="period">Period ' . $_GET['start'] . ' to ' . $_GET['end'] . '</div>
         </header>
         <footer>
             <div>SOP CODE 1: <span class="page"></span></div>
