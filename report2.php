@@ -30,17 +30,17 @@ if ($user->isLoggedIn()) {
     Redirect::to('index.php');
 }
 
-$span0 = 7;
-$span1 = 4;
-$span2 = 3;
+$span0 = 11;
+$span1 = 5;
+$span2 = 6;
 
 if ($_GET['group'] == 1) {
     $title = 'Medicines';
 } elseif ($_GET['group'] == 2) {
     $title = 'Medical Equipments';
-    $span0 = 11;
-    $span1 = 5;
-    $span2 = 6;
+    $span0 = 7;
+    $span1 = 4;
+    $span2 = 3;
 } elseif ($_GET['group'] == 3) {
     $title = 'Accessories';
     
@@ -60,7 +60,7 @@ $output .= '
         <style>
             @page { margin: 50px; }
             header { position: fixed; top: -30px; left: 0px; right: 0px; height: 50px; }
-            footer { position: fixed; bottom: -40px; left: 0px; right: 0px; height: 50px; }
+            footer { position: fixed; bottom: -50px; left: 0px; right: 0px; height: 50px; }
 
             .page-number {
                 position: fixed;
@@ -101,7 +101,7 @@ $output .= '
             <th colspan="2">Generic Name</th>
             <th colspan="2">Brand Name</th>   
             ';
-            if ($_GET['group'] == 2) {
+            if (!$_GET['group'] == 2) {
 
     $output .= '
    
@@ -192,7 +192,7 @@ $pdf->render();
 
 
 $canvas = $pdf->getCanvas();
-$canvas->page_text(700, 550, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+$canvas->page_text(700, 560, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
 
 // Output the generated PDF
