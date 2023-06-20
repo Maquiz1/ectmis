@@ -14,13 +14,15 @@ if ($user->isLoggedIn()) {
                 $data_count = $override->getCountReport('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 break;
             case 2:
-                $data = $override->searchBtnDate3('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                $data_count = $override->getCountReport('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                $data = $override->searchBtnDate3('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group']);
+                $data_count = $override->getCountReport('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                // $data = $override->searchBtnDate3('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                // $data_count = $override->getCountReport('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
                 break;
-            case 3:
-                $data = $override->searchBtnDate3('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                $data_count = $override->getCountReport('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                break;
+            // case 3:
+            //     $data = $override->searchBtnDate3('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+            //     $data_count = $override->getCountReport('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+            //     break;
         }
         $successMessage = 'Report Successful Created';
     } catch (Exception $e) {
@@ -38,9 +40,9 @@ if ($_GET['group'] == 1) {
     $title = 'Medicines';
 } elseif ($_GET['group'] == 2) {
     $title = 'Medical Equipments';
-    $span0 = 14;
-    $span1 = 7;
-    $span2 = 7;
+    $span0 = 20;
+    $span1 = 10;
+    $span2 = 10;
 } elseif ($_GET['group'] == 3) {
     $title = 'Accessories';
     
@@ -73,6 +75,11 @@ $output .= '
                 top: -30px;
                 color: blue;
              }
+            .reviewed {
+                position: fixed;
+                right: 470px;
+                top: -1px;
+             }
         </style>
     </head>
     <body>
@@ -82,7 +89,8 @@ $output .= '
             <div class="period">Period ' . $_GET['start'] . ' to ' . $_GET['end'] . '</div>
         </header>
         <footer>
-            <div>SOP CODE 1: <span class="page"></span></div>
+            <div>SOP CODE IHIBAG-CLN_031_V01: <span class="page"></span></div>
+            <div class="reviewed">Reviewed By  .................( INITIALS )</div>
         </footer>
 
 ';
@@ -118,10 +126,13 @@ $output .= '
             if ($_GET['group'] == 2) {
 
     $output .= '
-   
-            <th colspan="2">Quantity</th>
+            <th colspan="2">Required Quantity</th>
+            <th colspan="2">Available Quantity</th>
             <th colspan="2">Units</th>
-
+            <th colspan="2">Last Check</th>  
+            <th colspan="2">Status</th>   
+            <th colspan="2">Remarks</th>   
+            <th colspan="2">Next Check</th>   
             ';
             }
 
@@ -138,9 +149,13 @@ $output .= '
     foreach ($data as $row) {
         $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
         $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
+        $maintainance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['maintainance'];
 
-        $brand_name = $override->getNews('brand', 'id', $row['brand_id'], 'status', 1)[0]['name'];
+
+        $batch_balance = $override->getNews('batch', 'id', $row['batch_id'], 'status', 1)[0]['balance'];
         $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
+        $category_name1 = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
+
         $staff = $override->get('user', 'id', $row['staff_id'])[0];
         $batch_no = $row['batch_no'];
 
@@ -149,6 +164,12 @@ $output .= '
             $status = 'Expired';        
         } else{
             $status = 'Valid';        
+        }
+
+        if ($row['last_check'] = '') {
+            $check_status = 'Not Checked1';
+        } else {
+            $check_status = 'Checked!';
         }
 
         if ($row['balance'] <= 0) {
@@ -168,13 +189,12 @@ $output .= '
             <td colspan="2">' . $row['create_on'] . '</td>
             <td colspan="2">' . $generic_name . '</td>   
             <td colspan="2">' . $generic_balance . '</td>
-            <td colspan="2">' . $row['balance'] . '</td>
      
         ';
         if ($_GET['group'] == 1) {
 
     $output .= '
- 
+            <td colspan="2">' . $row['balance'] . '</td>
             <td colspan="2">' . $category_name .  '</td>
             <td colspan="2">' . $row['expire_date'] . '</td>
             <td colspan="2">' . $status .  '</td>
@@ -188,6 +208,10 @@ $output .= '
  
             <td colspan="2">' . $row['balance'] . '</td>
             <td colspan="2">' . $category_name .  '</td>
+            <td colspan="2">' . $row['last_check'] . '</td>
+            <td colspan="2">' . $check_status .  '</td>
+            <td colspan="2">' . $row['check_remarks'] . '</td>
+            <td colspan="2">' . $row['next_check'] . '</td>
 
         ';
          }

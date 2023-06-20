@@ -494,8 +494,7 @@ if ($user->isLoggedIn()) {
                                         'use_group' => $use_group,
                                     ));
                                     $BatchLastRow1 = $override->lastRow('check_records', 'id');
-                                    $user->updateRecord('batch', array('next_check' => Input::get('next_check')), Input::get('check_batch_id'));
-                                    $user->updateRecord('batch', array('last_check' => Input::get('last_check')), Input::get('check_batch_id'));
+                                    $user->updateRecord('batch', array('last_check' => Input::get('last_check'), 'check_remarks' => Input::get('remarks'),'next_check' => Input::get('next_check')), Input::get('check_batch_id'));
                                     $successMessage = 'Check Status Updated Successful';
                                 } catch (Exception $e) {
                                     die($e->getMessage());

@@ -29,7 +29,7 @@ if ($user->isLoggedIn()) {
             ));
             if ($validate->passed()) {
                 try {
-                    Redirect::to('report2.php?report='.Input::get('report').'&start='.Input::get('start_date').'&end='.Input::get('end_date').'&group='.Input::get('use_group'));
+                    Redirect::to('report2.php?report=' . Input::get('report') . '&start=' . Input::get('start_date') . '&end=' . Input::get('end_date') . '&group=' . Input::get('use_group'));
                 } catch (Exception $e) {
                     die($e->getMessage());
                 }
@@ -135,9 +135,9 @@ if ($user->isLoggedIn()) {
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
-                                                <option value="1">Current Status(by generic)</option>
-                                                <option value="2">Check Report</option>
-                                                <option value="3">Quantity Report</option>
+                                                <option value="1">Validity Report</option>
+                                                <option value="2">Verification / Check Report</option>
+                                                <!-- <option value="3">Quantity Report</option> -->
                                             </select>
                                         </div>
                                         <div class="col-md-1">Group</div>
@@ -208,7 +208,7 @@ if ($user->isLoggedIn()) {
                                                 <th width="8%">DATE</th>
                                                 <th width="10%">GENERIC</th>
                                                 <th width="10%">BRAND</th>
-                                                <th width="8%">BATCH</th>                                               
+                                                <th width="8%">BATCH</th>
                                                 <th width="5%">BALANCE</th>
 
                                             </tr>
@@ -233,8 +233,8 @@ if ($user->isLoggedIn()) {
                                             <?php } ?>
                                         </tbody>
                                     </table>
-                               
-                                    <?php } ?>
+
+                                <?php } ?>
 
                             </div>
                             <?php if (!$_POST) { ?>
