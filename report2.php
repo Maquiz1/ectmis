@@ -97,7 +97,7 @@ $output .= '
     
         <tr>
             <th colspan="2">No.</th>
-            <th colspan="2">Date</th>
+            <th colspan="2">Date Entered</th>
             <th colspan="2">Generic Name</th>
             ';
             if ($_GET['group'] == 1) {
@@ -131,12 +131,26 @@ $output .= '
 
     // Load HTML content into dompdf
     $x = 1;
+    $status = 'Valid';
+    $balance_status = 'Sufficient';
+
+
     foreach ($data as $row) {
         $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
         $brand_name = $override->getNews('brand', 'id', $row['brand_id'], 'status', 1)[0]['name'];
         $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
         $staff = $override->get('user', 'id', $row['staff_id'])[0];
         $batch_no = $row['batch_no'];
+
+
+        if ($row['expire_date'] <= date('Y-m-d')) {
+        $status = 'Expired';
+        }
+
+        if ($row['balance'] <= 0) {
+            $balance_status = 'Out of Stock';
+        }
+
 
 
         $output .= '
@@ -151,10 +165,10 @@ $output .= '
 
     $output .= '
  
-            <td colspan="2">' . $row['balance'] . '</td>
             <td colspan="2">' . $category_name .  '</td>
-            <td colspan="2">' . $category_name .  '</td>
-            <td colspan="2">' . $category_name .  '</td>
+            <td colspan="2">' . $row['expire_date'] . '</td>
+            <td colspan="2">' . $status .  '</td>
+            <td colspan="2">' . $balance_status .  '</td>
         ';
         }
 
@@ -181,9 +195,6 @@ $output .= '
             <br />
             <br />
             <br />
-            <br />
-            <br />
-            <br />
             <p align="right">----' . $user->data()->firstname . ' ' . $user->data()->lastname . '-----<br />Printed By</p>
             <br />
             <br />
@@ -191,9 +202,6 @@ $output .= '
         </td>
 
         <td colspan="' . $span2 . '" align="center" style="font-size: 18px">
-            <br />
-            <br />
-            <br />
             <br />
             <br />
             <br />
