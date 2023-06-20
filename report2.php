@@ -46,28 +46,7 @@ $file_name = $title . '.pdf';
 
 $output = ' ';
 
-$output .= '
-<html>
-<head>
-  <style>
-    @page { margin: 50px; }
-    header { position: fixed; top: -40px; left: 0px; right: 0px; height: 50px; }
-    footer { position: fixed; bottom: -40px; left: 0px; right: 0px; height: 50px; }
-  </style>
-</head>
-<body>
-  <header>
-    <div><span class="page"> e-CTMIS Report</span></div>
-  </header>
-  <footer>
-    <div>SOP CODE 1: <span class="page"></span></div>
-  </footer>
-
-';
-
-
 if ($_GET['group'] == 2) {
-
 
     $output .= '
     <table width="100%" border="1" cellpadding="5" cellspacing="0">
@@ -174,7 +153,7 @@ if ($_GET['group'] == 2) {
 
         <tr>
         <td colspan="15" align="center" style="font-size: 18px">
-            <b>For Period ' . $_GET['start'] . ' to ' .$_GET['end']. '</b>
+            <b>For Period ' . $_GET['start'] . ' to ' .$_GET['end'].'</b>
         </td>
         </tr>
 
@@ -240,15 +219,13 @@ if ($_GET['group'] == 2) {
             <br />
             <br />
             <br />
-            <p align="right">-----'.date('Y-m-d'). '-------<br />Date Printed</p>
+            <p align="right">-----'.date('Y-m-d').'-------<br />Date Printed</p>
             <br />
             <br />
             <br />
         </td>
     </tr>
         </table>  
-        </body>
-</html>
     ';  
 
 }
@@ -279,7 +256,7 @@ $pdf->render();
 // }
 
 $canvas = $pdf->getCanvas();
-$canvas->page_text(700, 550, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+$canvas->page_text(500, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
 
 
