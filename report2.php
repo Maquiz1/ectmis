@@ -101,7 +101,17 @@ $output .= '
             <th colspan="2">Generic Name</th>
             <th colspan="2">Brand Name</th>   
             ';
-            if (!$_GET['group'] == 2) {
+            if ($_GET['group'] == 1) {
+
+    $output .= '
+   
+            <th colspan="2">Quantity</th>
+            <th colspan="2">Units</th>
+
+            ';
+            }
+
+            if ($_GET['group'] == 2) {
 
     $output .= '
    
@@ -134,7 +144,7 @@ $output .= '
             <td colspan="2">' . $brand_name . '</td>
         
         ';
-        if ($_GET['group'] == 2) {
+        if ($_GET['group'] == 1) {
 
     $output .= '
  
@@ -143,6 +153,16 @@ $output .= '
 
         ';
         }
+
+        if ($_GET['group'] == 2) {
+
+        $output .= '
+ 
+            <td colspan="2">' . $row['balance'] . '</td>
+            <td colspan="2">' . $category_name .  '</td>
+
+        ';
+         }
 
         ' 
         </tr>
