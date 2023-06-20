@@ -1121,10 +1121,11 @@ if ($user->isLoggedIn()) {
                                         <thead>
                                             <tr>
                                                 <th width="10%">Date</th>
-                                                <th width="10%">Generic</th>
-                                                <th width="10%">Manage</th>
-                                                <th width="10%"></th>
-
+                                                <th width="15%">Generic</th>
+                                                <th width="35%">Manage</th>
+                                                <th width="20%">Action</th>
+                                                <th width="10%">Entries</th>
+                                                <th width="10%">Checks</th>
                                             </tr>
                                         </thead>
                                         <tbody id="myTable">
@@ -1146,6 +1147,13 @@ if ($user->isLoggedIn()) {
                                                     <td>
                                                         <a href="#updateLocation<?= $batch['id'] ?>" role="button" class="btn btn-info" data-toggle="modal">Update Locations Of Inventory</a>
 
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="data.php?id=11&gid=<?= $batch['id'] ?>" class="btn btn-default">View Entries</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="data.php?id=8&gid=<?= $batch['id'] ?>" class="btn btn-default">View Checks</a>
                                                     </td>
 
                                                 </tr>
@@ -2330,7 +2338,7 @@ if ($user->isLoggedIn()) {
                                         <thead>
                                             <tr>
                                                 <th width="5%">No.</th>
-                                                <th width="40%">Generic  Name</th>
+                                                <th width="40%">Generic Name</th>
                                                 <th width="30%">Location Name</th>
                                                 <th width="25%">Action</th>
 

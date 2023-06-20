@@ -50,7 +50,17 @@ if ($user->data()->accessLevel == 1) {
         </li>
         <li class="active">
             <a href="dashboard1.php">
-                <span class="isw-grid"></span><span class="text">Dashboard 1</span>
+                <span class="isw-grid"></span><span class="text">Details Summary</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="info.php?id=3">
+                <span class="isw-grid"></span><span class="text">List of All Generic Names</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="search.php?id=1">
+                <span class="isw-grid"></span><span class="text">Search Reports</span>
             </a>
         </li>
         <?php
@@ -159,26 +169,11 @@ if ($user->data()->accessLevel == 1) {
                         <span class="glyphicon glyphicon-list"></span><span class="text">View Pdf</span>
                     </a>
                 </li> -->
-                <li class="">
-                    <a href="info.php?id=3">
-                        <span class="glyphicon glyphicon-list"></span><span class="text">List of All Generic Names</span>
-                    </a>
-                </li>
                 <!-- <li class="">
                     <a href="add.php?id=17">
                         <span class="glyphicon glyphicon-list"></span><span class="text">Generic Test</span>
                     </a>
                 </li> -->
-            </ul>
-        </li>
-        <li class="openable">
-            <a href="#"><span class="isw-documents"></span><span class="text">Reports</span></a>
-            <ul>
-                <li>
-                    <a href="search.php?id=1">
-                        <span class="glyphicon glyphicon-search"></span><span class="text">Search Reports</span>
-                    </a>
-                </li>
             </ul>
         </li>
 

@@ -205,7 +205,7 @@ if ($user->isLoggedIn()) {
                     'status' => 2,
                 ), Input::get('id'));
 
-                $checkAssignedBatch = $override->selectData1('assigned_batch', 'batch_id', Input::get('id'), 'status', 1);
+                $checkAssignedBatch = $override->get('assigned_batch', 'batch_id', Input::get('id'));
                 foreach ($checkAssignedBatch as $AssignedBatchID) {
                 $user->updateRecord('assigned_batch', array(
                     'status' => 2,
@@ -217,25 +217,27 @@ if ($user->isLoggedIn()) {
                     'balance' => $genericBalance,
                 ), $generic_id);
 
-                $user->createRecord('batch_records', array(
-                    'generic_id' => $generic_id,
-                    'brand_id' => $brand_id,
-                    'batch_id' => Input::get('id'),
-                    'batch_no' => $batch_no,
-                    'quantity' => 0,
-                    'assigned' => $batchBalance,
-                    'balance' => $genericBalance,
-                    'create_on' => date('Y-m-d'),
-                    'staff_id' => $user->data()->id,
-                    'status' => 2,
-                    'study_id' => $study_id,
-                    'last_check' => $batchLast,
-                    'next_check' => $batchNext,
-                    'category' => $category,
-                    'remarks' => $remarks,
-                    'expire_date' => $batchexpire,
-                    'use_group' => $checkGeneric['use_group'],
-                ));
+                // $user->createRecord('batch_records', array(
+                //     'generic_id' => $generic_id,
+                //     'brand_id' => $brand_id,
+                //     'batch_id' => Input::get('id'),
+                //     'batch_no' => $batch_no,
+                //     'quantity' => 0,
+                //     'assigned' => $batchBalance,
+                //     'balance' => $genericBalance,
+                //     'create_on' => date('Y-m-d'),
+                //     'staff_id' => $user->data()->id,
+                //     'admin_id' => $user->data()->id,
+                //     'site_id' => $user->data()->site_id,
+                //     'status' => 2,
+                //     'study_id' => $study_id,
+                //     'last_check' => $batchLast,
+                //     'next_check' => $batchNext,
+                //     'category' => $category,
+                //     'remarks' => $remarks,
+                //     'expire_date' => $batchexpire,
+                //     'use_group' => $checkGeneric['use_group'],
+                // ));
 
                 $successMessage = 'Medicine / Device Quarantine Successful';
             } else {
@@ -987,7 +989,6 @@ if ($user->isLoggedIn()) {
                                         $amnt = 0;
                                         $pagNum = $override->getCount1('batch', 'generic_id', $_GET['gid'], 'status', 1);
                                         $pages = ceil($pagNum / $numRec);
-                                        // print_r($pages);
                                         if (!$_GET['page'] || $_GET['page'] == 1) {
                                             $page = 0;
                                         } else {

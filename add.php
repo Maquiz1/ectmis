@@ -1151,67 +1151,17 @@ if ($user->isLoggedIn()) {
     <?php include "head.php"; ?>
 
     <style>
-        /* * {
-            box-sizing: border-box;
-        } */
-
-        /* body {
-            font: 16px Arial;
-        } */
-
-        /*the container must be positioned relative:*/
-        /* .autocomplete {
-            position: relative;
+        .select-input {
             display: inline-block;
-        } */
-
-        /* input {
-            border: 1px solid transparent;
-            background-color: #f1f1f1;
-            padding: 10px;
-            font-size: 16px;
-        } */
-
-        /* input[type=text] {
-            background-color: #f1f1f1;
-            width: 100%;
         }
 
-        input[type=submit] {
-            background-color: DodgerBlue;
-            color: #fff;
-            cursor: pointer;
-        } */
+        .select-input select {
+            display: inline-block;
+        }
 
-        /* .autocomplete-items {
-            position: absolute;
-            border: 1px solid #d4d4d4;
-            border-bottom: none;
-            border-top: none;
-            z-index: 99; */
-        /*position the autocomplete items to be the same width as the container:*/
-        /* top: 100%;
-            left: 0;
-            right: 0;
-        } */
-
-        /* .autocomplete-items div {
-            padding: 10px;
-            cursor: pointer;
-            background-color: #fff;
-            border-bottom: 1px solid #d4d4d4;
-        } */
-
-        /*when hovering an item:*/
-        /* .autocomplete-items div:hover { */
-        /* background-color: #e9e9e9;
-        } */
-
-        /*when navigating through the items using the arrow keys:*/
-        /* .autocomplete-active {
-            background-color: DodgerBlue !important;
-            color: #ffffff;
-        } */
+        .select-input input[type="text"] {
+            display: none;
+        }
     </style>
 </head>
 
@@ -2163,7 +2113,7 @@ if ($user->isLoggedIn()) {
                                                     <!-- select -->
                                                     <div class="form-group">
                                                         <label>Generic Name::</label>
-                                                        <select name="generic_id3" id="generic_id3" style="width: 100%;" required>
+                                                        <select name="generic_id3" id="generic_id3" style="width: 100%;" class="select selectpicker input-block-level" required>
                                                             <option value="">Select Generic</option>
                                                             <?php foreach ($override->getData('generic') as $cat) { ?>
                                                                 <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
@@ -2172,19 +2122,6 @@ if ($user->isLoggedIn()) {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <!-- <div class="col-sm-12">
-                                                <div class="row-form clearfix"> -->
-                                                    <!-- select -->
-                                                    <!-- <div class="form-group">
-                                                        <div class="autocomplete" style="width:300px;"> -->
-                                                            <!-- <div class="form-group autocomplete" style="width:300px;"> -->
-                                                            <!-- <label>Generic Name2:</label>
-                                                            <input value="" class="validate[required]" id="name" type="text" name="name" placeholder="Type name..." onkeyup="myFunction()" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
 
                                             <div class="col-sm-4">
                                                 <div class="row-form clearfix">
@@ -3266,27 +3203,22 @@ if ($user->isLoggedIn()) {
                     }
                 });
             });
-
-            /* When the user clicks on the button,
-            toggle between hiding and showing the dropdown content */
-
-            // function myFunction() {
-            //     var input, filter, ul, li, a, i, txtValue;
-            //     input = document.getElementById("name");
-            //     filter = input.value.toUpperCase();
-            //     ul = document.getElementById("myUL");
-            //     li = ul.getElementsByTagName("li");
-            //     for (i = 0; i < li.length; i++) {
-            //         a = li[i].getElementsByTagName("a")[0];
-            //         txtValue = a.textContent || a.innerText;
-            //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            //             li[i].style.display = "";
-            //         } else {
-            //             li[i].style.display = "none";
-            //         }
-            //     }
-            // }
         });
+
+        function toggleInputType(input) {
+            const selectInput = document.getElementById('mySelect');
+            const textInput = document.getElementById('textInput');
+
+            if (input === selectInput) {
+                selectInput.style.display = 'inline-block';
+                textInput.style.display = 'none';
+                textInput.value = '';
+            } else if (input === textInput) {
+                selectInput.style.display = 'none';
+                textInput.style.display = 'inline-block';
+                selectInput.value = 'select';
+            }
+        }
     </script>
 </body>
 
