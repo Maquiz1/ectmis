@@ -135,8 +135,8 @@ if ($user->isLoggedIn()) {
                                         <div class="col-md-2">
                                             <select name="report" style="width: 100%;" required>
                                                 <option value="">Select Report</option>
-                                                <option value="1">Validity Report</option>
-                                                <option value="2">Verification / Check Report</option>
+                                                <option value="1">Validity ( List )Report </option>
+                                                <option value="2">Verification ( Check Report ) </option>
                                                 <!-- <option value="3">Quantity Report</option> -->
                                             </select>
                                         </div>
