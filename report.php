@@ -52,7 +52,7 @@ $output .= '
 <html>
     <head>
         <style>
-            @page { margin: 50px; }
+            @page { margin: 60px; }
             header { position: fixed; top: -30px; left: 0px; right: 0px; height: 50px; }
             footer { position: fixed; bottom: -55px; left: 0px; right: 0px; height: 50px; }
 
@@ -63,13 +63,13 @@ $output .= '
              }
             .period {
                 position: fixed;
-                right: 470px;
+                right: 400px;
                 top: -30px;
                 color: blue;
              }
             .reviewed {
                 position: fixed;
-                right: 470px;
+                right: 350px;
                 top: -1px;
              }
         </style>
