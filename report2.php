@@ -30,17 +30,17 @@ if ($user->isLoggedIn()) {
     Redirect::to('index.php');
 }
 
-$span0 = 11;
-$span1 = 5;
-$span2 = 6;
+$span0 = 16;
+$span1 = 8;
+$span2 = 8;
 
 if ($_GET['group'] == 1) {
     $title = 'Medicines';
 } elseif ($_GET['group'] == 2) {
     $title = 'Medical Equipments';
-    $span0 = 7;
-    $span1 = 4;
-    $span2 = 3;
+    $span0 = 12;
+    $span1 = 6;
+    $span2 = 6;
 } elseif ($_GET['group'] == 3) {
     $title = 'Accessories';
     
@@ -96,10 +96,9 @@ $output .= '
         </tr>
     
         <tr>
-            <th colspan="1">No.</th>
+            <th colspan="2">No.</th>
             <th colspan="2">Date</th>
             <th colspan="2">Generic Name</th>
-            <th colspan="2">Brand Name</th>   
             ';
             if ($_GET['group'] == 1) {
 
@@ -107,6 +106,10 @@ $output .= '
    
             <th colspan="2">Quantity</th>
             <th colspan="2">Units</th>
+            <th colspan="2">Expire Date</th>   
+            <th colspan="2">Status</th>   
+            <th colspan="2">Remarks</th>   
+
 
             ';
             }
@@ -138,11 +141,11 @@ $output .= '
 
         $output .= '
          <tr>
-            <td colspan="1">' . $x . '</td>
+            <td colspan="2">' . $x . '</td>
             <td colspan="2">' . $row['create_on'] . '</td>
-            <td colspan="2">' . $generic_name . '</td>
-            <td colspan="2">' . $brand_name . '</td>
-        
+            <td colspan="2">' . $generic_name . '</td>   
+            <td colspan="2">' . $row['balance'] . '</td>
+     
         ';
         if ($_GET['group'] == 1) {
 
@@ -150,7 +153,8 @@ $output .= '
  
             <td colspan="2">' . $row['balance'] . '</td>
             <td colspan="2">' . $category_name .  '</td>
-
+            <td colspan="2">' . $category_name .  '</td>
+            <td colspan="2">' . $category_name .  '</td>
         ';
         }
 
