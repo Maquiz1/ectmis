@@ -30,17 +30,17 @@ if ($user->isLoggedIn()) {
     Redirect::to('index.php');
 }
 
-$span0 = 16;
-$span1 = 8;
-$span2 = 8;
+$span0 = 18;
+$span1 = 9;
+$span2 = 9;
 
 if ($_GET['group'] == 1) {
     $title = 'Medicines';
 } elseif ($_GET['group'] == 2) {
     $title = 'Medical Equipments';
-    $span0 = 12;
-    $span1 = 6;
-    $span2 = 6;
+    $span0 = 14;
+    $span1 = 7;
+    $span2 = 7;
 } elseif ($_GET['group'] == 3) {
     $title = 'Accessories';
     
@@ -104,7 +104,8 @@ $output .= '
 
     $output .= '
    
-            <th colspan="2">Quantity</th>
+            <th colspan="2">Required Quantity</th>
+            <th colspan="2">Available Quantity</th>
             <th colspan="2">Units</th>
             <th colspan="2">Expire Date</th>   
             <th colspan="2">Status</th>   
@@ -131,12 +132,13 @@ $output .= '
 
     // Load HTML content into dompdf
     $x = 1;
-    $status = 'Valid';
-    $balance_status = 'Sufficient';
-
+    $status = '';
+    $balance_status = '';
 
     foreach ($data as $row) {
         $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
+        $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
+
         $brand_name = $override->getNews('brand', 'id', $row['brand_id'], 'status', 1)[0]['name'];
         $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
         $staff = $override->get('user', 'id', $row['staff_id'])[0];
@@ -144,12 +146,19 @@ $output .= '
 
 
         if ($row['expire_date'] <= date('Y-m-d')) {
-        $status = 'Expired';
+            $status = 'Expired';        
+        } else{
+            $status = 'Valid';        
         }
 
         if ($row['balance'] <= 0) {
             $balance_status = 'Out of Stock';
+        } elseif($row['balance'] > 0 && $row['balance'] < $generic_balance){
+            $balance_status = 'Running Low';
+        } else {
+            $balance_status = 'Sufficient';
         }
+
 
 
 
@@ -158,6 +167,7 @@ $output .= '
             <td colspan="2">' . $x . '</td>
             <td colspan="2">' . $row['create_on'] . '</td>
             <td colspan="2">' . $generic_name . '</td>   
+            <td colspan="2">' . $generic_balance . '</td>
             <td colspan="2">' . $row['balance'] . '</td>
      
         ';
