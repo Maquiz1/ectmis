@@ -57,7 +57,7 @@ $output .= '
 </head>
 <body>
   <header>
-    <div><span class="page"> e-CTMIS Report</span></div>
+    <div><span class="page"> e-CTMIS Report </span></div>
   </header>
   <footer>
     <div>SOP CODE 1: <span class="page"></span></div>
@@ -68,13 +68,12 @@ $output .= '
 
 if ($_GET['group'] == 2) {
 
-
     $output .= '
     <table width="100%" border="1" cellpadding="5" cellspacing="0">
     
         <tr>
             <td colspan="11" align="center" style="font-size: 18px">
-                <b>IFAKARA HEALTH INSTITUTE ( e-CTMIS Report)</b>
+                <b>IFAKARA HEALTH INSTITUTE </b>
             </td>
         </tr>
         <tr>
