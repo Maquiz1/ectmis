@@ -72,6 +72,9 @@ if ($user->isLoggedIn()) {
                             </div>
                         <?php } ?>
 
+                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                        <br>
+
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>INVENTORY STATUS SUMMARY</h1>
@@ -88,15 +91,14 @@ if ($user->isLoggedIn()) {
                                 </li>
                             </ul>
                         </div>
-                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
-                        <br>
+
 
                         <div class="block-fluid">
                             <table id='inventory_report1' cellpadding="0" cellspacing="0" width="100%" class="table">
                                 <thead>
                                     <tr>
 
-                                        <th width="25%">Generic</th>
+                                        <th width="60%">Generic</th>
                                         <th width="3">Required</th>
                                         <th width="3">Balance</th>
                                         <th width="3%"> EmKits</th>
@@ -105,13 +107,11 @@ if ($user->isLoggedIn()) {
                                         <th width="3%"> DRm</th>
                                         <th width="3%"> ScRm</th>
                                         <th width="3%"> VSrm</th>
-                                        <th width="3%"> Exam Rms</th>
+                                        <th width="7%"> Exam Rms</th>
                                         <th width="3%"> Ward</th>
                                         <th width="3%"> CTMr</th>
                                         <th width="3%"> Pharmacy</th>
                                         <th width="3%"> Other</th>
-                                        <th width="3%">Check</th>
-                                        <th width="3%">Validity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -184,19 +184,19 @@ if ($user->isLoggedIn()) {
                                             $balance = $bDiscription['balance'];
                                             $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
 
-                                        $check = 0;
-                                        $check1 = 0;
-                                        foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
-                                            $nextCheck = $batch2['next_check'];
-                                            $expireDate = $batch2['expire_date'];
-                                            if ($nextCheck <= date('Y-m-d')) {
-                                                $check = 1;
-                                            }
+                                            $check = 0;
+                                            $check1 = 0;
+                                            foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
+                                                $nextCheck = $batch2['next_check'];
+                                                $expireDate = $batch2['expire_date'];
+                                                if ($nextCheck <= date('Y-m-d')) {
+                                                    $check = 1;
+                                                }
 
-                                            if ($expireDate <= date('Y-m-d')) {
-                                                $check1 = 1;
+                                                if ($expireDate <= date('Y-m-d')) {
+                                                    $check1 = 1;
+                                                }
                                             }
-                                        }
                                     ?>
                                             <tr>
                                                 <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
@@ -364,28 +364,6 @@ if ($user->isLoggedIn()) {
                                                             <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $OtherSumLoc; ?></a>
                                                     <?php }
                                                     } ?>
-                                                </td>
-                                                <td>
-                                                    <?php if ($sumLoctn <= 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
-                                                    <?php } else if ($check == 1) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
-                                                    <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
-                                                    <?php } else { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
-                                                    <?php } ?>
-                                                </td>
-                                                <td>
-                                                    <?php if ($sumLoctn <= 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
-                                                    <?php } else if ($check1 == 1) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
-                                                    <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
-                                                    <?php } else { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
-                                                    <?php } ?>
                                                 </td>
                                             </tr>
                                     <?php }

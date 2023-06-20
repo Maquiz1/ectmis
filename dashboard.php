@@ -72,6 +72,8 @@ if ($user->isLoggedIn()) {
                             </div>
                         <?php } ?>
 
+                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>INVENTORY STATUS SUMMARY</h1>
@@ -88,10 +90,6 @@ if ($user->isLoggedIn()) {
                                 </li>
                             </ul>
                         </div>
-                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
-
-                        <br>
-
                         <div class="block-fluid">
                             <table id='inventory_report1' cellpadding="0" cellspacing="0" width="100%" class="table">
                                 <thead>
@@ -176,7 +174,7 @@ if ($user->isLoggedIn()) {
                                                     <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
                                                     <?php } else { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Checked!</a>
                                                     <?php } ?>
                                                 </td>
                                                 <td>
@@ -187,7 +185,7 @@ if ($user->isLoggedIn()) {
                                                     <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
                                                     <?php } else { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Valid!</a>
                                                     <?php } ?>
                                                 </td>
                                             </tr>
