@@ -28,6 +28,20 @@ class OverideData{
         return $num;
     }
 
+    public function getCountReport1($table, $field, $value, $where2, $id2, $where3, $id3, $where4, $id4)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $field >= '$value' AND $where2 <= '$id2' AND $where3 = '$id3' AND $where4 = '$id4'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getCountReport2($table, $field, $value, $where2, $id2, $where3,$id3, $where4,$id4, $where5, $id5)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $field >= '$value' AND $where2 <= '$id2' AND $where3 = '$id3' AND $where4 = '$id4' AND $where5 = '$id5'");
+        $num = $query->rowCount();
+        return $num;
+    }
+
     public function getCount($table,$field,$value){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $field = '$value'");
         $num = $query->rowCount();
@@ -240,6 +254,20 @@ class OverideData{
 
     public function searchBtnDate3($table,$var,$value,$var1,$value1,$var2,$value2){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 = '$value2'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDate4($table, $var, $value, $var1, $value1, $var2,$value2, $var3, $value3)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 = '$value2' AND $var3 = '$value3'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function searchBtnDate5($table, $var, $value, $var1, $value1, $var2, $value2, $var3, $value3, $var4, $value4)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $var >= '$value' AND $var1 <= '$value1' AND $var2 = '$value2' AND $var3 = '$value3' OR $var4 = '$value4'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }

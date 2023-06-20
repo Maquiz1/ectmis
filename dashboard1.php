@@ -174,22 +174,22 @@ if ($user->isLoggedIn()) {
                                                     <?php if ($sumLoctn <= 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
                                                     <?php } else if ($check == 1) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Not Checked!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
                                                     <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
                                                     <?php } ?>
                                                 </td>
                                                 <td>
                                                     <?php if ($sumLoctn <= 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
                                                     <?php } else if ($check1 == 1) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
                                                     <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">OK!</a>
                                                     <?php } ?>
                                                 </td>
                                                 <td>

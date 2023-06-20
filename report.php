@@ -10,19 +10,12 @@ if ($user->isLoggedIn()) {
     try {
         switch (Input::get('report')) {
             case 1:
-                $data = $override->searchBtnDate3('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                $data_count = $override->getCountReport('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
+                $data = $override->searchBtnDate4('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group'], 'maintainance', 2);
+                $data_count = $override->getCountReport1('batch', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group'], 'maintainance', 2);
                 break;
             case 2:
-                $data = $override->searchBtnDate3('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group']);
-                $data_count = $override->getCountReport('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group']);
-                // $data = $override->searchBtnDate3('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                // $data_count = $override->getCountReport('check_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                break;
-                // case 3:
-                //     $data = $override->searchBtnDate3('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                //     $data_count = $override->getCountReport('batch_records', 'create_on', $_GET['start'], 'create_on', $_GET['end'], 'use_group', $_GET['group']);
-                //     break;
+                $data = $override->searchBtnDate5('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group'] ,'maintainance',1, 'maintainance', 3);
+                $data_count = $override->getCountReport2('batch', 'last_check', $_GET['start'], 'last_check', $_GET['end'], 'use_group', $_GET['group'], 'maintainance', 1, 'maintainance', 3);
         }
         $successMessage = 'Report Successful Created';
     } catch (Exception $e) {
@@ -61,7 +54,7 @@ $output .= '
         <style>
             @page { margin: 50px; }
             header { position: fixed; top: -30px; left: 0px; right: 0px; height: 50px; }
-            footer { position: fixed; bottom: -50px; left: 0px; right: 0px; height: 50px; }
+            footer { position: fixed; bottom: -55px; left: 0px; right: 0px; height: 50px; }
 
             .tittle {
                 position: fixed;
@@ -106,7 +99,7 @@ $output .= '
             <th colspan="2">No.</th>
             <th colspan="2">Generic Name</th>
             ';
-if ($_GET['group'] == 1 || $_GET['group'] == 3 || $_GET['group'] == 4) {
+if (Input::get('report') == 1) {
 
     $output .= '
    
@@ -121,7 +114,7 @@ if ($_GET['group'] == 1 || $_GET['group'] == 3 || $_GET['group'] == 4) {
             ';
 }
 
-if ($_GET['group'] == 2) {
+if (Input::get('report') == 2) {
 
     $output .= '
             <th colspan="2">Required Quantity</th>
@@ -138,25 +131,15 @@ if ($_GET['group'] == 2) {
     
      ';
 
-// Load HTML content into dompdf
 $x = 1;
 $status = '';
 $balance_status = '';
-
-// print_r($data[0]['next_check']);
 
 foreach ($data as $row) {
     $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
     $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
     $maintainance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['maintainance'];
-
-
-    // $batch_balance = $override->getNews('batch', 'id', $row['batch_id'], 'status', 1)[0]['balance'];
     $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
-    // $category_name1 = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
-
-    // $staff = $override->get('user', 'id', $row['staff_id'])[0];
-    // $batch_no = $row['batch_no'];
 
     if ($row['expire_date'] <= date('Y-m-d')) {
         $status = 'Expired';
@@ -188,7 +171,7 @@ foreach ($data as $row) {
             <td colspan="2">' . $generic_balance . '</td>
      
         ';
-    if ($_GET['group'] == 1 || $_GET['group'] == 3 || $_GET['group'] == 4) {
+    if (Input::get('report') == 1) {
 
         $output .= '
             <td colspan="2">' . $row['balance'] . '</td>
@@ -199,12 +182,12 @@ foreach ($data as $row) {
         ';
     }
 
-    if ($_GET['group'] == 2) {
+    if (Input::get('report') == 2) {
 
         $output .= '
  
             <td colspan="2">' . $row['balance'] . '</td>
-            <td colspan="2">' . $row['last_check'] . '</td>
+            <td colspan="2">' . $row['last_check1'] . '</td>
             <td colspan="2">' . $check_status .  '</td>
             <td colspan="2">' . $row['check_remarks'] . '</td>
             <td colspan="2">' . $row['next_check'] . '</td>
