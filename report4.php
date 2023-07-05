@@ -10,44 +10,20 @@ if ($user->isLoggedIn()) {
     try {
         switch (Input::get('report')) {
             case 1:
-                $data = $override->getNewsASC0('generic', 'status',1, 'balance', 0,'name');
-                $data_count = $override->getNewsASC0Count('generic', 'status', 1, 'balance', 0, 'name');
+                $data = $override->getNewsASC1('batch', 'status',1, 'expire_date', date('Y-m-d'), 'batch_no');
+                $data_count = $override->getNewsASC1Count('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'batch_no');
                 break;
             case 2:
-                $data = $override->getNewsASC1('generic', 'status', 1, 'balance', 0, 'name');
-                $data_count = $override->getNewsASC1Count('generic', 'status', 1, 'balance', 0, 'name');
+                $data = $override->getNewsASC1G('batch', 'status', 1,'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data_count = $override->getNewsASC1CountG('batch', 'status', 1,'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
                 break;
             case 3:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC1G('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data_count = $override->getNewsASC1CountG('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
                 break;
             case 4:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                break;
-            case 5:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                break;
-            case 6:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                break;
-            case 7:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                break;
-            case 8:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                break;
-            case 9:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                break;
-            case 10:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC1G('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data_count = $override->getNewsASC1CountG('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
                 break;
         }
         $successMessage = 'Report Successful Created';
@@ -58,40 +34,30 @@ if ($user->isLoggedIn()) {
     Redirect::to('index.php');
 }
 
-$span0 = 10;
-$span1 = 5;
-$span2 = 5;
-
-$quantity = '';
-
-if ($_GET['report'] == 1 || $_GET['report'] == 3 || $_GET['report'] == 5 || $_GET['report'] == 7 || $_GET['report'] == 9) {
-    $quantity = 'Available';
-
-} elseif ($_GET['report'] == 2 || $_GET['report'] == 4 || $_GET['report'] == 6 || $_GET['report'] == 8 || $_GET['report'] == 10) {
-    $quantity = 'Out Of Stock';
-
-} 
-
+$span0 = 12;
+$span1 = 6;
+$span2 = 6;
 
 if ($_GET['group'] == 1) {
+
     $title =
     $quantity . ' Inventory ( Medicines )';
 } elseif ($_GET['group'] == 2) {
     $title =
-    $quantity . ' Inventory (Medical Equipments)';
-    $span0 = 10;
-    $span1 = 5;
-    $span2 = 5;
+    $quantity . ' Expired Inventory (Medical Equipments)';
+    $span0 = 12;
+    $span1 = 6;
+    $span2 = 6;
 } elseif ($_GET['group'] == 3) {
     $title =
-    $quantity .  ' Inventory ( Accessories )';
+    $quantity .  ' Expired Inventory ( Accessories )';
     
 } elseif ($_GET['group'] == 4) {
     $title =
-    $quantity . ' Inventory ( Supplies )';
+    $quantity . ' Expired  Inventory ( Supplies )';
 } else {
     $title =
-        $quantity .' '. 'Total Inventory ';
+        $quantity . '  Expired'. ' Total Inventory ';
 }
 
 $pdf = new Pdf();
@@ -149,9 +115,10 @@ $output .= '
     
         <tr>
             <th colspan="2">No.</th>
-            <th colspan="2">Generic Name</th>
-            <th colspan="2">Required Quantity</th>
+            <th colspan="2">Batch No.</th>
             <th colspan="2">Available Quantity</th>
+            <th colspan="2">Categry</th>
+            <th colspan="2">Date Expired</th>
             <th colspan="2">Status</th>
         </tr>
     
@@ -165,9 +132,9 @@ $output .= '
     // print_r($data[0]['next_check']);
 
     foreach ($data as $row) {
-        $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
-        $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
-        $maintainance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['maintainance'];
+        // $generic_name = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['name'];
+        // $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
+        // $maintainance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['maintainance'];
 
 
         // $batch_balance = $override->getNews('batch', 'id', $row['batch_id'], 'status', 1)[0]['balance'];
@@ -199,11 +166,11 @@ $output .= '
 
 
 
-    //     if ($row['expire_date'] <= date('Y-m-d')) {
-    //         $status = 'Expired';        
-    //     } else{
-    //         $status = 'Valid';        
-    //     }
+        if ($row['expire_date'] <= date('Y-m-d')) {
+            $status = 'Expired';        
+        } else{
+            $status = 'Valid';        
+        }
 
         if ($row['balance'] <= 0) {
             $balance_status = 'Out of Stock';
@@ -219,27 +186,29 @@ $output .= '
 
         }
 
-        // if ($row['last_check'] = '') {
-        //     $check_status = 'Not Checked1' .' - '. $balance_status;
-        // } else {
-        //     $check_status = 'Checked!' .' - '. $balance_status;
-        // }
+    // if ($row['last_check'] = '') {
+    //     $check_status = 'Not Checked1' .' - '. $balance_status;
+    // } else {
+    //     $check_status = 'Checked!' .' - '. $balance_status;
+    // }
 
 
-
+    if ($_GET['group'] == 1 || $_GET['group'] == 3 || $_GET['group'] == 4) {
 
         $output .= '
          <tr>
             <td colspan="2">' . $x . '</td>
-            <td colspan="2">' . $row['name'] . '</td>
-            <td colspan="2">' . $row['notify_quantity'] . '</td>
+            <td colspan="2">' . $row['batch_no'] . '</td>
             <td colspan="2">' . $row['balance'] . '</td>
-            <td colspan="2">' . $balance_status . '</td>
+            <td colspan="2">' . $category_name . '</td>
+            <td colspan="2">' . $row['expire_date'] . '</td>
+            <td colspan="2">' . $status . '</td>
         </tr>
         ';
 
         $x += 1;
-    }
+    
+    }}
 
     $output .= '
     <tr>
