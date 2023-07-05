@@ -98,7 +98,7 @@ if ($user->isLoggedIn()) {
                                 <thead>
                                     <tr>
 
-                                        <th width="60%">Generic</th>
+                                        <th width="20%">Generic</th>
                                         <th width="3">Required</th>
                                         <th width="3">Balance</th>
                                         <th width="3%"> EmKits</th>
