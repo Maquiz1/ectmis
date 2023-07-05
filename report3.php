@@ -22,31 +22,31 @@ if ($user->isLoggedIn()) {
                 $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 4:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 5:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 6:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 7:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 8:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 9:
-                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
-                $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data_count = $override->getNewsASC0CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
             case 10:
-                $data = $override->getNewsASC0G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
+                $data = $override->getNewsASC1G('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 $data_count = $override->getNewsASC1CountG('generic', 'status', 1, 'balance', 0, 'use_group', $_GET['group'], 'name');
                 break;
         }
@@ -61,25 +61,39 @@ if ($user->isLoggedIn()) {
 $span0 = 10;
 $span1 = 5;
 $span2 = 5;
-$title = 'Available Inventory ( Total Inventory )';
+
+$quantity = '';
+
+if ($_GET['report'] == 1 || $_GET['report'] == 3 || $_GET['report'] == 5 || $_GET['report'] == 7 || $_GET['report'] == 9) {
+    $quantity = 'Available';
+
+} elseif ($_GET['report'] == 2 || $_GET['report'] == 4 || $_GET['report'] == 6 || $_GET['report'] == 8 || $_GET['report'] == 10) {
+    $quantity = 'Out Of Stock';
+
+} 
+
 
 if ($_GET['group'] == 1) {
-    $title = 'Available Inventory ( Medicines )';
+    $title =
+    $quantity . ' Inventory ( Medicines )';
 } elseif ($_GET['group'] == 2) {
-    $title = 'Available Inventory (Medical Equipments)';
+    $title =
+    $quantity . ' Inventory (Medical Equipments)';
     $span0 = 10;
     $span1 = 5;
     $span2 = 5;
 } elseif ($_GET['group'] == 3) {
-    $title = 'Available Inventory ( Accessories )';
+    $title =
+    $quantity .  ' Inventory ( Accessories )';
     
 } elseif ($_GET['group'] == 4) {
-    $title = 'Available Inventory ( Supplies )';
+    $title =
+    $quantity . ' Inventory ( Supplies )';
 }
 
 $pdf = new Pdf();
 
-$file_name = $title . '.pdf';
+$file_name = $title .' - '. date('Y-m-d') .  '.pdf';
 
 $output = ' ';
 
@@ -168,10 +182,16 @@ $output .= '
 
         if ($row['balance'] <= 0) {
             $balance_status = 'Out of Stock';
+            $quantity = 'Out of Stock';
+
         } elseif($row['balance'] > 0 && $row['balance'] < $row['notify_quantity']){
             $balance_status = 'Running Low';
+            $quantity = 'Running Low';
+
         } else {
             $balance_status = 'Sufficient';
+            $quantity = 'Sufficient';
+
         }
 
         // if ($row['last_check'] = '') {
