@@ -154,12 +154,16 @@ if ($user->isLoggedIn()) {
                                             foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
                                                 $nextCheck = $batch2['next_check'];
                                                 $expireDate = $batch2['expire_date'];
+                                                $group = $batch2['use_group'];
+
                                                 if ($nextCheck <= date('Y-m-d')) {
                                                     $check = 1;
                                                 }
 
-                                                if ($expireDate <= date('Y-m-d')) {
-                                                    $check1 = 1;
+                                                if (!$group = 2) {
+                                                    if ($expireDate <= date('Y-m-d')) {
+                                                        $check1 = 1;
+                                                    }
                                                 }
                                             }
                                     ?>

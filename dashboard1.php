@@ -189,9 +189,12 @@ if ($user->isLoggedIn()) {
                                             foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
                                                 $nextCheck = $batch2['next_check'];
                                                 $expireDate = $batch2['expire_date'];
+
                                                 if ($nextCheck <= date('Y-m-d')) {
                                                     $check = 1;
                                                 }
+
+
 
                                                 if ($expireDate <= date('Y-m-d')) {
                                                     $check1 = 1;
@@ -375,18 +378,18 @@ if ($user->isLoggedIn()) {
                 </div>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <a href="dashboard.php?page=<?php if (($_GET['page'] - 1) > 0) {
+                        <a href="dashboard1.php?page=<?php if (($_GET['page'] - 1) > 0) {
                                                         echo $_GET['page'] - 1;
                                                     } else {
                                                         echo 1;
                                                     } ?>" class="btn btn-default">
                             < </a>
                                 <?php for ($i = 1; $i <= $pages; $i++) { ?>
-                                    <a href="dashboard.php?page=<?= $_GET['id'] ?>&page=<?= $i ?>" class="btn btn-default <?php if ($i == $_GET['page']) {
+                                    <a href="dashboard1.php?page=<?= $_GET['id'] ?>&page=<?= $i ?>" class="btn btn-default <?php if ($i == $_GET['page']) {
                                                                                                                                 echo 'active';
                                                                                                                             } ?>"><?= $i ?></a>
                                 <?php } ?>
-                                <a href="dashboard.php?page=<?php if (($_GET['page'] + 1) <= $pages) {
+                                <a href="dashboard1.php?page=<?php if (($_GET['page'] + 1) <= $pages) {
                                                                 echo $_GET['page'] + 1;
                                                             } else {
                                                                 echo $i - 1;
