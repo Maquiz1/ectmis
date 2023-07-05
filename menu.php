@@ -188,6 +188,56 @@ if ($user->data()->accessLevel == 1) {
                         <span class="text">Burn / destroyed </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 3) ?></span>
                     </a>
                 </li>
+                <li class="">
+                    <a href="report3.php?report=1">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Available Inventory</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=2">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Out of Stock Inventory</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=3&group=1">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Available Inventory (Medicines)</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=4&group=1">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Out of Stock Inventory (Medicines)</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=5&group=2">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Available Inventory (Medical Equipment)</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=6&group=2">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Out of Stock Inventory ( Medical Equipment )</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=7&group=3">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Available Inventory ( Accessories )</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=8&group=3">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Out of Stock Inventory ( Accessories )</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=9&group=4">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Available Inventory ( Supplies )</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report3.php?report=10&group=4">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Out of Stock Inventory ( Supplies )</span>
+                    </a>
+                </li>
                 <li>
                     <a href="info.php?id=22">
                         <span class="glyphicon glyphicon-share"></span><span class="text">Manage</span>

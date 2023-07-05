@@ -107,6 +107,63 @@ class OverideData{
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
+
+    public function getNewsASC0($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 > '$id2' ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getNewsASC0Count($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 > '$id2' ORDER BY $name ASC");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getNewsASC1($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 <= '$id2' ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getNewsASC1Count($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 <= '$id2' ORDER BY $name ASC");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+
+    public function getNewsASC0G($table, $where, $id, $where2, $id2,$where3, $id3, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 > '$id2' AND $where3 = '$id3'  ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getNewsASC0CountG($table, $where, $id, $where2, $id2,$where3, $id3, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 > '$id2' AND $where3 = '$id3' ORDER BY $name ASC");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getNewsASC1G($table, $where, $id, $where2, $id2, $where3, $id3, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 <= '$id2' AND $where3 = '$id3' ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getNewsASC1CountG($table, $where, $id, $where2, $id2, $where3, $id3, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 <= '$id2' AND $where3 = '$id3' ORDER BY $name ASC");
+        $num = $query->rowCount();
+        return $num;
+    }
     
     public function getNews1($table,$where,$id,$where2,$id2,$where3,$id3){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 = '$id2' AND $where3 = '$id3'");
