@@ -181,7 +181,7 @@ if ($user->isLoggedIn()) {
                                                 </td>
                                                 <td>
                                                     <?php if ($sumLoctn <= 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
                                                     <?php } else if ($check == 1) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
                                                     <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
@@ -192,7 +192,7 @@ if ($user->isLoggedIn()) {
                                                 </td>
                                                 <td>
                                                     <?php if ($sumLoctn <= 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
+                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
                                                     <?php } else if ($check1 == 1) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
                                                     <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
