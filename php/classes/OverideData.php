@@ -101,6 +101,13 @@ class OverideData{
         return $result;
     }
 
+    public function getNewsASC($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 = '$id2' ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
     public function getNews1($table,$where,$id,$where2,$id2,$where3,$id3){
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 = '$id2' AND $where3 = '$id3'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -175,10 +182,17 @@ class OverideData{
         $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id'");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
-    }
+    }    
 
     public function get2($table,$value,$where,$id){
         $query = $this->_pdo->query("SELECT $value FROM $table WHERE $where = '$id'");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getDataAsc($table, $where, $id, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' ORDER BY $name ASC");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }

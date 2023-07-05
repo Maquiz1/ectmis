@@ -8,7 +8,7 @@ $random = new Random();
 header('Content-Type: application/json');
 
 $output = array();
-$all_generic = $override->get('generic', 'status', 1);
+$all_generic = $override->getDataAsc('generic', 'status', 1,'name');
 foreach ($all_generic as $name) {
     $output[] = $name['name'];
 }

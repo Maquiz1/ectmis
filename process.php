@@ -35,7 +35,7 @@ if ($_GET['content'] == 'region') {
 } elseif ($_GET['content'] == 'generic_id33') {
     if ($_GET['getUid']) {
         $output = array();
-        $project_id = $override->getNews('generic', 'id', $_GET['getUid'], 'status', 1);
+        $project_id = $override->getNewsASC('generic', 'id', $_GET['getUid'], 'status', 1,'name');
         foreach ($project_id as $name) {
             $output['use_group'] .= $name['use_group'];
         }
@@ -173,7 +173,7 @@ if ($_GET['content'] == 'region') {
 } elseif ($_GET['content'] == 'update_generic_name') {
     if ($_GET['getUid']) {
         $output = array();
-        $project_id = $override->get('generic', 'id', $_GET['getUid']);
+        $project_id = $override->getDataAsc('generic', 'id', $_GET['getUid'],'name');
         foreach ($project_id as $name) {
             $output['update_generic_id'] = $name['id'];
         }
@@ -277,7 +277,7 @@ if ($_GET['content'] == 'region') {
 
     if ($_GET['getUid_status']) {
         $output = array();
-        $all_generic = $override->get('generic', 'status', $_GET['getUid_status']);
+        $all_generic = $override->getDataAsc('generic', 'status', $_GET['getUid_status'],'name');
         foreach ($all_generic as $name) {
             $output[] = $name['name'];
         }
@@ -286,7 +286,7 @@ if ($_GET['content'] == 'region') {
 }
 
 elseif ($_GET['content'] == 'all_generic2') {
-    $all_generic = $override->get('generic', 'status', $_GET['getUid_status']);
+    $all_generic = $override->getDataAsc('generic', 'status', $_GET['getUid_status'],'name');
     ?>
     <option value="">Select Brands</option>
     <?php foreach ($all_generic as $batch) { ?>
