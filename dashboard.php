@@ -134,8 +134,17 @@ if ($user->isLoggedIn()) {
                                             $useGroup = $override->get('use_group', 'id', $bDiscription['use_group'])[0]['name'];
                                             $form = $override->get('drug_cat', 'id', $bDiscription['category_id'])[0]['name'];
 
-                                            $sumLoctn = $override->getSumD2('assigned_batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
-                                            $sumNotify = $override->getSumD2('assigned_batch', 'notify_quantity', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(notify_quantity)'];
+                                            $sumLoctn = 0;
+                                            $sumNotify = 0;
+                                            if ($override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'] > 0) {
+                                                $sumLoctn = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
+                                            }
+                                            // print_r($sumLoctn);
+
+                                            // if ($override->getSumD2('batch', 'notify_quantity', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(notify_quantity)'] > 0) {
+                                            //     $sumNotify = $override->getSumD2('batch', 'notify_quantity', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(notify_quantity)'];
+                                            // }
+
                                             $Notify = $bDiscription['notify_quantity'];
                                             $balance = $bDiscription['balance'];
                                             $batchBalance = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
@@ -171,7 +180,7 @@ if ($user->isLoggedIn()) {
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
                                                     <?php } else if ($check == 1) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
-                                                    <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
+                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
                                                     <?php } else { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Checked!</a>
@@ -182,7 +191,7 @@ if ($user->isLoggedIn()) {
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Finished</a>
                                                     <?php } else if ($check1 == 1) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
-                                                    <?php } else if ($sumLoctn < $sumNotify && $sumLoctn > 0) { ?>
+                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
                                                     <?php } else { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Valid!</a>
