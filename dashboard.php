@@ -257,15 +257,19 @@ if ($user->isLoggedIn()) {
                                                             </a>
                                                         </div>
                                                     <?php } else if ($check == 1) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
-                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
                                                         <div class="hover-container">
-                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
 
                                                             <div class="hover-text"><?php echo 'Increase this Stock'; ?></div>
                                                             </a>
                                                         </div>
-                                                    <?php } else { ?>
+                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
+
+                                                            <div class="hover-text"><?php echo 'Please Check this Stock'; ?></div>
+                                                            </a>
+                                                        </div> <?php } else { ?>
                                                         <div class="hover-container">
                                                             <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Checked!</a>
 
