@@ -165,11 +165,6 @@ if ($user->isLoggedIn()) {
                                             if ($override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'] > 0) {
                                                 $sumLoctn = $override->getSumD2('batch', 'balance', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(balance)'];
                                             }
-                                            // print_r($sumLoctn);
-
-                                            // if ($override->getSumD2('batch', 'notify_quantity', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(notify_quantity)'] > 0) {
-                                            //     $sumNotify = $override->getSumD2('batch', 'notify_quantity', 'generic_id', $bDiscription['id'], 'status', 1)[0]['SUM(notify_quantity)'];
-                                            // }
 
                                             $Notify = $bDiscription['notify_quantity'];
                                             $balance = $bDiscription['balance'];
@@ -177,20 +172,35 @@ if ($user->isLoggedIn()) {
 
                                             $check = 0;
                                             $check1 = 0;
-                                            foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
-                                                $nextCheck = $batch2['next_check'];
-                                                $expireDate = $batch2['expire_date'];
-                                                $group = $batch2['use_group'];
+                                            // foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $batch2) {
+                                            //     $nextCheck = $batch2['next_check'];
+                                            //     $expireDate = $batch2['expire_date'];
+                                            //     $group = $batch2['use_group'];
 
+                                            //     if ($nextCheck <= date('Y-m-d')) {
+                                            //         $check = 1;
+                                            //     }
+
+                                            //     // if (!$group = 2) {
+                                            //     //     if ($expireDate <= date('Y-m-d')) {
+                                            //     //         $check1 = 1;
+                                            //     //     }
+                                            //     // }
+                                            // }
+
+                                            $found1 = false;
+                                            foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $value1) {
+                                                $nextCheck = $value1['next_check'];
                                                 if ($nextCheck <= date('Y-m-d')) {
-                                                    $check = 1;
+                                                    $found1 = true;
+                                                    break;
                                                 }
+                                            }
 
-                                                // if (!$group = 2) {
-                                                //     if ($expireDate <= date('Y-m-d')) {
-                                                //         $check1 = 1;
-                                                //     }
-                                                // }
+                                            if ($found1) {
+                                                $check = 1;
+                                            } else {
+                                                $check = 0;
                                             }
 
 
@@ -200,6 +210,7 @@ if ($user->isLoggedIn()) {
 
                                             foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $value) {
                                                 $expireDate = $value['expire_date'];
+                                                $group = $value['use_group'];
 
                                                 if ($expireDate <= date('Y-m-d') && $group != 2) {
                                                     $found = true;
@@ -258,18 +269,21 @@ if ($user->isLoggedIn()) {
                                                         </div>
                                                     <?php } else if ($check == 1) { ?>
                                                         <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
+
+                                                            <div class="hover-text"><?php echo 'Please Check this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
+
+                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
+                                                        <div class="hover-container">
                                                             <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
 
                                                             <div class="hover-text"><?php echo 'Increase this Stock'; ?></div>
                                                             </a>
                                                         </div>
-                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
-                                                        <div class="hover-container">
-                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
 
-                                                            <div class="hover-text"><?php echo 'Please Check this Stock'; ?></div>
-                                                            </a>
-                                                        </div> <?php } else { ?>
+                                                    <?php } else { ?>
                                                         <div class="hover-container">
                                                             <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Checked!</a>
 
