@@ -398,4 +398,33 @@ class OverideData{
         return $result;
     }
 
+
+    public function getNewsASC030($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 > '$id2' ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getNewsASC0Count30($table, $where, $id, $where2, $id2, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 > '$id2' ORDER BY $name ASC");
+        $num = $query->rowCount();
+        return $num;
+    }
+
+    public function getNewsASC1G30($table, $where, $id, $where2, $id2, $where3, $id3, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 <= '$id2' AND $where3 = '$id3' ORDER BY $name ASC");
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getNewsASC1CountG30($table, $where, $id, $where2, $id2, $where3, $id3, $name)
+    {
+        $query = $this->_pdo->query("SELECT * FROM $table WHERE $where = '$id' AND $where2 <= '$id2' AND $where3 = '$id3' ORDER BY $name ASC");
+        $num = $query->rowCount();
+        return $num;
+    }
+
 }
