@@ -28,6 +28,31 @@ if ($user->isLoggedIn()) {
 <head>
     <title> Dashboard | e-CTMIS </title>
     <?php include "head.php"; ?>
+    <style>
+        .hover-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hover-container .hover-text {
+            visibility: hidden;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .hover-container:hover .hover-text {
+            visibility: visible;
+        }
+    </style>
 </head>
 
 <body>
@@ -206,11 +231,23 @@ if ($user->isLoggedIn()) {
                                                 <td><?= $notify_quantity ?></td>
                                                 <td>
                                                     <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning"><?= $balance; ?></a>
+                                                        <div class="hover-container">
+                                                            <a href="add.php?id=11" role="button" class="btn btn-warning"><?= $balance; ?></a>
+                                                            <div class="hover-text"><?php echo 'Receive newe Batch'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } elseif ($batchBalance == 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger"><?= $balance; ?></a>
+                                                        <div class="hover-container">
+                                                            <a href="add.php?id=11" role="button" class="btn btn-danger"><?= $balance; ?></a>
+                                                            <div class="hover-text"><?php echo 'Receive new Batch'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success"><?= $balance; ?></a>
+                                                        <div class="hover-container">
+                                                            <a href="add.php?id=11" role="button" class="btn btn-success"><?= $balance; ?></a>
+                                                            <div class="hover-text"><?php echo 'Recive new Batch'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } ?>
                                                 </td>
                                                 <td><?php if ($EmKitsSumLoc == '') {
@@ -219,11 +256,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($EmKitsSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-danger"><?= $EmKitsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-danger"><?= $EmKitsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($EmKits['notify_quantity'] >= $EmKitsSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-warning"><?= $EmKitsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-warning"><?= $EmKitsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($EmKits['notify_quantity'] < $EmKitsSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-info"><?= $EmKitsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=1&gid=<?= $bDiscription['id'] ?>&lbid=<?= $EmKits['id'] ?>" role="button" class="btn btn-info"><?= $EmKitsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -233,11 +282,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($AmKitsSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-danger"><?= $AmKitsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-danger"><?= $AmKitsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($AmKits['notify_quantity'] >= $AmKitsSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-warning"><?= $AmKitsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-warning"><?= $AmKitsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($AmKits['notify_quantity'] < $AmKitsSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-info"><?= $AmKitsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=2&gid=<?= $bDiscription['id'] ?>&lbid=<?= $AmKits['id'] ?>" role="button" class="btn btn-info"><?= $AmKitsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -247,11 +308,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($ECRmSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-danger"><?= $ECRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-danger"><?= $ECRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($ECRm['notify_quantity'] >= $ECRmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-warning"><?= $ECRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-warning"><?= $ECRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($ECRm['notify_quantity'] < $ECRmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-info"><?= $ECRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=3&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ECRm['id'] ?>" role="button" class="btn btn-info"><?= $ECRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -261,11 +334,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($DRmSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-danger"><?= $DRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-danger"><?= $DRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($DRm['notify_quantity'] >= $DRmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-warning"><?= $DRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-warning"><?= $DRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($DRm['notify_quantity'] < $DRmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-info"><?= $DRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=4&gid=<?= $bDiscription['id'] ?>&lbid=<?= $DRm['id'] ?>" role="button" class="btn btn-info"><?= $DRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -275,11 +360,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($ScRmSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-danger"><?= $ScRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-danger"><?= $ScRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($ScRm['notify_quantity'] >= $ScRmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-warning"><?= $ScRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-warning"><?= $ScRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($ScRm['notify_quantity'] < $ScRmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-info"><?= $ScRmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=5&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ScRm['id'] ?>" role="button" class="btn btn-info"><?= $ScRmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -289,11 +386,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($VSrmSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-danger"><?= $VSrmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-danger"><?= $VSrmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($VSrm['notify_quantity'] >= $VSrmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-warning"><?= $VSrmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-warning"><?= $VSrmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($VSrm['notify_quantity'] < $VSrmSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-info"><?= $VSrmSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=6&gid=<?= $bDiscription['id'] ?>&lbid=<?= $VSrm['id'] ?>" role="button" class="btn btn-info"><?= $VSrmSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -303,11 +412,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($ExamRmsSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRmsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-danger"><?= $ExamRmsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($ExamRms['notify_quantity'] >= $ExamRmsSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-warning"><?= $ExamRmsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-warning"><?= $ExamRmsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($ExamRms['notify_quantity'] < $ExamRmsSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-info"><?= $ExamRmsSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=7&gid=<?= $bDiscription['id'] ?>&lbid=<?= $ExamRms['id'] ?>" role="button" class="btn btn-info"><?= $ExamRmsSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -317,11 +438,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($WardSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $WardSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-danger"><?= $WardSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($Ward['notify_quantity'] >= $WardSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-warning"><?= $WardSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-warning"><?= $WardSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($Ward['notify_quantity'] < $WardSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $WardSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=8&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Ward['id'] ?>" role="button" class="btn btn-info"><?= $WardSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -331,11 +464,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($CTMrSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-danger"><?= $CTMrSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-danger"><?= $CTMrSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($CTMr['notify_quantity'] >= $CTMrSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-warning"><?= $CTMrSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-warning"><?= $CTMrSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($CTMr['notify_quantity'] < $CTMrSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-info"><?= $CTMrSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=9&gid=<?= $bDiscription['id'] ?>&lbid=<?= $CTMr['id'] ?>" role="button" class="btn btn-info"><?= $CTMrSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -345,11 +490,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($PharmacySumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-danger"><?= $PharmacySumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-danger"><?= $PharmacySumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($Pharmacy['notify_quantity'] >= $PharmacySumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-warning"><?= $PharmacySumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-warning"><?= $PharmacySumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($Pharmacy['notify_quantity'] < $PharmacySumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-info"><?= $PharmacySumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=10&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Pharmacy['id'] ?>" role="button" class="btn btn-info"><?= $PharmacySumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -360,11 +517,23 @@ if ($user->isLoggedIn()) {
                                                     ?>
                                                         <?php if ($OtherSumLoc == 0) {
                                                         ?>
-                                                            <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-danger"><?= $OtherSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-danger"><?= $OtherSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php } elseif ($Other['notify_quantity'] >= $OtherSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-warning"><?= $OtherSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-warning"><?= $OtherSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                         <?php  } elseif ($Other['notify_quantity'] < $OtherSumLoc) { ?>
-                                                            <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $OtherSumLoc; ?></a>
+                                                            <div class="hover-container">
+                                                                <a href="data.php?id=13&lid=96&gid=<?= $bDiscription['id'] ?>&lbid=<?= $Other['id'] ?>" role="button" class="btn btn-info"><?= $OtherSumLoc; ?></a>
+                                                                <div class="hover-text"><?php echo 'Increase same Batch'; ?></div>
+                                                                </a>
+                                                            </div>
                                                     <?php }
                                                     } ?>
                                                 </td>
@@ -379,10 +548,10 @@ if ($user->isLoggedIn()) {
                 <div class="pull-right">
                     <div class="btn-group">
                         <a href="dashboard1.php?page=<?php if (($_GET['page'] - 1) > 0) {
-                                                        echo $_GET['page'] - 1;
-                                                    } else {
-                                                        echo 1;
-                                                    } ?>" class="btn btn-default">
+                                                            echo $_GET['page'] - 1;
+                                                        } else {
+                                                            echo 1;
+                                                        } ?>" class="btn btn-default">
                             < </a>
                                 <?php for ($i = 1; $i <= $pages; $i++) { ?>
                                     <a href="dashboard1.php?page=<?= $_GET['id'] ?>&page=<?= $i ?>" class="btn btn-default <?php if ($i == $_GET['page']) {
@@ -390,10 +559,10 @@ if ($user->isLoggedIn()) {
                                                                                                                             } ?>"><?= $i ?></a>
                                 <?php } ?>
                                 <a href="dashboard1.php?page=<?php if (($_GET['page'] + 1) <= $pages) {
-                                                                echo $_GET['page'] + 1;
-                                                            } else {
-                                                                echo $i - 1;
-                                                            } ?>" class="btn btn-default"> > </a>
+                                                                    echo $_GET['page'] + 1;
+                                                                } else {
+                                                                    echo $i - 1;
+                                                                } ?>" class="btn btn-default"> > </a>
                     </div>
                 </div>
                 <div class="row">

@@ -28,6 +28,32 @@ if ($user->isLoggedIn()) {
 <head>
     <title> Dashboard | e-CTMIS </title>
     <?php include "head.php"; ?>
+    <style>
+        .hover-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hover-container .hover-text {
+            visibility: hidden;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .hover-container:hover .hover-text {
+            visibility: visible;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -160,43 +186,116 @@ if ($user->isLoggedIn()) {
                                                     $check = 1;
                                                 }
 
-                                                if (!$group = 2) {
-                                                    if ($expireDate <= date('Y-m-d')) {
-                                                        $check1 = 1;
-                                                    }
+                                                // if (!$group = 2) {
+                                                //     if ($expireDate <= date('Y-m-d')) {
+                                                //         $check1 = 1;
+                                                //     }
+                                                // }
+                                            }
+
+
+                                            // $values = array(15, 27, 39, 42, 56);
+                                            // $targetValue = 50;
+                                            $found = false;
+
+                                            foreach ($override->getNews('batch', 'generic_id', $bDiscription['id'], 'status', 1) as $value) {
+                                                $expireDate = $value['expire_date'];
+
+                                                if ($expireDate <= date('Y-m-d') && $group != 2) {
+                                                    $found = true;
+                                                    break;
                                                 }
                                             }
+
+                                            if ($found) {
+                                                $check1 = 1;
+                                            } else {
+                                                $check1 = 0;
+                                            }
+
+
+
+
+
                                     ?>
                                             <tr>
                                                 <td><a href="data.php?id=7&did=<?= $bDiscription['id'] ?>"><?= $generic ?></a></td>
                                                 <td><?= $notify_quantity ?></td>
                                                 <td>
                                                     <?php if ($batchBalance <= $Notify && $batchBalance > 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-warning"><?= $balance; ?></a>
+                                                        <div class="hover-container">
+                                                            <a href="add.php?id=11" role="button" class="btn btn-warning"><?= $balance; ?>
+                                                                <div class="hover-text"><?php echo 'Receive New Batch'; ?></div>
+                                                            </a>
+
+                                                        </div>
                                                     <?php } elseif ($batchBalance == 0) { ?>
-                                                        <a href="#" role="button" class="btn btn-danger"><?= $balance; ?></a>
+                                                        <div class="hover-container">
+                                                            <a href="add.php?id=11" role="button" class="btn btn-danger"><?= $balance; ?>
+
+                                                                <div class="hover-text"><?php echo 'Receive New Batch'; ?></div>
+                                                            </a>
+
+
+                                                        </div>
                                                     <?php } else { ?>
-                                                        <a href="#" role="button" class="btn btn-success"><?= $balance; ?></a>
+                                                        <div class="hover-container">
+                                                            <a href="add.php?id=11" role="button" class="btn btn-success"><?= $balance; ?>
+
+                                                                <div class="hover-text"><?php echo 'Receive New Batch'; ?></div>
+                                                            </a>
+
+                                                        </div>
                                                     <?php } ?>
                                                 </td>
                                                 <td>
                                                     <?php if ($sumLoctn <= 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
+
+                                                            <div class="hover-text"><?php echo 'Increase this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } else if ($check == 1) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Not Checked!</a>
-                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
+                                                    <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
+
+                                                            <div class="hover-text"><?php echo 'Increase this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } else { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Checked!</a>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Checked!</a>
+
+                                                            <div class="hover-text"><?php echo 'Please Check this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } ?>
                                                 </td>
                                                 <td>
                                                     <?php if ($sumLoctn <= 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Out of Stock</a>
+
+                                                            <div class="hover-text"><?php echo 'Increase this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } else if ($check1 == 1) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-danger" data-toggle="modal">Expired!</a>
+
+                                                            <div class="hover-text"><?php echo 'Please Quarantine this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } else if ($sumLoctn < $Notify && $sumLoctn > 0) { ?>
-                                                        <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
+                                                        <div class="hover-container">
+                                                            <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-warning" data-toggle="modal">Low!</a>
+
+                                                            <div class="hover-text"><?php echo 'Increase this Stock'; ?></div>
+                                                            </a>
+                                                        </div>
                                                     <?php } else { ?>
                                                         <a href="data.php?id=1&gid=<?= $bDiscription['id'] ?>" role="button" class="btn btn-success" data-toggle="modal">Valid!</a>
                                                     <?php } ?>
