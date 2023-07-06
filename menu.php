@@ -246,6 +246,39 @@ if ($user->data()->accessLevel == 1) {
             </ul>
         </li>
         <li class="openable">
+            <a href="#"><span class="isw-tag"></span><span class="text">Valid Batchs</span></a>
+            <ul>
+                <!-- <li>
+                    <a href="data.php?id=9">
+                        <span class="text">Quarantined</span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 2) ?></span>
+                    </a>
+                    <a href="data.php?id=10">
+                        <span class="text">Burn / destroyed </span> <span class="badge badge-primary badge-pill"><?= $override->getCount('batch', 'status', 3) ?></span>
+                    </a>
+                </li> -->
+                <li class="">
+                    <a href="report5.php?report=1">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Total Valid Inventory</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report5.php?report=2&group=1">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Valid Inventory (Medicines)</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report5.php?report=3&group=3">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Valid Inventory ( Accessories )</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report5.php?report=4&group=4">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Valid Inventory ( Supplies )</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="openable">
             <a href="#"><span class="isw-tag"></span><span class="text">Expired Batchs</span></a>
             <ul>
                 <!-- <li>

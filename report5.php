@@ -8,23 +8,22 @@ $random = new Random();
 
 if ($user->isLoggedIn()) {
     try {
-        $data_count = 0;
         switch (Input::get('report')) {
             case 1:
-                $data = $override->getNewsASC1('batch', 'status',1, 'expire_date', date('Y-m-d'), 'batch_no');
-                $data_count = $override->getNewsASC1Count('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'batch_no');
+                $data = $override->getNewsASC0('batch', 'status',1, 'expire_date', date('Y-m-d'), 'batch_no');
+                $data_count = $override->getNewsASC0Count('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'batch_no');
                 break;
             case 2:
-                $data = $override->getNewsASC1G('batch', 'status', 1,'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
-                $data_count = $override->getNewsASC1CountG('batch', 'status', 1,'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data = $override->getNewsASC0G('batch', 'status', 1,'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data_count = $override->getNewsASC0CountG('batch', 'status', 1,'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
                 break;
             case 3:
-                $data = $override->getNewsASC1G('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
-                $data_count = $override->getNewsASC1CountG('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data = $override->getNewsASC0G('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data_count = $override->getNewsASC0CountG('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
                 break;
             case 4:
-                $data = $override->getNewsASC1G('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
-                $data_count = $override->getNewsASC1CountG('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data = $override->getNewsASC0G('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
+                $data_count = $override->getNewsASC0CountG('batch', 'status', 1, 'expire_date', date('Y-m-d'), 'use_group', $_GET['group'], 'batch_no');
                 break;
         }
         $successMessage = 'Report Successful Created';
@@ -39,37 +38,25 @@ $span0 = 14;
 $span1 = 7;
 $span2 = 7;
 
-
-$data_count1 = 0;
-$data_count3 = 0;
-$data_count4 = 0;
 if ($_GET['group'] == 1) {
-    $data_count1 = $data_count;
     $title =
     $quantity . ' Inventory ( Medicines )';
 } elseif ($_GET['group'] == 2) {
-    $data_count = 0;
     $title =
-    $quantity . ' Expired Inventory (Medical Equipments)';
+    $quantity . ' Valid Inventory (Medical Equipments)';
     $span0 = 14;
     $span1 = 7;
     $span2 = 7;
 } elseif ($_GET['group'] == 3) {
-    $data_count3 = $data_count;
-
     $title =
-    $quantity .  ' Expired Inventory ( Accessories )';
+    $quantity .  ' Valid Inventory ( Accessories )';
     
 } elseif ($_GET['group'] == 4) {
-    $data_count4 = $data_count;
-
     $title =
-    $quantity . ' Expired  Inventory ( Supplies )';
+    $quantity . ' Valid  Inventory ( Supplies )';
 } else {
-    $data_count = $data_count1 + $data_count3 + $data_count4;
-
     $title =
-        $quantity . '  Expired'. ' Total Inventory ';
+        $quantity . '  Valid'. ' Total Inventory ';
 }
 
 $pdf = new Pdf();
@@ -166,7 +153,6 @@ $output .= '
 
         }
 
-    if ($row['use_group'] == 1 || $row['use_group'] == 3 || $row['use_group'] == 4) {
 
         $output .= '
          <tr>
@@ -182,9 +168,7 @@ $output .= '
 
         $x += 1;
     
-    
     }
-}
 
     $output .= '
     <tr>
