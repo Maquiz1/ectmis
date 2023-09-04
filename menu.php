@@ -344,6 +344,31 @@ if ($user->data()->accessLevel == 1) {
                 </li>
             </ul>
         </li>
+        <li class="openable">
+            <a href="#"><span class="isw-tag"></span><span class="text">Checking Inventory</span></a>
+            <ul>
+                <li class="">
+                    <a href="report7.php?report=1&group=1">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Inventory (Medicines)</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report7.php?report=2&group=2">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Inventory (Medical Equipment)</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report7.php?report=3&group=3">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Inventory ( Accessories )</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="report7.php?report=4&group=4">
+                        <span class="glyphicon glyphicon-list"></span><span class="text">Inventory ( Supplies )</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 
     <div class="dr"><span></span></div>

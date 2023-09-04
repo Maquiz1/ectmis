@@ -140,7 +140,7 @@ foreach ($data as $row) {
     $generic_balance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['notify_quantity'];
     $maintainance = $override->getNews('generic', 'id', $row['generic_id'], 'status', 1)[0]['maintainance'];
     $category_name = $override->get('drug_cat', 'id', $row['category'])[0]['name'];
-
+    $last_check = $row['last_check'];
     if ($row['expire_date'] <= date('Y-m-d')) {
         $status = 'Expired';
     } else {
@@ -187,7 +187,7 @@ foreach ($data as $row) {
         $output .= '
  
             <td colspan="2">' . $row['balance'] . '</td>
-            <td colspan="2">' . $row['last_check1'] . '</td>
+            <td colspan="2">' . $last_check . '</td>
             <td colspan="2">' . $check_status .  '</td>
             <td colspan="2">' . $row['check_remarks'] . '</td>
             <td colspan="2">' . $row['next_check'] . '</td>
